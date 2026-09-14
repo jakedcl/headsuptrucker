@@ -46,7 +46,8 @@ NYC's 149 legacy locations are **not** labeled as posted warnings. They are reta
 
 - `/`: vehicle-height entry.
 - `/map?height=108`: map for a 9 ft vehicle.
-- URL parameters `lat`, `lng`, `z`, and `bridge` preserve the map view and selected record.
+- URL parameters `lat`, `lng`, `z`, `bridge`, `from`, and `to` preserve the map view, selected record, and optional path check.
+- From/To on the map traces a driving path and lists posted records near it. This is not turn-by-turn navigation.
 - Clustered markers expand on click; individual records open source details.
 - Gray optional markers mean more than 12 inches above your height, not guaranteed fit.
 - Mobile layout includes a map and accessible clearance list.
