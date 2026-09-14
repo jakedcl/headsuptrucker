@@ -135,7 +135,7 @@ export function DriveForm({ initialFrom = "", initialTo = "", loading, error, ac
   initialFrom?: string; initialTo?: string; loading: boolean; error: string; active: boolean;
   onSubmit: (from: Place | string, to: Place | string) => void; onClear: () => void;
 }) {
-  const [open, setOpen] = useState(() => active || Boolean(initialFrom.trim() || initialTo.trim()));
+  const [open, setOpen] = useState(true);
   const [fromText, setFromText] = useState(initialFrom);
   const [toText, setToText] = useState(initialTo);
   const [fromPlace, setFromPlace] = useState<Place | null>(null);
@@ -154,7 +154,7 @@ export function DriveForm({ initialFrom = "", initialTo = "", loading, error, ac
         aria-controls="drive-form-fields"
         onClick={() => setOpen(value => !value)}
       >
-        <span className="eyebrow">CHECK A DRIVE</span>
+        <span className="eyebrow">CHECK A ROUTE</span>
         <span className="drive-chevron" aria-hidden="true">{open ? "▴" : "▾"}</span>
       </button>
       {active && <button className="text-button" type="button" onClick={onClear}>Clear</button>}
