@@ -59,7 +59,12 @@ function addOverlayLayers(map: MapInstance) {
       id: "truck-restrictions-line",
       type: "line",
       source: "truck-routes",
-      filter: ["all", ["has", "restriction"], ["!=", ["get", "restriction"], ""]],
+      filter: [
+        "all",
+        ["has", "restriction"],
+        ["!=", ["get", "restriction"], null],
+        ["!=", ["get", "restriction"], ""],
+      ],
       layout: { "line-cap": "round", "line-join": "round", visibility: "none" },
       paint: {
         "line-color": "#b45309",

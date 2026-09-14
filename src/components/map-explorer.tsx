@@ -86,6 +86,7 @@ export function MapExplorer() {
   const [truckRoutesData, setTruckRoutesData] = useState<import("geojson").FeatureCollection | null>(null);
   const [streetClosuresData, setStreetClosuresData] = useState<import("geojson").FeatureCollection | null>(null);
   const [awarenessError, setAwarenessError] = useState("");
+  const [awarenessLoading, setAwarenessLoading] = useState(false);
   const [bounds, setBounds] = useState<[number, number, number, number] | null>(null);
   const [listLimit, setListLimit] = useState(30);
   const [shareMessage, setShareMessage] = useState("");
@@ -125,6 +126,7 @@ export function MapExplorer() {
     if (!needRoutes || truckRoutesData) return;
     const controller = new AbortController();
     setAwarenessError("");
+    setAwarenessLoading(true);
     fetch("/data/truck-routes-nyc.geojson", { signal: controller.signal })
       .then(async response => {
         if (!response.ok) throw new Error("Truck routes couldn’t load.");
@@ -132,6 +134,9 @@ export function MapExplorer() {
       })
       .catch(error => {
         if (error.name !== "AbortError") setAwarenessError(error.message);
+      })
+      .finally(() => {
+        if (!controller.signal.aborted) setAwarenessLoading(false);
       });
     return () => controller.abort();
   }, [awareness.truckRoutes, awareness.truckRestrictions, truckRoutesData]);
@@ -140,6 +145,7 @@ export function MapExplorer() {
     if (!awareness.streetClosures || streetClosuresData) return;
     const controller = new AbortController();
     setAwarenessError("");
+    setAwarenessLoading(true);
     fetch("/data/street-closures-nyc.geojson", { signal: controller.signal })
       .then(async response => {
         if (!response.ok) throw new Error("Street closures couldn’t load.");
@@ -147,6 +153,9 @@ export function MapExplorer() {
       })
       .catch(error => {
         if (error.name !== "AbortError") setAwarenessError(error.message);
+      })
+      .finally(() => {
+        if (!controller.signal.aborted) setAwarenessLoading(false);
       });
     return () => controller.abort();
   }, [awareness.streetClosures, streetClosuresData]);
@@ -337,6 +346,14 @@ export function MapExplorer() {
             Road closures
           </label>
           <p className="awareness-note">Overlays only — not used for path check. Off by default.</p>
+          {(awareness.truckRoutes || awareness.truckRestrictions || awareness.streetClosures) && (
+            <div className="awareness-legend" aria-hidden="true">
+              {awareness.truckRoutes && <span><i className="swatch route" />Truck route</span>}
+              {awareness.truckRestrictions && <span><i className="swatch restrict" />Restriction</span>}
+              {awareness.streetClosures && <span><i className="swatch closure" />Road closed</span>}
+            </div>
+          )}
+          {awarenessLoading && <p className="awareness-note" role="status">Loading NYC overlay…</p>}
           {awarenessError && <p className="awareness-error" role="status">{awarenessError}</p>}
         </div>
         <DriveForm
