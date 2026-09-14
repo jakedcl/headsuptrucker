@@ -104,7 +104,7 @@ export function DriveForm({ initialFrom = "", initialTo = "", loading, error, ac
         <PlaceField label="To" inputId="drive-to" placeholder="Jones Beach" value={toText} onChange={value => { setToText(value); setToPlace(null); }} onPick={place => { setToText(place.label); setToPlace(place); }} />
         {error && <p role="alert" className="form-error">{error}</p>}
         {loading && <p className="drive-status" role="status">Looking up those places and posted clearances nearby…</p>}
-        <button className="primary" type="submit" disabled={loading}>{loading ? "Checking this path" : "Show lows on this path"}<span aria-hidden="true">↗</span></button>
+        <button className="primary" type="submit" disabled={loading}>{loading ? "Going…" : "Go"}</button>
       </form>
     )}
   </div>;
