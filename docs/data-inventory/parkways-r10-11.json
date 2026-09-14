@@ -1,0 +1,338 @@
+[
+  {
+    "PARKWAYNAME": "Belt System - Laurelton Parkway",
+    "CV_RESTRICTIONS": "No Commercial Vehicles",
+    "REGION": 11,
+    "DIRECTION": "P"
+  },
+  {
+    "PARKWAYNAME": "Belt System - Shore Parkway",
+    "CV_RESTRICTIONS": "No Commercial Vehicles",
+    "REGION": 11,
+    "DIRECTION": "P"
+  },
+  {
+    "PARKWAYNAME": "Belt System - Shore Parkway",
+    "CV_RESTRICTIONS": "No Commercial Vehicles",
+    "REGION": 11,
+    "DIRECTION": "R"
+  },
+  {
+    "PARKWAYNAME": "Bronx Pelham Parkway",
+    "CV_RESTRICTIONS": "No Commercial Vehicles",
+    "REGION": 11,
+    "DIRECTION": "R"
+  },
+  {
+    "PARKWAYNAME": "Cross Bay Parkway",
+    "CV_RESTRICTIONS": "No Commercial Vehicles",
+    "REGION": 11,
+    "DIRECTION": "R"
+  },
+  {
+    "PARKWAYNAME": "Loop Parkway",
+    "CV_RESTRICTIONS": "Vehicles registered as Passenger vehicles only without commercial goods.  No vehicles with heights over 94 inches.",
+    "REGION": 10,
+    "DIRECTION": "P"
+  },
+  {
+    "PARKWAYNAME": "Mosholu Parkway",
+    "CV_RESTRICTIONS": "No Commercial Vehicles",
+    "REGION": 11,
+    "DIRECTION": "P"
+  },
+  {
+    "PARKWAYNAME": "Northern State Parkway",
+    "CV_RESTRICTIONS": "Vehicles registered as Passenger vehicles only without commercial goods.  No vehicles with heights over 94 inches.",
+    "REGION": 10,
+    "DIRECTION": "P"
+  },
+  {
+    "PARKWAYNAME": "Northern State Parkway",
+    "CV_RESTRICTIONS": "Vehicles registered as Passenger vehicles only without commercial goods.  No vehicles with heights over 94 inches.",
+    "REGION": 10,
+    "DIRECTION": "R"
+  },
+  {
+    "PARKWAYNAME": "Shore Front Parkway",
+    "CV_RESTRICTIONS": "No Commercial Vehicles",
+    "REGION": 11,
+    "DIRECTION": "P"
+  },
+  {
+    "PARKWAYNAME": "Shore Front Parkway",
+    "CV_RESTRICTIONS": "No Commercial Vehicles",
+    "REGION": 11,
+    "DIRECTION": "R"
+  },
+  {
+    "PARKWAYNAME": "Southern State Parkway",
+    "CV_RESTRICTIONS": "Vehicles registered as Passenger vehicles only without commercial goods.  No vehicles with heights over 94 inches.",
+    "REGION": 10,
+    "DIRECTION": "P"
+  },
+  {
+    "PARKWAYNAME": "Southern State Parkway",
+    "CV_RESTRICTIONS": "Vehicles registered as Passenger vehicles only without commercial goods.  No vehicles with heights over 94 inches.",
+    "REGION": 10,
+    "DIRECTION": "R"
+  },
+  {
+    "PARKWAYNAME": "Belt System - Cross Island Parkway",
+    "CV_RESTRICTIONS": "No Commercial Vehicles",
+    "REGION": 11,
+    "DIRECTION": "P"
+  },
+  {
+    "PARKWAYNAME": "Belt System - Cross Island Parkway",
+    "CV_RESTRICTIONS": "No Commercial Vehicles",
+    "REGION": 11,
+    "DIRECTION": "R"
+  },
+  {
+    "PARKWAYNAME": "Belt System - Laurelton Parkway",
+    "CV_RESTRICTIONS": "No Commercial Vehicles",
+    "REGION": 11,
+    "DIRECTION": "R"
+  },
+  {
+    "PARKWAYNAME": "Belt System - Southern Parkway",
+    "CV_RESTRICTIONS": "No Commercial Vehicles",
+    "REGION": 11,
+    "DIRECTION": "P"
+  },
+  {
+    "PARKWAYNAME": "Belt System - Southern Parkway",
+    "CV_RESTRICTIONS": "No Commercial Vehicles",
+    "REGION": 11,
+    "DIRECTION": "R"
+  },
+  {
+    "PARKWAYNAME": "Bethpage State Parkway",
+    "CV_RESTRICTIONS": "Vehicles registered as Passenger vehicles only without commercial goods.  No vehicles with heights over 94 inches.",
+    "REGION": 10,
+    "DIRECTION": "P"
+  },
+  {
+    "PARKWAYNAME": "Bethpage State Parkway",
+    "CV_RESTRICTIONS": "Vehicles registered as Passenger vehicles only without commercial goods.  No vehicles with heights over 94 inches.",
+    "REGION": 10,
+    "DIRECTION": "R"
+  },
+  {
+    "PARKWAYNAME": "Bronx Pelham Parkway",
+    "CV_RESTRICTIONS": "No Commercial Vehicles",
+    "REGION": 11,
+    "DIRECTION": "P"
+  },
+  {
+    "PARKWAYNAME": "Bronx River Parkway (N.Y.C.)",
+    "CV_RESTRICTIONS": "No Commercial Vehicles",
+    "REGION": 11,
+    "DIRECTION": "P"
+  },
+  {
+    "PARKWAYNAME": "Bronx River Parkway (N.Y.C.)",
+    "CV_RESTRICTIONS": "No Commercial Vehicles",
+    "REGION": 11,
+    "DIRECTION": "R"
+  },
+  {
+    "PARKWAYNAME": "Cross Bay Parkway",
+    "CV_RESTRICTIONS": "No Commercial Vehicles",
+    "REGION": 11,
+    "DIRECTION": "P"
+  },
+  {
+    "PARKWAYNAME": "Franklin D. Roosevelt Drive",
+    "CV_RESTRICTIONS": "No Commercial Vehicles",
+    "REGION": 11,
+    "DIRECTION": "P"
+  },
+  {
+    "PARKWAYNAME": "Bay Parkway - Section of Ocean Parkway",
+    "CV_RESTRICTIONS": "Vehicles registered as Passenger vehicles only without commercial goods.  No vehicles with heights over 94 inches.",
+    "REGION": 10,
+    "DIRECTION": "P"
+  },
+  {
+    "PARKWAYNAME": "Grand Central Parkway",
+    "CV_RESTRICTIONS": "(RFK to B-Q Expressway Only) Commercial vehicles and single-unit trucks up to 12'-6\" high with no more than 3 axles and 10 tires are allowed",
+    "REGION": 11,
+    "DIRECTION": "R"
+  },
+  {
+    "PARKWAYNAME": "Meadowbrook State Parkway",
+    "CV_RESTRICTIONS": "Vehicles registered as Passenger vehicles only without commercial goods.  No vehicles with heights over 94 inches.",
+    "REGION": 10,
+    "DIRECTION": "P"
+  },
+  {
+    "PARKWAYNAME": "Meadowbrook State Parkway",
+    "CV_RESTRICTIONS": "Vehicles registered as Passenger vehicles only without commercial goods.  No vehicles with heights over 94 inches.",
+    "REGION": 10,
+    "DIRECTION": "R"
+  },
+  {
+    "PARKWAYNAME": "Mosholu Parkway",
+    "CV_RESTRICTIONS": "No Commercial Vehicles",
+    "REGION": 11,
+    "DIRECTION": "R"
+  },
+  {
+    "PARKWAYNAME": "Ocean Parkway (N.Y.C.)",
+    "CV_RESTRICTIONS": "No Commercial Vehicles",
+    "REGION": 11,
+    "DIRECTION": "P"
+  },
+  {
+    "PARKWAYNAME": "Henry Hudson Parkway",
+    "CV_RESTRICTIONS": "No Commercial Vehicles",
+    "REGION": 11,
+    "DIRECTION": "P"
+  },
+  {
+    "PARKWAYNAME": "Henry Hudson Parkway",
+    "CV_RESTRICTIONS": "No Commercial Vehicles",
+    "REGION": 11,
+    "DIRECTION": "R"
+  },
+  {
+    "PARKWAYNAME": "Hutchinson River Parkway (N.Y.C.)",
+    "CV_RESTRICTIONS": "No Commercial Vehicles",
+    "REGION": 11,
+    "DIRECTION": "P"
+  },
+  {
+    "PARKWAYNAME": "Hutchinson River Parkway (N.Y.C.)",
+    "CV_RESTRICTIONS": "No Commercial Vehicles",
+    "REGION": 11,
+    "DIRECTION": "R"
+  },
+  {
+    "PARKWAYNAME": "Jackie Robinson (Interborough) Parkway",
+    "CV_RESTRICTIONS": "No Commercial Vehicles",
+    "REGION": 11,
+    "DIRECTION": "P"
+  },
+  {
+    "PARKWAYNAME": "Jackie Robinson (Interborough) Parkway",
+    "CV_RESTRICTIONS": "No Commercial Vehicles",
+    "REGION": 11,
+    "DIRECTION": "R"
+  },
+  {
+    "PARKWAYNAME": "Loop Parkway",
+    "CV_RESTRICTIONS": "Vehicles registered as Passenger vehicles only without commercial goods.  No vehicles with heights over 94 inches.",
+    "REGION": 10,
+    "DIRECTION": "R"
+  },
+  {
+    "PARKWAYNAME": "Ocean Parkway (Nassau, Suffolk)",
+    "CV_RESTRICTIONS": "Vehicles registered as Passenger vehicles only without commercial goods.  No vehicles with heights over 94 inches.",
+    "REGION": 10,
+    "DIRECTION": "P"
+  },
+  {
+    "PARKWAYNAME": "Ocean Parkway (N.Y.C.)",
+    "CV_RESTRICTIONS": "No Commercial Vehicles",
+    "REGION": 11,
+    "DIRECTION": "R"
+  },
+  {
+    "PARKWAYNAME": "Robert Moses Causeway",
+    "CV_RESTRICTIONS": "Vehicles registered as Passenger vehicles only without commercial goods.  No vehicles with heights over 94 inches.",
+    "REGION": 10,
+    "DIRECTION": "P"
+  },
+  {
+    "PARKWAYNAME": "Robert Moses Causeway",
+    "CV_RESTRICTIONS": "Vehicles registered as Passenger vehicles only without commercial goods.  No vehicles with heights over 94 inches.",
+    "REGION": 10,
+    "DIRECTION": "R"
+  },
+  {
+    "PARKWAYNAME": "Sagtikos/Sunken Meadow State Parkway",
+    "CV_RESTRICTIONS": "Vehicles registered as Passenger vehicles only without commercial goods.  No vehicles with heights over 94 inches.",
+    "REGION": 10,
+    "DIRECTION": "P"
+  },
+  {
+    "PARKWAYNAME": "Sagtikos/Sunken Meadow State Parkway",
+    "CV_RESTRICTIONS": "Vehicles registered as Passenger vehicles only without commercial goods.  No vehicles with heights over 94 inches.",
+    "REGION": 10,
+    "DIRECTION": "R"
+  },
+  {
+    "PARKWAYNAME": "Wantagh State Parkway",
+    "CV_RESTRICTIONS": "Vehicles registered as Passenger vehicles only without commercial goods.  No vehicles with heights over 94 inches.",
+    "REGION": 10,
+    "DIRECTION": "P"
+  },
+  {
+    "PARKWAYNAME": "Wantagh State Parkway",
+    "CV_RESTRICTIONS": "Vehicles registered as Passenger vehicles only without commercial goods.  No vehicles with heights over 94 inches.",
+    "REGION": 10,
+    "DIRECTION": "R"
+  },
+  {
+    "PARKWAYNAME": "Korean War Vets Parkway (Richmond)",
+    "CV_RESTRICTIONS": "No Commercial Vehicles",
+    "REGION": 11,
+    "DIRECTION": "P"
+  },
+  {
+    "PARKWAYNAME": "Korean War Vets Parkway (Richmond)",
+    "CV_RESTRICTIONS": "No Commercial Vehicles",
+    "REGION": 11,
+    "DIRECTION": "R"
+  },
+  {
+    "PARKWAYNAME": "Franklin D. Roosevelt Drive",
+    "CV_RESTRICTIONS": "No Commercial Vehicles",
+    "REGION": 11,
+    "DIRECTION": "R"
+  },
+  {
+    "PARKWAYNAME": "Grand Central Parkway",
+    "CV_RESTRICTIONS": "No Commercial Vehicles",
+    "REGION": 11,
+    "DIRECTION": "P"
+  },
+  {
+    "PARKWAYNAME": "Grand Central Parkway",
+    "CV_RESTRICTIONS": "No Commercial Vehicles",
+    "REGION": 11,
+    "DIRECTION": "R"
+  },
+  {
+    "PARKWAYNAME": "Harlem River Drive",
+    "CV_RESTRICTIONS": "No Commercial Vehicles",
+    "REGION": 11,
+    "DIRECTION": "P"
+  },
+  {
+    "PARKWAYNAME": "Harlem River Drive",
+    "CV_RESTRICTIONS": "No Commercial Vehicles",
+    "REGION": 11,
+    "DIRECTION": "R"
+  },
+  {
+    "PARKWAYNAME": "Grand Central Parkway",
+    "CV_RESTRICTIONS": "(RFK to B-Q Expressway Only) Commercial vehicles and single-unit trucks up to 12'-6\" high with no more than 3 axles and 10 tires are allowed",
+    "REGION": 11,
+    "DIRECTION": "P"
+  },
+  {
+    "PARKWAYNAME": "Ocean Parkway (Nassau, Suffolk)",
+    "CV_RESTRICTIONS": "Vehicles registered as Passenger vehicles only without commercial goods.  No vehicles with heights over 94 inches.",
+    "REGION": 10,
+    "DIRECTION": "R"
+  },
+  {
+    "PARKWAYNAME": "Bay Parkway - Section of Ocean Parkway",
+    "CV_RESTRICTIONS": "Vehicles registered as Passenger vehicles only without commercial goods.  No vehicles with heights over 94 inches.",
+    "REGION": 10,
+    "DIRECTION": "R"
+  }
+]

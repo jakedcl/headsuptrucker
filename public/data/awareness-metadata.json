@@ -1,42 +1,43 @@
 {
-  "builtAt": "2026-09-14T13:43:40.423Z",
+  "builtAt": "2026-09-14T16:55:00.000Z",
   "sources": {
     "truckRoutes": {
       "dataset": "jjja-shxy",
       "url": "https://data.cityofnewyork.us/Transportation/New-York-City-Truck-Routes/jjja-shxy",
-      "segmentCount": 32628,
-      "withRestrictionText": 860,
-      "byRouteType": {
-        "Through": 13113,
-        "Local": 19292,
-        "Limited Local": 223,
-        "Other": 0
-      }
+      "note": "Also derives road-features, road-labels, crossing-limits"
     },
-    "streetClosures": {
-      "dataset": "ezy6-djsf",
-      "url": "https://data.cityofnewyork.us/Transportation/Street-Closures-due-to-Construction-Activities-by-/ezy6-djsf",
-      "activeCount": 1628,
-      "filter": "workenddate >= today (build day); LINESTRING/MULTILINESTRING only",
-      "geometryNote": "WKT in EPSG:2263 (NY Long Island State Plane ftUS), converted to WGS84"
+    "postedLoad": {
+      "feed": "NYSDOT CommVehicleDataFeed /0",
+      "file": "posted-load-nyc-li.geojson",
+      "count": 75,
+      "unit": "US tons"
     },
-    "loadingZones": {
-      "truckSignsDataset": "qt6m-xctn",
-      "truckSignsUrl": "https://data.cityofnewyork.us/Transportation/Street-Sign-Work-Orders/qt6m-xctn",
-      "neighborhoodSignsDataset": "6pjf-tf5u",
-      "neighborhoodSignsUrl": "https://data.cityofnewyork.us/Transportation/Neighborhood-Loading-Zone-signs-locations-NYCDOT/6pjf-tf5u",
-      "signCount": 6600,
-      "byZoneType": {
-        "truck": 5864,
-        "neighborhood": 736
-      },
-      "filter": "record_type = Current with State Plane coordinates",
-      "geometryNote": "sign_x_coord/sign_y_coord in EPSG:2263 \u2192 WGS84 points"
+    "parkways": {
+      "attributes": "NYSDOT CommVehicleDataFeed /2 Regions 10–11",
+      "geometry": "OpenStreetMap ways (name match)",
+      "file": "parkways-nyc-li.geojson",
+      "facilityCount": 23
+    },
+    "majorCrossings": {
+      "file": "major-crossings.geojson",
+      "count": 14,
+      "note": "Curated MTA / PANYNJ / NYCDOT limits — hand-maintained"
+    },
+    "crossingLimits": {
+      "file": "crossing-limits-nyc.geojson",
+      "segmentCount": 860,
+      "uniqueTexts": 11,
+      "note": "Parsed from NYC truck-route restrictio field"
+    },
+    "roadFeatures": {
+      "file": "road-features-nyc.geojson",
+      "kinds": ["bridge", "tunnel", "expressway"],
+      "note": "Filtered from NYC truck routes flags"
     }
   },
   "notes": [
-    "Awareness overlays only \u2014 not used for path routing.",
-    "NYC only; Long Island clearances remain separate.",
-    "Loading zones are curb sign locations, not guaranteed open spaces."
+    "Awareness overlays only — not used for path routing.",
+    "Width / weight / commercial inputs unlock related layers.",
+    "Missing overlay data never means a road is clear."
   ]
 }

@@ -9,6 +9,17 @@ import { featuresAlongRoute, formatDriveMiles, formatDriveMinutes, type DrivePat
 import { DriveForm } from "./drive-form";
 import { HeightForm } from "./height-form";
 import type { Viewport, AwarenessLayers } from "./clearance-map";
+import {
+  EMPTY_VEHICLE_PROFILE,
+  formatTons,
+  formatWidth,
+  loadConflict,
+  parseWeightParam,
+  parseWidthParam,
+  widthConflict,
+  type VehicleProfile,
+} from "@/lib/vehicle-profile";
+import { annotateFacilities, evaluateFacilityProps } from "@/lib/facilities";
 
 const Map = dynamic(() => import("./clearance-map").then(m => m.ClearanceMap), {
   ssr: false,
@@ -19,6 +30,12 @@ const AWARENESS_OFF: AwarenessLayers = {
   truckRoutes: false,
   streetClosures: false,
   loadingZones: false,
+  roadFeatures: false,
+  parkways: false,
+  postedLoad: false,
+  crossingLimits: false,
+  majorCrossings: false,
+  facilities: true,
 };
 
 function updateUrl(values: Record<string, string | null>) {
@@ -86,6 +103,22 @@ export function MapExplorer() {
   const [truckRoutesData, setTruckRoutesData] = useState<import("geojson").FeatureCollection | null>(null);
   const [streetClosuresData, setStreetClosuresData] = useState<import("geojson").FeatureCollection | null>(null);
   const [loadingZonesData, setLoadingZonesData] = useState<import("geojson").FeatureCollection | null>(null);
+  const [roadFeaturesData, setRoadFeaturesData] = useState<import("geojson").FeatureCollection | null>(null);
+  const [roadLabelsData, setRoadLabelsData] = useState<import("geojson").FeatureCollection | null>(null);
+  const [parkwaysData, setParkwaysData] = useState<import("geojson").FeatureCollection | null>(null);
+  const [postedLoadRaw, setPostedLoadRaw] = useState<import("geojson").FeatureCollection | null>(null);
+  const [crossingLimitsRaw, setCrossingLimitsRaw] = useState<import("geojson").FeatureCollection | null>(null);
+  const [majorCrossingsData, setMajorCrossingsData] = useState<import("geojson").FeatureCollection | null>(null);
+  const [facilitiesRaw, setFacilitiesRaw] = useState<import("geojson").FeatureCollection | null>(null);
+  const [selectedFacilityId, setSelectedFacilityId] = useState<string | null>(params.get("facility"));
+  const [widthDraft, setWidthDraft] = useState(() => params.get("width") || "");
+  const [weightDraft, setWeightDraft] = useState(() => params.get("weight") || "");
+  const [vehicle, setVehicle] = useState<VehicleProfile>(() => ({
+    ...EMPTY_VEHICLE_PROFILE,
+    widthInches: parseWidthParam(params.get("width")),
+    weightTons: parseWeightParam(params.get("weight")),
+    commercial: params.get("commercial") === "1",
+  }));
   const [awarenessError, setAwarenessError] = useState("");
   const [awarenessLoading, setAwarenessLoading] = useState(false);
   const [bounds, setBounds] = useState<[number, number, number, number] | null>(null);
@@ -181,6 +214,120 @@ export function MapExplorer() {
   }, [awareness.loadingZones, loadingZonesData]);
 
   useEffect(() => {
+    const jobs: Array<{
+      need: boolean;
+      have: boolean;
+      url: string;
+      label: string;
+      set: (fc: import("geojson").FeatureCollection) => void;
+    }> = [
+      { need: awareness.roadFeatures, have: Boolean(roadFeaturesData), url: "/data/road-features-nyc.geojson", label: "Road features", set: setRoadFeaturesData },
+      { need: awareness.roadFeatures, have: Boolean(roadLabelsData), url: "/data/road-labels-nyc.geojson", label: "Road labels", set: setRoadLabelsData },
+      { need: awareness.parkways || vehicle.commercial, have: Boolean(parkwaysData), url: "/data/parkways-nyc-li.geojson", label: "Parkways", set: setParkwaysData },
+      { need: awareness.postedLoad || vehicle.weightTons !== null, have: Boolean(postedLoadRaw), url: "/data/posted-load-nyc-li.geojson", label: "Posted load bridges", set: setPostedLoadRaw },
+      { need: awareness.crossingLimits || vehicle.widthInches !== null, have: Boolean(crossingLimitsRaw), url: "/data/crossing-limits-nyc.geojson", label: "Crossing limits", set: setCrossingLimitsRaw },
+      { need: awareness.majorCrossings, have: Boolean(majorCrossingsData), url: "/data/major-crossings.geojson", label: "Major crossings", set: setMajorCrossingsData },
+      { need: true, have: Boolean(facilitiesRaw), url: "/data/facilities-nyc-li.geojson", label: "Facilities", set: setFacilitiesRaw },
+    ];
+    const pending = jobs.filter(j => j.need && !j.have);
+    if (pending.length === 0) return;
+    const controller = new AbortController();
+    setAwarenessError("");
+    setAwarenessLoading(true);
+    Promise.all(
+      pending.map(async job => {
+        const response = await fetch(job.url, { signal: controller.signal });
+        if (!response.ok) throw new Error(`${job.label} couldn’t load.`);
+        job.set(await response.json());
+      }),
+    )
+      .catch(error => {
+        if (error.name !== "AbortError") setAwarenessError(error.message);
+      })
+      .finally(() => {
+        if (!controller.signal.aborted) setAwarenessLoading(false);
+      });
+    return () => controller.abort();
+  }, [
+    awareness.roadFeatures,
+    awareness.parkways,
+    awareness.postedLoad,
+    awareness.crossingLimits,
+    awareness.majorCrossings,
+    vehicle.commercial,
+    vehicle.weightTons,
+    vehicle.widthInches,
+    roadFeaturesData,
+    roadLabelsData,
+    parkwaysData,
+    postedLoadRaw,
+    crossingLimitsRaw,
+    majorCrossingsData,
+    facilitiesRaw,
+  ]);
+
+
+  const facilitiesData = useMemo(() => {
+    if (!facilitiesRaw || height == null) return null;
+    return annotateFacilities(facilitiesRaw, {
+      heightInches: height,
+      widthInches: vehicle.widthInches,
+      weightTons: vehicle.weightTons,
+      commercial: vehicle.commercial,
+    });
+  }, [facilitiesRaw, height, vehicle.widthInches, vehicle.weightTons, vehicle.commercial]);
+
+  const selectedFacility = useMemo(() => {
+    if (!selectedFacilityId || !facilitiesRaw) return null;
+    return facilitiesRaw.features.find(f => f.properties?.id === selectedFacilityId) || null;
+  }, [selectedFacilityId, facilitiesRaw]);
+
+  const selectedFacilityEval = useMemo(() => {
+    if (!selectedFacility || height == null) return null;
+    return evaluateFacilityProps((selectedFacility.properties || {}) as Record<string, unknown>, {
+      heightInches: height,
+      widthInches: vehicle.widthInches,
+      weightTons: vehicle.weightTons,
+      commercial: vehicle.commercial,
+    });
+  }, [selectedFacility, height, vehicle]);
+
+  const postedLoadData = useMemo(() => {
+    if (!postedLoadRaw) return null;
+    return {
+      type: "FeatureCollection" as const,
+      features: postedLoadRaw.features.map(f => ({
+        ...f,
+        properties: {
+          ...f.properties,
+          conflict: loadConflict(Number(f.properties?.postedLoadTons) || 0, vehicle.weightTons),
+        },
+      })),
+    };
+  }, [postedLoadRaw, vehicle.weightTons]);
+
+  const crossingLimitsData = useMemo(() => {
+    if (!crossingLimitsRaw) return null;
+    return {
+      type: "FeatureCollection" as const,
+      features: crossingLimitsRaw.features.map(f => ({
+        ...f,
+        properties: {
+          ...f.properties,
+          conflict: widthConflict(
+            typeof f.properties?.widthInches === "number" ? f.properties.widthInches : null,
+            vehicle.widthInches,
+          ),
+        },
+      })),
+    };
+  }, [crossingLimitsRaw, vehicle.widthInches]);
+
+  const activeAwareness: AwarenessLayers = {
+    ...awareness,
+    facilities: true,
+  };
+  useEffect(() => {
     if (!fromParam.trim() || !toParam.trim()) {
       setDrive(null);
       setDriveError("");
@@ -236,7 +383,49 @@ export function MapExplorer() {
   }, [drive, routeParam, params]);
 
 
-  const onSelect = useCallback((id: string) => updateUrl({ bridge: id }), []);
+  const onSelect = useCallback((id: string) => {
+    setSelectedFacilityId(null);
+    updateUrl({ bridge: id, facility: null });
+  }, []);
+  const onFacilitySelect = useCallback((id: string) => {
+    setSelectedFacilityId(id);
+    updateUrl({ facility: id, bridge: null });
+  }, []);
+  const commitWidthDraft = useCallback(() => {
+    const trimmed = widthDraft.trim();
+    if (!trimmed) {
+      setVehicle(v => ({ ...v, widthInches: null }));
+      setWidthDraft("");
+      updateUrl({ width: null });
+      return;
+    }
+    const parsed = parseWidthParam(trimmed);
+    if (parsed === null) {
+      setWidthDraft(vehicle.widthInches == null ? "" : String(vehicle.widthInches));
+      return;
+    }
+    setVehicle(v => ({ ...v, widthInches: parsed }));
+    setWidthDraft(String(parsed));
+    updateUrl({ width: String(parsed) });
+  }, [widthDraft, vehicle.widthInches]);
+  const commitWeightDraft = useCallback(() => {
+    const trimmed = weightDraft.trim();
+    if (!trimmed) {
+      setVehicle(v => ({ ...v, weightTons: null }));
+      setWeightDraft("");
+      updateUrl({ weight: null });
+      return;
+    }
+    const parsed = parseWeightParam(trimmed);
+    if (parsed === null) {
+      setWeightDraft(vehicle.weightTons == null ? "" : String(vehicle.weightTons));
+      return;
+    }
+    setVehicle(v => ({ ...v, weightTons: parsed }));
+    setWeightDraft(String(parsed));
+    updateUrl({ weight: String(parsed) });
+  }, [weightDraft, vehicle.weightTons]);
+
   const onViewport = useCallback((viewport: Viewport, nextBounds: [number, number, number, number]) => {
     setBounds(nextBounds);
     updateUrl({ lng: viewport.lng.toFixed(5), lat: viewport.lat.toFixed(5), z: viewport.z.toFixed(2) });
@@ -339,8 +528,75 @@ export function MapExplorer() {
           <input type="checkbox" checked={showAll} onChange={e => setShowAll(e.target.checked)} />
           Also show clearances more than 12″ above
         </label>
-        <div className="awareness-panel" role="group" aria-label="Awareness layers">
-          <span className="eyebrow">AWARENESS · NYC</span>
+        <div className="awareness-panel" role="group" aria-label="Vehicle and map layers">
+          <span className="eyebrow">YOUR VEHICLE</span>
+          <p className="awareness-note">
+            Height is required. Leave width or weight blank and we treat those as OK everywhere — we only fail a facility when a filled dimension conflicts, or height is too tall.
+          </p>
+          <div className="vehicle-dims">
+            <label>
+              <span>Width (in) · optional</span>
+              <input
+                inputMode="numeric"
+                type="text"
+                placeholder="e.g. 96"
+                value={widthDraft}
+                onChange={e => setWidthDraft(e.target.value)}
+                onBlur={commitWidthDraft}
+                onKeyDown={e => {
+                  if (e.key === "Enter") e.currentTarget.blur();
+                }}
+              />
+            </label>
+            <label>
+              <span>Weight (tons) · optional</span>
+              <input
+                inputMode="decimal"
+                type="text"
+                placeholder="e.g. 10"
+                value={weightDraft}
+                onChange={e => setWeightDraft(e.target.value)}
+                onBlur={commitWeightDraft}
+                onKeyDown={e => {
+                  if (e.key === "Enter") e.currentTarget.blur();
+                }}
+              />
+            </label>
+          </div>
+          <label className="all-toggle">
+            <input
+              type="checkbox"
+              checked={vehicle.commercial}
+              onChange={e => {
+                const commercial = e.target.checked;
+                setVehicle(v => ({ ...v, commercial }));
+                updateUrl({ commercial: commercial ? "1" : null });
+              }}
+            />
+            Commercial / truck vehicle
+          </label>
+          {(vehicle.widthInches != null || vehicle.weightTons != null) && (
+            <p className="awareness-note">
+              Checking
+              {vehicle.widthInches != null ? ` width ${formatWidth(vehicle.widthInches)}` : ""}
+              {vehicle.widthInches != null && vehicle.weightTons != null ? " ·" : ""}
+              {vehicle.weightTons != null ? ` weight ${formatTons(vehicle.weightTons)}` : ""}
+              {vehicle.commercial ? " · commercial" : ""}.
+            </p>
+          )}
+
+          <span className="eyebrow">FACILITIES · STATUS</span>
+          <ul className="facility-legend" aria-label="Facility status legend">
+            <li><span className="swatch ok" aria-hidden />OK for your vehicle</li>
+            <li><span className="swatch caution" aria-hidden />Caution — tight or exceptions</li>
+            <li><span className="swatch danger" aria-hidden />Do not go — ban or too tall/wide/heavy</li>
+            <li><span className="swatch unknown" aria-hidden />Unknown — missing limit data</li>
+          </ul>
+          <p className="awareness-note">
+            Colored lines and pins are bridges, tunnels, and parkways. Tap any for why. Underpass pins still use height only.
+          </p>
+
+          <span className="eyebrow">MORE LAYERS · NYC</span>
           <label className="all-toggle">
             <input
               type="checkbox"
@@ -357,7 +613,6 @@ export function MapExplorer() {
             />
             Construction closures
           </label>
-
           <label className="all-toggle">
             <input
               type="checkbox"
@@ -366,17 +621,7 @@ export function MapExplorer() {
             />
             Loading zones
           </label>
-          <p className="awareness-note">
-            Routes = NYC truck network. Closures = DOT construction feed. Loading zones = curb sign points. Overlays only — not used for path check.
-          </p>
-          {(awareness.truckRoutes || awareness.streetClosures || awareness.loadingZones) && (
-            <div className="awareness-legend" aria-hidden="true">
-              {awareness.truckRoutes && <span><i className="swatch route" />Route</span>}
-              {awareness.streetClosures && <span><i className="swatch closure" />Closed</span>}
-              {awareness.loadingZones && <span><i className="swatch loading" />Loading zone</span>}
-            </div>
-          )}
-          {awarenessLoading && <p className="awareness-note" role="status">Loading NYC overlay…</p>}
+          {awarenessLoading && <p className="awareness-note" role="status">Loading map layers…</p>}
           {awarenessError && <p className="awareness-error" role="status">{awarenessError}</p>}
         </div>
         <DriveForm
@@ -527,15 +772,23 @@ export function MapExplorer() {
           data={mapCollection}
           height={height}
           showAll={showAll}
-          awareness={awareness}
+          awareness={activeAwareness}
           truckRoutesData={truckRoutesData}
           streetClosuresData={streetClosuresData}
           loadingZonesData={loadingZonesData}
+          roadFeaturesData={roadFeaturesData}
+          roadLabelsData={roadLabelsData}
+          parkwaysData={parkwaysData}
+          postedLoadData={postedLoadData}
+          crossingLimitsData={crossingLimitsData}
+          majorCrossingsData={majorCrossingsData}
+          facilitiesData={facilitiesData}
           selectedId={selectedId}
           drive={activeDrive}
           altRoutes={altRoutes}
           initialViewport={initialViewport}
           onSelect={onSelect}
+          onFacilitySelect={onFacilitySelect}
           onViewport={onViewport}
         />
       )}
@@ -545,7 +798,64 @@ export function MapExplorer() {
           ? "Posted records near this path. Check signs. Missing markers do not guarantee clearance."
           : "Check posted signs. Missing markers do not guarantee clearance."}
       </div>
-      {selected && selectedLabels && (
+      {selectedFacility && selectedFacilityEval && (
+        <section className="detail-panel facility-detail" aria-label="Selected facility details">
+          <button
+            className="detail-close"
+            aria-label="Close facility details"
+            onClick={() => {
+              setSelectedFacilityId(null);
+              updateUrl({ facility: null });
+            }}
+          >×</button>
+          <p className="eyebrow">{String(selectedFacility.properties?.kind || "facility").toUpperCase()}</p>
+          <p className={`margin-label ${selectedFacilityEval.status}`}>{selectedFacilityEval.summary}</p>
+          <h2>{String(selectedFacility.properties?.name || "Facility")}</h2>
+          {selectedFacility.properties?.operator ? (
+            <p className="crossing">{String(selectedFacility.properties.operator)}</p>
+          ) : null}
+          <ul className="facility-reasons">
+            {selectedFacilityEval.reasons.map(reason => (
+              <li key={`${reason.dimension}-${reason.label}`}>
+                <span className={`reason-status ${reason.status}`}>{reason.label}</span>
+                <span>{reason.detail}</span>
+              </li>
+            ))}
+          </ul>
+          {selectedFacility.properties?.restrictionNote ? (
+            <p className="posting-note" role="note">{String(selectedFacility.properties.restrictionNote)}</p>
+          ) : null}
+          <dl>
+            <div><dt>Your height</dt><dd>{formatHeight(height)}</dd></div>
+            {vehicle.widthInches != null ? <div><dt>Your width</dt><dd>{formatWidth(vehicle.widthInches)}</dd></div> : null}
+            {vehicle.weightTons != null ? <div><dt>Your weight</dt><dd>{formatTons(vehicle.weightTons)}</dd></div> : null}
+            {typeof selectedFacility.properties?.heightInches === "number" ? (
+              <div><dt>Posted height</dt><dd>{formatHeight(selectedFacility.properties.heightInches)}</dd></div>
+            ) : null}
+            {typeof selectedFacility.properties?.widthInches === "number" ? (
+              <div><dt>Posted width</dt><dd>{formatWidth(selectedFacility.properties.widthInches)}</dd></div>
+            ) : null}
+            {typeof selectedFacility.properties?.postedLoadTons === "number" ? (
+              <div><dt>Posted load</dt><dd>{formatTons(selectedFacility.properties.postedLoadTons)}</dd></div>
+            ) : typeof selectedFacility.properties?.weightTons === "number" ? (
+              <div><dt>Posted load</dt><dd>{formatTons(selectedFacility.properties.weightTons)}</dd></div>
+            ) : null}
+          </dl>
+          <button
+            className="share-clearance"
+            type="button"
+            onClick={() => copyLink(buildShareUrl({
+              height: String(height),
+              facility: selectedFacilityId,
+              width: vehicle.widthInches == null ? null : String(vehicle.widthInches),
+              weight: vehicle.weightTons == null ? null : String(vehicle.weightTons),
+              commercial: vehicle.commercial ? "1" : null,
+            }), setShareMessage)}
+          >Share this facility</button>
+          <p className="detail-note">Awareness only — check posted signs. Missing limits do not mean the road is clear.</p>
+        </section>
+      )}
+      {selected && selectedLabels && !selectedFacility && (
         <section className="detail-panel" aria-label="Selected clearance details">
           <button className="detail-close" aria-label="Close clearance details" onClick={() => updateUrl({ bridge: null })}>×</button>
           <p className="eyebrow">OFFICIAL POSTED CLEARANCE</p>
