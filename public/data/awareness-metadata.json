@@ -31,13 +31,12 @@
         "neighborhood": 736
       },
       "filter": "record_type = Current with State Plane coordinates",
-      "geometryNote": "sign_x_coord/sign_y_coord in EPSG:2263 → WGS84 points"
+      "geometryNote": "sign_x_coord/sign_y_coord in EPSG:2263 \u2192 WGS84 points"
     }
   },
   "notes": [
-    "Awareness overlays only — not used for path routing.",
+    "Awareness overlays only \u2014 not used for path routing.",
     "NYC only; Long Island clearances remain separate.",
-    "Truck restrictions are segments with non-empty restrictio text.",
     "Loading zones are curb sign locations, not guaranteed open spaces."
   ]
 }
