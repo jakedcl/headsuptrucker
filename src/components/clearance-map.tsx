@@ -60,18 +60,14 @@ function addOverlayLayers(map: MapInstance) {
       id: "truck-restrictions-line",
       type: "line",
       source: "truck-routes",
-      filter: [
-        "all",
-        ["has", "restriction"],
-        ["!=", ["get", "restriction"], null],
-        ["!=", ["get", "restriction"], ""],
-      ],
+      // Only segments with real restriction text (~860 of ~32k).
+      filter: [">", ["length", ["coalesce", ["get", "restriction"], ""]], 0],
       layout: { "line-cap": "round", "line-join": "round", visibility: "none" },
       paint: {
-        "line-color": "#b45309",
-        "line-width": ["interpolate", ["linear"], ["zoom"], 10, 2, 14, 5],
-        "line-opacity": 0.85,
-        "line-dasharray": [1.4, 1.2],
+        "line-color": "#c2410c",
+        "line-width": ["interpolate", ["linear"], ["zoom"], 10, 2.5, 14, 6],
+        "line-opacity": 0.95,
+        "line-dasharray": [0.8, 1.6],
       },
     });
   }
@@ -113,6 +109,18 @@ function addOverlayLayers(map: MapInstance) {
   if (!map.getSource("drive")) {
     map.addSource("drive", { type: "geojson", data: EMPTY_DRIVE });
     map.addLayer({
+      id: "drive-glow",
+      type: "line",
+      source: "drive",
+      layout: { "line-cap": "round", "line-join": "round" },
+      paint: {
+        "line-color": "#828bff",
+        "line-width": 16,
+        "line-opacity": 0.28,
+        "line-blur": 10,
+      },
+    });
+    map.addLayer({
       id: "drive-casing",
       type: "line",
       source: "drive",
@@ -124,7 +132,7 @@ function addOverlayLayers(map: MapInstance) {
       type: "line",
       source: "drive",
       layout: { "line-cap": "round", "line-join": "round" },
-      paint: { "line-color": "#0a84ff", "line-width": 5.5, "line-opacity": 0.98 },
+      paint: { "line-color": "#828bff", "line-width": 5.5, "line-opacity": 0.98 },
     });
   }
   if (!map.getSource("drive-alts")) {
@@ -345,7 +353,21 @@ export function ClearanceMap({
     const source = map?.getSource("truck-routes") as GeoJSONSource | undefined;
     if (!ready || !map || !source) return;
     if (truckRoutesData) {
-      source.setData(truckRoutesData).catch(() => {
+      // Drop null/empty restriction so the subset filter can’t treat them as present.
+      const cleaned: FeatureCollection = {
+        type: "FeatureCollection",
+        features: truckRoutesData.features.map(feature => {
+          const restriction = feature.properties?.restriction;
+          const properties = { ...(feature.properties || {}) };
+          if (typeof restriction !== "string" || !restriction.trim()) {
+            delete properties.restriction;
+          } else {
+            properties.restriction = restriction.trim();
+          }
+          return { ...feature, properties };
+        }),
+      };
+      source.setData(cleaned).catch(() => {
         setError("Truck route overlay couldn’t load.");
       });
     }
@@ -358,6 +380,25 @@ export function ClearanceMap({
       map.setLayoutProperty("truck-restrictions-line", "visibility", showRestrictions ? "visible" : "none");
     }
   }, [truckRoutesData, awareness.truckRoutes, awareness.truckRestrictions, ready]);
+
+  useEffect(() => {
+    const map = mapRef.current;
+    if (!ready || !map?.getLayer("drive-glow")) return;
+    if (!drive) {
+      map.setPaintProperty("drive-glow", "line-opacity", 0);
+      return;
+    }
+    let frame = 0;
+    const start = performance.now();
+    const tick = (now: number) => {
+      if (!mapRef.current?.getLayer("drive-glow")) return;
+      const wave = 0.5 + 0.5 * Math.sin(((now - start) / 1400) * Math.PI * 2);
+      mapRef.current.setPaintProperty("drive-glow", "line-opacity", 0.18 + wave * 0.28);
+      frame = requestAnimationFrame(tick);
+    };
+    frame = requestAnimationFrame(tick);
+    return () => cancelAnimationFrame(frame);
+  }, [drive, ready]);
 
   useEffect(() => {
     const map = mapRef.current;

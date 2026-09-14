@@ -356,7 +356,7 @@ export function MapExplorer() {
               checked={awareness.truckRestrictions}
               onChange={e => setAwareness(a => ({ ...a, truckRestrictions: e.target.checked }))}
             />
-            Truck restrictions
+            Posted limits on those routes
           </label>
           <label className="all-toggle">
             <input
@@ -364,8 +364,9 @@ export function MapExplorer() {
               checked={awareness.streetClosures}
               onChange={e => setAwareness(a => ({ ...a, streetClosures: e.target.checked }))}
             />
-            Road closures
+            Construction closures
           </label>
+
           <label className="all-toggle">
             <input
               type="checkbox"
@@ -374,12 +375,14 @@ export function MapExplorer() {
             />
             Loading zones
           </label>
-          <p className="awareness-note">Overlays only — not used for path check. Off by default.</p>
+          <p className="awareness-note">
+            Routes = NYC truck network. Posted limits = same file, only segments with height/weight/time notes (~860 of ~32k). Closures = separate DOT construction feed. Loading zones = curb sign points. Overlays only — not used for path check.
+          </p>
           {(awareness.truckRoutes || awareness.truckRestrictions || awareness.streetClosures || awareness.loadingZones) && (
             <div className="awareness-legend" aria-hidden="true">
-              {awareness.truckRoutes && <span><i className="swatch route" />Truck route</span>}
-              {awareness.truckRestrictions && <span><i className="swatch restrict" />Restriction</span>}
-              {awareness.streetClosures && <span><i className="swatch closure" />Road closed</span>}
+              {awareness.truckRoutes && <span><i className="swatch route" />Route</span>}
+              {awareness.truckRestrictions && <span><i className="swatch restrict" />Posted limit</span>}
+              {awareness.streetClosures && <span><i className="swatch closure" />Closed</span>}
               {awareness.loadingZones && <span><i className="swatch loading" />Loading zone</span>}
             </div>
           )}
