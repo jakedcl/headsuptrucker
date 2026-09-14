@@ -43,6 +43,8 @@ export type AwarenessLayers = {
   crossingLimits: boolean;
   /** Curated major bridge/tunnel pins */
   majorCrossings: boolean;
+  /** Status-colored bridges / tunnels / parkways (clickable) */
+  facilities: boolean;
 };
 
 function addOverlayLayers(map: MapInstance) {
@@ -249,6 +251,70 @@ function addOverlayLayers(map: MapInstance) {
       minzoom: 9,
     });
   }
+  if (!map.getSource("facilities")) {
+    map.addSource("facilities", { type: "geojson", data: EMPTY_FC });
+    const statusColor = [
+      "match",
+      ["get", "status"],
+      "danger", "#c9322a",
+      "caution", "#cf720e",
+      "ok", "#0f7a4c",
+      "#64748b",
+    ] as never;
+    map.addLayer({
+      id: "facilities-line",
+      type: "line",
+      source: "facilities",
+      filter: ["any", ["==", ["geometry-type"], "LineString"], ["==", ["geometry-type"], "MultiLineString"]],
+      layout: { "line-cap": "round", "line-join": "round", visibility: "none" },
+      paint: {
+        "line-color": statusColor,
+        "line-width": ["interpolate", ["linear"], ["zoom"], 9, 2.5, 14, 6],
+        "line-opacity": 0.85,
+      },
+    });
+    map.addLayer({
+      id: "facilities-circle",
+      type: "circle",
+      source: "facilities",
+      filter: ["==", ["geometry-type"], "Point"],
+      layout: { visibility: "none" },
+      paint: {
+        "circle-radius": ["interpolate", ["linear"], ["zoom"], 8, 6, 13, 10],
+        "circle-color": statusColor,
+        "circle-opacity": 0.95,
+        "circle-stroke-width": 2,
+        "circle-stroke-color": "#ffffff",
+      },
+    });
+    map.addLayer({
+      id: "facilities-label",
+      type: "symbol",
+      source: "facilities",
+      layout: {
+        visibility: "none",
+        "text-field": ["get", "name"],
+        "text-size": ["interpolate", ["linear"], ["zoom"], 9, 11, 13, 13],
+        "text-font": ["Open Sans Semibold", "Arial Unicode MS Bold"],
+        "text-offset": [0, 1.15],
+        "text-anchor": "top",
+        "text-optional": true,
+        "symbol-sort-key": [
+          "match",
+          ["get", "status"],
+          "danger", 0,
+          "caution", 1,
+          2,
+        ],
+      },
+      paint: {
+        "text-color": "#1e293b",
+        "text-halo-color": "#ffffff",
+        "text-halo-width": 1.5,
+      },
+      minzoom: 9,
+    });
+  }
   if (!map.getSource("drive")) {
     map.addSource("drive", { type: "geojson", data: EMPTY_DRIVE });
     map.addLayer({
@@ -333,8 +399,10 @@ export function ClearanceMap({
   postedLoadData = null,
   crossingLimitsData = null,
   majorCrossingsData = null,
+  facilitiesData = null,
   initialViewport,
   onSelect,
+  onFacilitySelect,
   onViewport,
 }: {
   data: ClearanceCollection;
@@ -353,13 +421,15 @@ export function ClearanceMap({
   postedLoadData?: FeatureCollection | null;
   crossingLimitsData?: FeatureCollection | null;
   majorCrossingsData?: FeatureCollection | null;
+  facilitiesData?: FeatureCollection | null;
   initialViewport: Viewport;
   onSelect: (id: string) => void;
+  onFacilitySelect?: (id: string) => void;
   onViewport: (viewport: Viewport, bounds: [number, number, number, number]) => void;
 }) {
   const container = useRef<HTMLDivElement>(null);
   const mapRef = useRef<MapInstance | null>(null);
-  const current = useRef({ data, height, showAll, onSelect, onViewport });
+  const current = useRef({ data, height, showAll, onSelect, onFacilitySelect, onViewport });
   const initial = useRef(initialViewport);
   const ends = useRef<maplibregl.Marker[]>([]);
   const focusedId = useRef<string | null>(null);
@@ -367,8 +437,8 @@ export function ClearanceMap({
   const [error, setError] = useState("");
 
   useEffect(() => {
-    current.current = { data, height, showAll, onSelect, onViewport };
-  }, [data, height, showAll, onSelect, onViewport]);
+    current.current = { data, height, showAll, onSelect, onFacilitySelect, onViewport };
+  }, [data, height, showAll, onSelect, onFacilitySelect, onViewport]);
 
   useEffect(() => {
     if (!container.current) return;
@@ -463,6 +533,19 @@ export function ClearanceMap({
 
     map.on("load", () => {
       addOverlayLayers(map);
+    map.on("click", "facilities-line", event => {
+      const id = event.features?.[0]?.properties?.id;
+      if (id) current.current.onFacilitySelect?.(String(id));
+    });
+    map.on("click", "facilities-circle", event => {
+      const id = event.features?.[0]?.properties?.id;
+      if (id) current.current.onFacilitySelect?.(String(id));
+    });
+    for (const layerId of ["facilities-line", "facilities-circle"]) {
+      map.on("mouseenter", layerId, () => { map.getCanvas().style.cursor = "pointer"; });
+      map.on("mouseleave", layerId, () => { map.getCanvas().style.cursor = ""; });
+    }
+
       setReady(true);
       reportViewport();
     });
@@ -583,6 +666,9 @@ export function ClearanceMap({
       ["crossing-limits", "crossing-limits-line", crossingLimitsData, awareness.crossingLimits],
       ["major-crossings", "major-crossings-circle", majorCrossingsData, awareness.majorCrossings],
       ["major-crossings", "major-crossings-label", majorCrossingsData, awareness.majorCrossings],
+      ["facilities", "facilities-line", facilitiesData, awareness.facilities],
+      ["facilities", "facilities-circle", facilitiesData, awareness.facilities],
+      ["facilities", "facilities-label", facilitiesData, awareness.facilities],
     ];
     for (const [sourceId, layerId, dataFc, on] of pairs) {
       const source = map.getSource(sourceId) as GeoJSONSource | undefined;
@@ -602,12 +688,14 @@ export function ClearanceMap({
     awareness.postedLoad,
     awareness.crossingLimits,
     awareness.majorCrossings,
+    awareness.facilities,
     roadFeaturesData,
     roadLabelsData,
     parkwaysData,
     postedLoadData,
     crossingLimitsData,
     majorCrossingsData,
+    facilitiesData,
   ]);
 
   useEffect(() => {
