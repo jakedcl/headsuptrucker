@@ -520,6 +520,48 @@ export function MapExplorer() {
                 router.replace(`/?height=${height}`);
               }}
             >{formatHeight(height)}<span>↕</span></button>}
+        <div className="vehicle-dims">
+          <label>
+            <span>Width (in) · optional</span>
+            <input
+              inputMode="numeric"
+              type="text"
+              placeholder="e.g. 96"
+              value={widthDraft}
+              onChange={e => setWidthDraft(e.target.value)}
+              onBlur={commitWidthDraft}
+              onKeyDown={e => {
+                if (e.key === "Enter") e.currentTarget.blur();
+              }}
+            />
+          </label>
+          <label>
+            <span>Weight (tons) · optional</span>
+            <input
+              inputMode="decimal"
+              type="text"
+              placeholder="e.g. 10"
+              value={weightDraft}
+              onChange={e => setWeightDraft(e.target.value)}
+              onBlur={commitWeightDraft}
+              onKeyDown={e => {
+                if (e.key === "Enter") e.currentTarget.blur();
+              }}
+            />
+          </label>
+        </div>
+        <label className="all-toggle">
+          <input
+            type="checkbox"
+            checked={vehicle.commercial}
+            onChange={e => {
+              const commercial = e.target.checked;
+              setVehicle(v => ({ ...v, commercial }));
+              updateUrl({ commercial: commercial ? "1" : null });
+            }}
+          />
+          Commercial / truck vehicle
+        </label>
         <div className="legend">
           <div><i className="swatch danger" /><span>At or below your height</span><strong>{dangerCount}</strong></div>
           <div><i className="swatch caution" /><span>1–12″ above your height</span><strong>{cautionCount}</strong></div>
@@ -528,74 +570,7 @@ export function MapExplorer() {
           <input type="checkbox" checked={showAll} onChange={e => setShowAll(e.target.checked)} />
           Also show clearances more than 12″ above
         </label>
-        <div className="awareness-panel" role="group" aria-label="Vehicle and map layers">
-          <span className="eyebrow">YOUR VEHICLE</span>
-          <p className="awareness-note">
-            Height is required. Leave width or weight blank and we treat those as OK everywhere — we only fail a facility when a filled dimension conflicts, or height is too tall.
-          </p>
-          <div className="vehicle-dims">
-            <label>
-              <span>Width (in) · optional</span>
-              <input
-                inputMode="numeric"
-                type="text"
-                placeholder="e.g. 96"
-                value={widthDraft}
-                onChange={e => setWidthDraft(e.target.value)}
-                onBlur={commitWidthDraft}
-                onKeyDown={e => {
-                  if (e.key === "Enter") e.currentTarget.blur();
-                }}
-              />
-            </label>
-            <label>
-              <span>Weight (tons) · optional</span>
-              <input
-                inputMode="decimal"
-                type="text"
-                placeholder="e.g. 10"
-                value={weightDraft}
-                onChange={e => setWeightDraft(e.target.value)}
-                onBlur={commitWeightDraft}
-                onKeyDown={e => {
-                  if (e.key === "Enter") e.currentTarget.blur();
-                }}
-              />
-            </label>
-          </div>
-          <label className="all-toggle">
-            <input
-              type="checkbox"
-              checked={vehicle.commercial}
-              onChange={e => {
-                const commercial = e.target.checked;
-                setVehicle(v => ({ ...v, commercial }));
-                updateUrl({ commercial: commercial ? "1" : null });
-              }}
-            />
-            Commercial / truck vehicle
-          </label>
-          {(vehicle.widthInches != null || vehicle.weightTons != null) && (
-            <p className="awareness-note">
-              Checking
-              {vehicle.widthInches != null ? ` width ${formatWidth(vehicle.widthInches)}` : ""}
-              {vehicle.widthInches != null && vehicle.weightTons != null ? " ·" : ""}
-              {vehicle.weightTons != null ? ` weight ${formatTons(vehicle.weightTons)}` : ""}
-              {vehicle.commercial ? " · commercial" : ""}.
-            </p>
-          )}
-
-          <span className="eyebrow">FACILITIES · STATUS</span>
-          <ul className="facility-legend" aria-label="Facility status legend">
-            <li><span className="swatch ok" aria-hidden />OK for your vehicle</li>
-            <li><span className="swatch caution" aria-hidden />Caution — tight or exceptions</li>
-            <li><span className="swatch danger" aria-hidden />Do not go — ban or too tall/wide/heavy</li>
-            <li><span className="swatch unknown" aria-hidden />Unknown — missing limit data</li>
-          </ul>
-          <p className="awareness-note">
-            Colored lines and pins are bridges, tunnels, and parkways. Tap any for why. Underpass pins still use height only.
-          </p>
-
+        <div className="awareness-panel" role="group" aria-label="Map layers">
           <span className="eyebrow">MORE LAYERS · NYC</span>
           <label className="all-toggle">
             <input
@@ -765,6 +740,12 @@ export function MapExplorer() {
         </button>
       </div>
       {shareMessage && <div className="share-status" role="status">{shareMessage}</div>}
+      <ul className="map-legend" aria-label="Facility status legend">
+        <li><span className="swatch ok" aria-hidden />OK</li>
+        <li><span className="swatch caution" aria-hidden />Caution</li>
+        <li><span className="swatch danger" aria-hidden />Do not go</li>
+        <li><span className="swatch unknown" aria-hidden />Unknown</li>
+      </ul>
       {mapCollection && (
         <Map
           key={mapEpoch}
