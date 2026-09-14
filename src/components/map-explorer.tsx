@@ -19,6 +19,7 @@ const AWARENESS_OFF: AwarenessLayers = {
   truckRoutes: false,
   truckRestrictions: false,
   streetClosures: false,
+  loadingZones: false,
 };
 
 function updateUrl(values: Record<string, string | null>) {
@@ -85,6 +86,7 @@ export function MapExplorer() {
   const [awareness, setAwareness] = useState<AwarenessLayers>(AWARENESS_OFF);
   const [truckRoutesData, setTruckRoutesData] = useState<import("geojson").FeatureCollection | null>(null);
   const [streetClosuresData, setStreetClosuresData] = useState<import("geojson").FeatureCollection | null>(null);
+  const [loadingZonesData, setLoadingZonesData] = useState<import("geojson").FeatureCollection | null>(null);
   const [awarenessError, setAwarenessError] = useState("");
   const [awarenessLoading, setAwarenessLoading] = useState(false);
   const [bounds, setBounds] = useState<[number, number, number, number] | null>(null);
@@ -159,6 +161,25 @@ export function MapExplorer() {
       });
     return () => controller.abort();
   }, [awareness.streetClosures, streetClosuresData]);
+
+  useEffect(() => {
+    if (!awareness.loadingZones || loadingZonesData) return;
+    const controller = new AbortController();
+    setAwarenessError("");
+    setAwarenessLoading(true);
+    fetch("/data/loading-zones-nyc.geojson", { signal: controller.signal })
+      .then(async response => {
+        if (!response.ok) throw new Error("Loading zones couldn’t load.");
+        setLoadingZonesData(await response.json());
+      })
+      .catch(error => {
+        if (error.name !== "AbortError") setAwarenessError(error.message);
+      })
+      .finally(() => {
+        if (!controller.signal.aborted) setAwarenessLoading(false);
+      });
+    return () => controller.abort();
+  }, [awareness.loadingZones, loadingZonesData]);
 
   useEffect(() => {
     if (!fromParam.trim() || !toParam.trim()) {
@@ -345,12 +366,21 @@ export function MapExplorer() {
             />
             Road closures
           </label>
+          <label className="all-toggle">
+            <input
+              type="checkbox"
+              checked={awareness.loadingZones}
+              onChange={e => setAwareness(a => ({ ...a, loadingZones: e.target.checked }))}
+            />
+            Loading zones
+          </label>
           <p className="awareness-note">Overlays only — not used for path check. Off by default.</p>
-          {(awareness.truckRoutes || awareness.truckRestrictions || awareness.streetClosures) && (
+          {(awareness.truckRoutes || awareness.truckRestrictions || awareness.streetClosures || awareness.loadingZones) && (
             <div className="awareness-legend" aria-hidden="true">
               {awareness.truckRoutes && <span><i className="swatch route" />Truck route</span>}
               {awareness.truckRestrictions && <span><i className="swatch restrict" />Restriction</span>}
               {awareness.streetClosures && <span><i className="swatch closure" />Road closed</span>}
+              {awareness.loadingZones && <span><i className="swatch loading" />Loading zone</span>}
             </div>
           )}
           {awarenessLoading && <p className="awareness-note" role="status">Loading NYC overlay…</p>}
@@ -507,6 +537,7 @@ export function MapExplorer() {
           awareness={awareness}
           truckRoutesData={truckRoutesData}
           streetClosuresData={streetClosuresData}
+          loadingZonesData={loadingZonesData}
           selectedId={selectedId}
           drive={activeDrive}
           altRoutes={altRoutes}

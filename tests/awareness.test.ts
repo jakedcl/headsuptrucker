@@ -3,6 +3,7 @@ import assert from "node:assert/strict";
 import { parseStatePlaneLineWkt, statePlaneToLngLat } from "../src/lib/nyc-state-plane";
 import { normalizeRouteType, normalizeTruckRouteFeature } from "../scripts/sources/nyc-truck-routes";
 import { isActiveClosure, normalizeStreetClosure } from "../scripts/sources/nyc-street-closures";
+import { isCurrentSign, isTruckLoadingSign, normalizeLoadingZone } from "../scripts/sources/nyc-loading-zones";
 
 test("state plane converter lands Anthony Ave Bronx near expected lon/lat", () => {
   const [lng, lat] = statePlaneToLngLat(1011445.34, 250115.43);
@@ -99,5 +100,43 @@ test("street closures keep only active LINESTRING rows", () => {
     1,
     now,
   );
+  assert.equal(expired, null);
+});
+
+
+test("loading zone signs keep current truck and neighborhood points", () => {
+  assert.equal(isCurrentSign("Current"), true);
+  assert.equal(isCurrentSign("Historical"), false);
+  assert.equal(isTruckLoadingSign("TRUCK (SYMBOL) TRUCK LOADING ONLY 7AM-7PM"), true);
+  assert.equal(isTruckLoadingSign("NO STANDING HOTEL LOADING ZONE"), false);
+
+  const truck = normalizeLoadingZone({
+    order_number: "S-1",
+    record_type: "Current",
+    borough: "Brooklyn",
+    on_street: "EAST 35 STREET",
+    from_street: "AVENUE I",
+    to_street: "DEAD END",
+    side_of_street: "E",
+    sign_code: "PS-124EA",
+    sign_description: "TRUCK (SYMBOL) TRUCK LOADING ONLY MONDAY-FRIDAY 7AM-6PM",
+    sign_x_coord: "1000215",
+    sign_y_coord: "168876",
+  }, 0, "truck");
+  assert.ok(truck);
+  assert.equal(truck!.properties.zoneType, "truck");
+  assert.equal(truck!.geometry.type, "Point");
+  assert.ok(truck!.geometry.coordinates[0] < -73.8 && truck!.geometry.coordinates[1] > 40.6);
+
+  const expired = normalizeLoadingZone({
+    order_number: "S-1",
+    record_type: "Historical",
+    borough: "Brooklyn",
+    on_street: "EAST 35 STREET",
+    sign_code: "PS-124EA",
+    sign_description: "TRUCK LOADING ONLY",
+    sign_x_coord: "1000215",
+    sign_y_coord: "168876",
+  }, 1, "truck");
   assert.equal(expired, null);
 });
