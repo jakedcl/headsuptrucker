@@ -1,4 +1,11 @@
+import type { ClearanceRecord } from "./types";
+
 export type Severity = "danger" | "caution" | "clear";
+export type RecordLabels = { title: string; subtitle: string };
+
+const PLACE_WORD = /\b(avenue|ave|street|st|road|rd|blvd|parkway|pkwy|turnpike|tpke|drive|dr|lane|ln|place|pl|court|ct|expressway|expwy|highway|hwy|bridge|river|creek|path|park|ramp|canal|transit|amtrak|lirr)\b/i;
+const SHORT_ROUTE = /^(I\d+[A-Z]?|NY\d+[A-Z]?|US\d+[A-Z]?)$/i;
+const REFERENCE_MARKER = /^[0-9]{2,4}[A-Z][0-9A-Z]{6,}$/i;
 
 export function getClearanceSeverity(clearance: number, vehicle: number): Severity {
   if (!Number.isFinite(clearance) || !Number.isFinite(vehicle) || clearance <= 0 || vehicle <= 0) throw new Error("Heights must be positive numbers.");
@@ -26,4 +33,30 @@ export function describeMargin(clearance: number, vehicle: number): string {
   const margin = clearance - vehicle;
   if (margin === 0) return "Equal to your vehicle height";
   return `${Math.abs(margin)}″ ${margin < 0 ? "lower than" : "above"} your vehicle height`;
+}
+
+export function crossingPhrase(appliesTo: ClearanceRecord["appliesTo"], crossing: string) {
+  return `${appliesTo === "under" ? "Under" : "On bridge over"} ${crossing.trim() || "unnamed crossing"}`;
+}
+
+/** NYSDOT often stores a reference-marker blob instead of a street name. */
+export function isInventoryLabel(name: string) {
+  const text = name.trim();
+  if (!text || PLACE_WORD.test(text)) return false;
+  const compact = text.replace(/[\s./-]+/g, "");
+  if (SHORT_ROUTE.test(compact)) return false;
+  if (REFERENCE_MARKER.test(compact)) return true;
+  const digits = (compact.match(/\d/g) || []).length;
+  return compact.length >= 10 && digits >= 4 && digits / compact.length >= 0.3 && /[A-Z]/i.test(compact);
+}
+
+export function recordLabels(record: Pick<ClearanceRecord, "road" | "crossing" | "location" | "appliesTo">): RecordLabels {
+  const road = record.road.trim();
+  const crossing = record.crossing.trim();
+  const location = record.location.trim();
+  const relation = crossingPhrase(record.appliesTo, crossing);
+  if (road && !isInventoryLabel(road)) return { title: road, subtitle: relation };
+  if (crossing && !isInventoryLabel(crossing)) return { title: relation, subtitle: location || "Posted clearance at this structure" };
+  if (location) return { title: location, subtitle: relation };
+  return { title: road || "Road name unavailable", subtitle: relation };
 }
