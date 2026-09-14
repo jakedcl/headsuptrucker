@@ -3,17 +3,31 @@ import { useEffect, useRef, useState } from "react";
 import * as maplibregl from "maplibre-gl";
 import { type GeoJSONSource, type Map as MapInstance } from "maplibre-gl";
 import type { ClearanceCollection } from "@/lib/types";
+import type { FeatureCollection, LineString } from "geojson";
+import type { DrivePath } from "@/lib/path";
 import { formatHeight, getClearanceSeverity, recordLabels } from "@/lib/clearance";
 
 export type Viewport = { lng: number; lat: number; z: number };
-export function ClearanceMap({ data, height, showAll, selectedId, initialViewport, onSelect, onViewport }: {
-  data: ClearanceCollection; height: number; showAll: boolean; selectedId: string | null;
+const emptyDrive: FeatureCollection<LineString> = { type: "FeatureCollection", features: [] };
+function driveCollection(coordinates: number[][]): FeatureCollection<LineString> {
+  return { type: "FeatureCollection", features: [{ type: "Feature", properties: {}, geometry: { type: "LineString", coordinates } }] };
+}
+function endpointMarker(letter: string, label: string) {
+  const el = document.createElement("div");
+  el.className = "endpoint-marker";
+  el.textContent = letter;
+  el.setAttribute("aria-label", label);
+  return el;
+}
+export function ClearanceMap({ data, height, showAll, selectedId, drive, initialViewport, onSelect, onViewport }: {
+  data: ClearanceCollection; height: number; showAll: boolean; selectedId: string | null; drive: DrivePath | null;
   initialViewport: Viewport; onSelect: (id: string) => void;
   onViewport: (viewport: Viewport, bounds: [number, number, number, number]) => void;
 }) {
   const container = useRef<HTMLDivElement>(null), mapRef = useRef<MapInstance | null>(null);
   const current = useRef({ data, height, showAll, onSelect, onViewport });
   const initial = useRef(initialViewport);
+  const ends = useRef<maplibregl.Marker[]>([]);
   const [ready, setReady] = useState(false), [error, setError] = useState("");
   useEffect(() => { current.current = { data, height, showAll, onSelect, onViewport }; }, [data, height, showAll, onSelect, onViewport]);
   useEffect(() => {
@@ -67,6 +81,9 @@ export function ClearanceMap({ data, height, showAll, selectedId, initialViewpor
       updateMarkers();
     }
     map.on("load", () => {
+      map.addSource("drive", { type: "geojson", data: emptyDrive });
+      map.addLayer({ id: "drive-casing", type: "line", source: "drive", layout: { "line-cap": "round", "line-join": "round" }, paint: { "line-color": "#ffffff", "line-width": 7 } });
+      map.addLayer({ id: "drive-line", type: "line", source: "drive", layout: { "line-cap": "round", "line-join": "round" }, paint: { "line-color": "#17212b", "line-width": 3.5 } });
       map.addSource("clearances", { type: "geojson", data: { type: "FeatureCollection", features: [] }, cluster: true, clusterMaxZoom: 12, clusterRadius: 38,
         clusterProperties: { dangerCount: ["+", ["case", ["==", ["get", "severity"], "danger"], 1, 0]], cautionCount: ["+", ["case", ["==", ["get", "severity"], "caution"], 1, 0]] } });
       // Keep a renderable layer: MapLibre skips loading sources used only by
@@ -80,7 +97,7 @@ export function ClearanceMap({ data, height, showAll, selectedId, initialViewpor
     map.on("error", () => setError("Part of the map couldn’t load. Try reloading; clearance records remain available in the list."));
     // A new dataset can reuse cluster IDs, so clear DOM markers before every update.
     map.on("dataloading", event => { if (event.dataType === "source" && event.sourceId === "clearances") { for (const m of markers.values()) m.remove(); markers.clear(); } });
-    return () => { for (const m of markers.values()) m.remove(); map.remove(); mapRef.current = null; };
+    return () => { for (const m of markers.values()) m.remove(); for (const m of ends.current) m.remove(); map.remove(); mapRef.current = null; };
   }, []);
 
   useEffect(() => {
@@ -88,6 +105,21 @@ export function ClearanceMap({ data, height, showAll, selectedId, initialViewpor
     if (!ready || !source) return;
     source.setData({ type: "FeatureCollection", features: data.features.filter(f => showAll || f.properties.postedClearanceInches <= height + 12).map(f => ({ ...f, properties: { ...f.properties, severity: getClearanceSeverity(f.properties.postedClearanceInches, height), displayTitle: recordLabels(f.properties).title } })) }).catch(() => setError("Clearance markers couldn’t load. The source records are still available in the list."));
   }, [data, height, showAll, ready]);
+  useEffect(() => {
+    const map = mapRef.current;
+    const source = map?.getSource("drive") as GeoJSONSource | undefined;
+    if (!ready || !map || !source) return;
+    for (const marker of ends.current) marker.remove();
+    ends.current = [];
+    if (!drive) { source.setData(emptyDrive).catch(() => undefined); return; }
+    source.setData(driveCollection(drive.coordinates)).catch(() => setError("The driving path couldn’t be drawn. Posted records remain in the list."));
+    ends.current = [
+      new maplibregl.Marker({ element: endpointMarker("A", `Start: ${drive.from.label}`), anchor: "center" }).setLngLat([drive.from.lng, drive.from.lat]).addTo(map),
+      new maplibregl.Marker({ element: endpointMarker("B", `End: ${drive.to.label}`), anchor: "center" }).setLngLat([drive.to.lng, drive.to.lat]).addTo(map),
+    ];
+    const bounds = drive.coordinates.reduce((box, pair) => box.extend(pair as [number, number]), new maplibregl.LngLatBounds(drive.coordinates[0] as [number, number], drive.coordinates[0] as [number, number]));
+    map.fitBounds(bounds, { padding: 56, duration: 700, maxZoom: 14 });
+  }, [drive, ready]);
   useEffect(() => {
     const feature = data.features.find(f => f.properties.id === selectedId);
     if (feature && ready) mapRef.current?.easeTo({ center: feature.geometry.coordinates as [number, number], zoom: Math.max(14, mapRef.current.getZoom()), duration: 500 });
