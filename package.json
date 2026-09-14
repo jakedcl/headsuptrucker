@@ -14,7 +14,8 @@
     "format": "prettier --write src scripts tests package.json tsconfig.json README.md data-audit.md docs",
     "test": "tsx --test tests/*.test.ts",
     "data:fetch": "tsx scripts/fetch-sources.ts",
-    "data:build": "tsx scripts/build-dataset.ts"
+    "data:build": "tsx scripts/build-dataset.ts",
+    "data:awareness": "tsx scripts/build-awareness.ts"
   },
   "dependencies": {
     "@fontsource/barlow-condensed": "^5.3.0",

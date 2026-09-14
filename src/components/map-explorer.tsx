@@ -8,12 +8,18 @@ import { describeMargin, formatHeight, getClearanceSeverity, isInventoryLabel, p
 import { featuresAlongRoute, formatDriveMiles, formatDriveMinutes, type DrivePath, type DriveRoute, type Place } from "@/lib/path";
 import { DriveForm } from "./drive-form";
 import { HeightForm } from "./height-form";
-import type { Viewport } from "./clearance-map";
+import type { Viewport, AwarenessLayers } from "./clearance-map";
 
 const Map = dynamic(() => import("./clearance-map").then(m => m.ClearanceMap), {
   ssr: false,
   loading: () => <div className="map-message">Loading interactive map…</div>,
 });
+
+const AWARENESS_OFF: AwarenessLayers = {
+  truckRoutes: false,
+  truckRestrictions: false,
+  streetClosures: false,
+};
 
 function updateUrl(values: Record<string, string | null>) {
   const url = new URL(window.location.href);
@@ -76,6 +82,10 @@ export function MapExplorer() {
   const [retry, setRetry] = useState(0);
   const [editing, setEditing] = useState(false);
   const [showAll, setShowAll] = useState(false);
+  const [awareness, setAwareness] = useState<AwarenessLayers>(AWARENESS_OFF);
+  const [truckRoutesData, setTruckRoutesData] = useState<import("geojson").FeatureCollection | null>(null);
+  const [streetClosuresData, setStreetClosuresData] = useState<import("geojson").FeatureCollection | null>(null);
+  const [awarenessError, setAwarenessError] = useState("");
   const [bounds, setBounds] = useState<[number, number, number, number] | null>(null);
   const [listLimit, setListLimit] = useState(30);
   const [shareMessage, setShareMessage] = useState("");
@@ -109,6 +119,37 @@ export function MapExplorer() {
     });
     return () => controller.abort();
   }, [retry]);
+
+  useEffect(() => {
+    const needRoutes = awareness.truckRoutes || awareness.truckRestrictions;
+    if (!needRoutes || truckRoutesData) return;
+    const controller = new AbortController();
+    setAwarenessError("");
+    fetch("/data/truck-routes-nyc.geojson", { signal: controller.signal })
+      .then(async response => {
+        if (!response.ok) throw new Error("Truck routes couldn’t load.");
+        setTruckRoutesData(await response.json());
+      })
+      .catch(error => {
+        if (error.name !== "AbortError") setAwarenessError(error.message);
+      });
+    return () => controller.abort();
+  }, [awareness.truckRoutes, awareness.truckRestrictions, truckRoutesData]);
+
+  useEffect(() => {
+    if (!awareness.streetClosures || streetClosuresData) return;
+    const controller = new AbortController();
+    setAwarenessError("");
+    fetch("/data/street-closures-nyc.geojson", { signal: controller.signal })
+      .then(async response => {
+        if (!response.ok) throw new Error("Street closures couldn’t load.");
+        setStreetClosuresData(await response.json());
+      })
+      .catch(error => {
+        if (error.name !== "AbortError") setAwarenessError(error.message);
+      });
+    return () => controller.abort();
+  }, [awareness.streetClosures, streetClosuresData]);
 
   useEffect(() => {
     if (!fromParam.trim() || !toParam.trim()) {
@@ -249,6 +290,7 @@ export function MapExplorer() {
               onClick={() => {
                 setEditing(false);
                 setShowAll(false);
+                setAwareness(AWARENESS_OFF);
                 setBounds(null);
                 setListLimit(30);
                 setShareMessage("");
@@ -268,6 +310,35 @@ export function MapExplorer() {
           <input type="checkbox" checked={showAll} onChange={e => setShowAll(e.target.checked)} />
           Also show clearances more than 12″ above
         </label>
+        <div className="awareness-panel" role="group" aria-label="Awareness layers">
+          <span className="eyebrow">AWARENESS · NYC</span>
+          <label className="all-toggle">
+            <input
+              type="checkbox"
+              checked={awareness.truckRoutes}
+              onChange={e => setAwareness(a => ({ ...a, truckRoutes: e.target.checked }))}
+            />
+            Truck routes
+          </label>
+          <label className="all-toggle">
+            <input
+              type="checkbox"
+              checked={awareness.truckRestrictions}
+              onChange={e => setAwareness(a => ({ ...a, truckRestrictions: e.target.checked }))}
+            />
+            Truck restrictions
+          </label>
+          <label className="all-toggle">
+            <input
+              type="checkbox"
+              checked={awareness.streetClosures}
+              onChange={e => setAwareness(a => ({ ...a, streetClosures: e.target.checked }))}
+            />
+            Road closures
+          </label>
+          <p className="awareness-note">Overlays only — not used for path check. Off by default.</p>
+          {awarenessError && <p className="awareness-error" role="status">{awarenessError}</p>}
+        </div>
         <DriveForm
           key={`${fromParam}|${toParam}`}
           initialFrom={fromParam}
@@ -416,6 +487,9 @@ export function MapExplorer() {
           data={mapCollection}
           height={height}
           showAll={showAll}
+          awareness={awareness}
+          truckRoutesData={truckRoutesData}
+          streetClosuresData={streetClosuresData}
           selectedId={selectedId}
           drive={activeDrive}
           altRoutes={altRoutes}
