@@ -382,6 +382,29 @@ function addOverlayLayers(map: MapInstance) {
   }
 }
 
+function ShareControl(onShare: () => void): maplibregl.IControl {
+  let container: HTMLDivElement | undefined;
+  return {
+    onAdd() {
+      container = document.createElement("div");
+      container.className = "maplibregl-ctrl maplibregl-ctrl-group";
+      const button = document.createElement("button");
+      button.type = "button";
+      button.className = "map-share-ctrl";
+      button.title = "Share map";
+      button.setAttribute("aria-label", "Share map");
+      button.innerHTML = `<svg width="18" height="18" viewBox="0 0 24 24" aria-hidden="true" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><path d="M4 12v7a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2v-7"/><polyline points="16 6 12 2 8 6"/><line x1="12" y1="2" x2="12" y2="15"/></svg>`;
+      button.addEventListener("click", () => onShare());
+      container.appendChild(button);
+      return container;
+    },
+    onRemove() {
+      container?.remove();
+      container = undefined;
+    },
+  };
+}
+
 export function ClearanceMap({
   data,
   height,
@@ -404,6 +427,7 @@ export function ClearanceMap({
   onSelect,
   onFacilitySelect,
   onViewport,
+  onShare,
 }: {
   data: ClearanceCollection;
   height: number;
@@ -426,10 +450,11 @@ export function ClearanceMap({
   onSelect: (id: string) => void;
   onFacilitySelect?: (id: string) => void;
   onViewport: (viewport: Viewport, bounds: [number, number, number, number]) => void;
+  onShare?: () => void;
 }) {
   const container = useRef<HTMLDivElement>(null);
   const mapRef = useRef<MapInstance | null>(null);
-  const current = useRef({ data, height, showAll, onSelect, onFacilitySelect, onViewport });
+  const current = useRef({ data, height, showAll, onSelect, onFacilitySelect, onViewport, onShare });
   const initial = useRef(initialViewport);
   const ends = useRef<maplibregl.Marker[]>([]);
   const focusedId = useRef<string | null>(null);
@@ -437,8 +462,8 @@ export function ClearanceMap({
   const [error, setError] = useState("");
 
   useEffect(() => {
-    current.current = { data, height, showAll, onSelect, onFacilitySelect, onViewport };
-  }, [data, height, showAll, onSelect, onFacilitySelect, onViewport]);
+    current.current = { data, height, showAll, onSelect, onFacilitySelect, onViewport, onShare };
+  }, [data, height, showAll, onSelect, onFacilitySelect, onViewport, onShare]);
 
   useEffect(() => {
     if (!container.current) return;
@@ -467,6 +492,9 @@ export function ClearanceMap({
     });
     locate.on("error", () => setError("Location is unavailable. You can still pan and zoom the map."));
     map.addControl(locate, "top-right");
+    if (current.current.onShare) {
+      map.addControl(ShareControl(() => current.current.onShare?.()), "top-right");
+    }
 
     const markers = new Map<string, maplibregl.Marker>();
     function updateMarkers() {

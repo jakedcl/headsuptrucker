@@ -483,8 +483,6 @@ export function MapExplorer() {
       || a.properties.id.localeCompare(b.properties.id));
   }
 
-  const dangerCount = visible.filter(f => getClearanceSeverity(f.properties.postedClearanceInches, height) === "danger").length;
-  const cautionCount = visible.filter(f => getClearanceSeverity(f.properties.postedClearanceInches, height) === "caution").length;
   const selected = data?.features.find(f => f.properties.id === selectedId)?.properties;
   const selectedLabels = selected ? recordLabels(selected) : null;
   const selectedSeverity = selected ? getClearanceSeverity(selected.postedClearanceInches, height) : null;
@@ -594,18 +592,39 @@ export function MapExplorer() {
               updateUrl({ commercial: commercial ? "1" : null });
             }}
           />
-          Commercial / truck vehicle
+          Commercial / truck plates
         </label>
-        <div className="legend">
-          <div><i className="swatch danger" /><span>At or below your height</span><strong>{dangerCount}</strong></div>
-          <div><i className="swatch caution" /><span>1–12″ above your height</span><strong>{cautionCount}</strong></div>
-        </div>
-        <label className="all-toggle">
-          <input type="checkbox" checked={showAll} onChange={e => setShowAll(e.target.checked)} />
-          Also show clearances more than 12″ above
-        </label>
-        <div className="awareness-panel" role="group" aria-label="Map layers">
-          <span className="eyebrow">MORE LAYERS · NYC</span>
+        <DriveForm
+          key={`${fromParam}|${toParam}`}
+          initialFrom={fromParam}
+          initialTo={toParam}
+          loading={driveLoading}
+          error={driveError}
+          active={Boolean(drive)}
+          onSubmit={(from, to) => {
+            setListLimit(30);
+            pendingPlaces.current = { from, to };
+            const fromText = asLabel(from);
+            const toText = asLabel(to);
+            if (fromText === fromParam && toText === toParam) setDriveRetry(n => n + 1);
+            updateUrl({ from: fromText, to: toText, bridge: null, route: null });
+          }}
+          onClear={() => {
+            setDrive(null);
+            setDriveError("");
+            pendingPlaces.current = null;
+            updateUrl({ from: null, to: null, bridge: null, route: null });
+          }}
+        />
+        <div className="map-legend-panel" role="group" aria-label="Legend">
+          <span className="eyebrow">LEGEND</span>
+          <ul className="facility-legend">
+            <li><span className="swatch ok" aria-hidden />OK</li>
+            <li><span className="swatch caution" aria-hidden />Caution</li>
+            <li><span className="swatch danger" aria-hidden />Do not go</li>
+            <li><span className="swatch unknown" aria-hidden />Unknown</li>
+          </ul>
+          <span className="eyebrow legend-subhead">MORE LAYERS</span>
           <label className="all-toggle">
             <input
               type="checkbox"
@@ -630,38 +649,20 @@ export function MapExplorer() {
             />
             Loading zones
           </label>
+          <fieldset className="legend-radios">
+            <legend className="sr-only">Clearance filter</legend>
+            <label className="all-toggle">
+              <input type="radio" name="safe-clearances" checked={!showAll} onChange={() => setShowAll(false)} />
+              Tight clearances only
+            </label>
+            <label className="all-toggle">
+              <input type="radio" name="safe-clearances" checked={showAll} onChange={() => setShowAll(true)} />
+              Show safe clearances
+            </label>
+          </fieldset>
           {awarenessLoading && <p className="awareness-note" role="status">Loading map layers…</p>}
           {awarenessError && <p className="awareness-error" role="status">{awarenessError}</p>}
         </div>
-        <DriveForm
-          key={`${fromParam}|${toParam}`}
-          initialFrom={fromParam}
-          initialTo={toParam}
-          loading={driveLoading}
-          error={driveError}
-          active={Boolean(drive)}
-          onSubmit={(from, to) => {
-            setListLimit(30);
-            pendingPlaces.current = { from, to };
-            const fromText = asLabel(from);
-            const toText = asLabel(to);
-            if (fromText === fromParam && toText === toParam) setDriveRetry(n => n + 1);
-            updateUrl({ from: fromText, to: toText, bridge: null, route: null });
-          }}
-          onClear={() => {
-            setDrive(null);
-            setDriveError("");
-            pendingPlaces.current = null;
-            updateUrl({ from: null, to: null, bridge: null, route: null });
-          }}
-        />
-        <ul className="facility-legend" aria-label="Facility status legend">
-          <li><span className="swatch ok" aria-hidden />OK</li>
-          <li><span className="swatch caution" aria-hidden />Caution</li>
-          <li><span className="swatch danger" aria-hidden />Do not go</li>
-          <li><span className="swatch unknown" aria-hidden />Unknown</li>
-        </ul>
-
         {routeOptions.length > 1 && activeDrive && (
           <div className="route-compare" role="group" aria-label="Compare driving paths">
             <div className="panel-heading">
@@ -774,11 +775,6 @@ export function MapExplorer() {
       </div>
     </aside>
     <section className="map-area" aria-label="Clearance map">
-      <div className="map-topline">
-        <button className="share-button" onClick={() => copyLink(window.location.href, setShareMessage)}>
-          {activeDrive ? "Share path ↗" : selectedId ? "Share clearance ↗" : "Share map ↗"}
-        </button>
-      </div>
       {shareMessage && <div className="share-status" role="status">{shareMessage}</div>}
       {mapCollection && (
         <Map
@@ -804,6 +800,7 @@ export function MapExplorer() {
           onSelect={onSelect}
           onFacilitySelect={onFacilitySelect}
           onViewport={onViewport}
+          onShare={() => copyLink(window.location.href, setShareMessage)}
         />
       )}
       {!data && <div className="map-message">{fetchError ? "Map data unavailable. Retry from the clearance list." : "Preparing your map…"}</div>}
