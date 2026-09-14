@@ -10,57 +10,123 @@ function PlaceField({ label, value, onChange, onPick, placeholder, inputId }: {
 }) {
   const listId = useId();
   const wrap = useRef<HTMLDivElement>(null);
+  const focused = useRef(false);
   const [open, setOpen] = useState(false);
   const [loading, setLoading] = useState(false);
   const [items, setItems] = useState<Suggestion[]>([]);
   const [active, setActive] = useState(-1);
   const [error, setError] = useState("");
+
+  function closeSuggestions() {
+    setOpen(false);
+    setActive(-1);
+  }
+
   useEffect(() => {
     const query = value.trim();
-    if (query.length < 2) { setItems([]); setLoading(false); setError(""); setOpen(false); return; }
+    if (query.length < 2) {
+      setItems([]);
+      setLoading(false);
+      setError("");
+      closeSuggestions();
+      return;
+    }
     const controller = new AbortController();
     const timer = window.setTimeout(() => {
-      setLoading(true); setError("");
+      setLoading(true);
+      setError("");
       fetch(`/api/places?q=${encodeURIComponent(query)}`, { signal: controller.signal }).then(async response => {
         const json = await response.json() as { places?: Suggestion[]; error?: string };
         if (!response.ok) throw new Error(json.error || "Suggestions unavailable.");
         setItems(Array.isArray(json.places) ? json.places : []);
-        setOpen(true); setActive(-1);
-      }).catch(err => { if (err.name !== "AbortError") { setItems([]); setError(err.message); setOpen(true); } }).finally(() => { if (!controller.signal.aborted) setLoading(false); });
+        setActive(-1);
+        // Late fetches were reopening the list after Go / other clicks.
+        if (focused.current) setOpen(true);
+      }).catch(err => {
+        if (err.name === "AbortError") return;
+        setItems([]);
+        setError(err.message);
+        if (focused.current) setOpen(true);
+      }).finally(() => {
+        if (!controller.signal.aborted) setLoading(false);
+      });
     }, 280);
-    return () => { window.clearTimeout(timer); controller.abort(); };
+    return () => {
+      window.clearTimeout(timer);
+      controller.abort();
+    };
   }, [value]);
+
   useEffect(() => {
     function onPointer(event: MouseEvent) {
-      if (!wrap.current?.contains(event.target as Node)) setOpen(false);
+      if (!wrap.current?.contains(event.target as Node)) {
+        focused.current = false;
+        closeSuggestions();
+      }
     }
     document.addEventListener("mousedown", onPointer);
     return () => document.removeEventListener("mousedown", onPointer);
   }, []);
+
   function choose(place: Place) {
     onPick(place);
     setItems([]);
-    setOpen(false);
-    setActive(-1);
+    focused.current = false;
+    closeSuggestions();
   }
+
   return <div className="place-field" ref={wrap}>
     <label htmlFor={inputId}><span>{label}</span>
-      <input id={inputId} name={label.toLowerCase()} autoComplete="off" spellCheck={false} placeholder={placeholder} value={value} aria-autocomplete="list" aria-controls={listId} aria-expanded={open} role="combobox" aria-activedescendant={active >= 0 ? `${listId}-${active}` : undefined}
-        onChange={e => onChange(e.target.value)} onFocus={() => { if (items.length || error) setOpen(true); }}
+      <input
+        id={inputId}
+        name={label.toLowerCase()}
+        autoComplete="off"
+        spellCheck={false}
+        placeholder={placeholder}
+        value={value}
+        aria-autocomplete="list"
+        aria-controls={listId}
+        aria-expanded={open}
+        role="combobox"
+        aria-activedescendant={active >= 0 ? `${listId}-${active}` : undefined}
+        onChange={e => onChange(e.target.value)}
+        onFocus={() => {
+          focused.current = true;
+          if (items.length || error || loading || value.trim().length >= 2) setOpen(true);
+        }}
+        onBlur={() => {
+          focused.current = false;
+          window.setTimeout(() => {
+            if (focused.current) return;
+            if (wrap.current?.contains(document.activeElement)) return;
+            closeSuggestions();
+          }, 0);
+        }}
         onKeyDown={e => {
+          if (e.key === "Escape") { closeSuggestions(); return; }
           if (!open && (e.key === "ArrowDown" || e.key === "ArrowUp") && items.length) { setOpen(true); return; }
-          if (e.key === "Escape") { setOpen(false); setActive(-1); return; }
           if (e.key === "ArrowDown") { e.preventDefault(); setOpen(true); setActive(i => Math.min((i < 0 ? -1 : i) + 1, items.length - 1)); return; }
           if (e.key === "ArrowUp") { e.preventDefault(); setActive(i => Math.max(i - 1, 0)); return; }
           if (e.key === "Enter" && open && active >= 0 && items[active]) { e.preventDefault(); choose(items[active]); }
-        }} />
+        }}
+      />
     </label>
     {open && <ul id={listId} className="place-suggestions" role="listbox" aria-label={`${label} suggestions`}>
       {loading && <li className="place-suggestion muted" role="presentation">Searching places…</li>}
       {!loading && error && <li className="place-suggestion muted" role="presentation">{error}</li>}
       {!loading && !error && !items.length && value.trim().length >= 2 && <li className="place-suggestion muted" role="presentation">No matches in NYC or Long Island.</li>}
-      {items.map((place, index) => <li key={`${place.label}-${place.lng}-${place.lat}`} id={`${listId}-${index}`} role="option" aria-selected={active === index} className={`place-suggestion ${active === index ? "active" : ""}`}
-        onMouseEnter={() => setActive(index)} onMouseDown={e => e.preventDefault()} onClick={() => choose(place)}>{place.label}</li>)}
+      {items.map((place, index) => (
+        <li
+          key={`${place.label}-${place.lng}-${place.lat}`}
+          id={`${listId}-${index}`}
+          role="option"
+          aria-selected={active === index}
+          className={`place-suggestion ${active === index ? "active" : ""}`}
+          onMouseEnter={() => setActive(index)}
+          onMouseDown={e => e.preventDefault()}
+          onClick={() => choose(place)}
+        >{place.label}</li>
+      ))}
     </ul>}
   </div>;
 }
@@ -96,6 +162,7 @@ export function DriveForm({ initialFrom = "", initialTo = "", loading, error, ac
     {open && (
       <form id="drive-form-fields" onSubmit={event => {
         event.preventDefault();
+        (document.activeElement as HTMLElement | null)?.blur?.();
         const from = fromPlace && fromPlace.label === fromText.trim() ? fromPlace : fromText.trim();
         const to = toPlace && toPlace.label === toText.trim() ? toPlace : toText.trim();
         onSubmit(from, to);
