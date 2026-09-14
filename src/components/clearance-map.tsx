@@ -31,7 +31,6 @@ const EMPTY_FC: FeatureCollection = { type: "FeatureCollection", features: [] };
 
 export type AwarenessLayers = {
   truckRoutes: boolean;
-  truckRestrictions: boolean;
   streetClosures: boolean;
   loadingZones: boolean;
 };
@@ -54,20 +53,6 @@ function addOverlayLayers(map: MapInstance) {
         ],
         "line-width": ["interpolate", ["linear"], ["zoom"], 10, 1.2, 14, 3.5],
         "line-opacity": 0.55,
-      },
-    });
-    map.addLayer({
-      id: "truck-restrictions-line",
-      type: "line",
-      source: "truck-routes",
-      // Only segments with real restriction text (~860 of ~32k).
-      filter: [">", ["length", ["coalesce", ["get", "restriction"], ""]], 0],
-      layout: { "line-cap": "round", "line-join": "round", visibility: "none" },
-      paint: {
-        "line-color": "#c2410c",
-        "line-width": ["interpolate", ["linear"], ["zoom"], 10, 2.5, 14, 6],
-        "line-opacity": 0.95,
-        "line-dasharray": [0.8, 1.6],
       },
     });
   }
@@ -353,33 +338,14 @@ export function ClearanceMap({
     const source = map?.getSource("truck-routes") as GeoJSONSource | undefined;
     if (!ready || !map || !source) return;
     if (truckRoutesData) {
-      // Drop null/empty restriction so the subset filter can’t treat them as present.
-      const cleaned: FeatureCollection = {
-        type: "FeatureCollection",
-        features: truckRoutesData.features.map(feature => {
-          const restriction = feature.properties?.restriction;
-          const properties = { ...(feature.properties || {}) };
-          if (typeof restriction !== "string" || !restriction.trim()) {
-            delete properties.restriction;
-          } else {
-            properties.restriction = restriction.trim();
-          }
-          return { ...feature, properties };
-        }),
-      };
-      source.setData(cleaned).catch(() => {
+      source.setData(truckRoutesData).catch(() => {
         setError("Truck route overlay couldn’t load.");
       });
     }
-    const showRoutes = awareness.truckRoutes;
-    const showRestrictions = awareness.truckRestrictions;
     if (map.getLayer("truck-routes-line")) {
-      map.setLayoutProperty("truck-routes-line", "visibility", showRoutes ? "visible" : "none");
+      map.setLayoutProperty("truck-routes-line", "visibility", awareness.truckRoutes ? "visible" : "none");
     }
-    if (map.getLayer("truck-restrictions-line")) {
-      map.setLayoutProperty("truck-restrictions-line", "visibility", showRestrictions ? "visible" : "none");
-    }
-  }, [truckRoutesData, awareness.truckRoutes, awareness.truckRestrictions, ready]);
+  }, [truckRoutesData, awareness.truckRoutes, ready]);
 
   useEffect(() => {
     const map = mapRef.current;

@@ -17,7 +17,6 @@ const Map = dynamic(() => import("./clearance-map").then(m => m.ClearanceMap), {
 
 const AWARENESS_OFF: AwarenessLayers = {
   truckRoutes: false,
-  truckRestrictions: false,
   streetClosures: false,
   loadingZones: false,
 };
@@ -124,7 +123,7 @@ export function MapExplorer() {
   }, [retry]);
 
   useEffect(() => {
-    const needRoutes = awareness.truckRoutes || awareness.truckRestrictions;
+    const needRoutes = awareness.truckRoutes;
     if (!needRoutes || truckRoutesData) return;
     const controller = new AbortController();
     setAwarenessError("");
@@ -141,7 +140,7 @@ export function MapExplorer() {
         if (!controller.signal.aborted) setAwarenessLoading(false);
       });
     return () => controller.abort();
-  }, [awareness.truckRoutes, awareness.truckRestrictions, truckRoutesData]);
+  }, [awareness.truckRoutes, truckRoutesData]);
 
   useEffect(() => {
     if (!awareness.streetClosures || streetClosuresData) return;
@@ -353,14 +352,6 @@ export function MapExplorer() {
           <label className="all-toggle">
             <input
               type="checkbox"
-              checked={awareness.truckRestrictions}
-              onChange={e => setAwareness(a => ({ ...a, truckRestrictions: e.target.checked }))}
-            />
-            Posted limits on those routes
-          </label>
-          <label className="all-toggle">
-            <input
-              type="checkbox"
               checked={awareness.streetClosures}
               onChange={e => setAwareness(a => ({ ...a, streetClosures: e.target.checked }))}
             />
@@ -376,12 +367,11 @@ export function MapExplorer() {
             Loading zones
           </label>
           <p className="awareness-note">
-            Routes = NYC truck network. Posted limits = same file, only segments with height/weight/time notes (~860 of ~32k). Closures = separate DOT construction feed. Loading zones = curb sign points. Overlays only — not used for path check.
+            Routes = NYC truck network. Closures = DOT construction feed. Loading zones = curb sign points. Overlays only — not used for path check.
           </p>
-          {(awareness.truckRoutes || awareness.truckRestrictions || awareness.streetClosures || awareness.loadingZones) && (
+          {(awareness.truckRoutes || awareness.streetClosures || awareness.loadingZones) && (
             <div className="awareness-legend" aria-hidden="true">
               {awareness.truckRoutes && <span><i className="swatch route" />Route</span>}
-              {awareness.truckRestrictions && <span><i className="swatch restrict" />Posted limit</span>}
               {awareness.streetClosures && <span><i className="swatch closure" />Closed</span>}
               {awareness.loadingZones && <span><i className="swatch loading" />Loading zone</span>}
             </div>
