@@ -5,7 +5,7 @@ import { useSearchParams } from "next/navigation";
 import { useCallback, useEffect, useMemo, useRef, useState } from "react";
 import type { ClearanceCollection } from "@/lib/types";
 import { describeMargin, formatHeight, getClearanceSeverity, isInventoryLabel, parseHeightParam, recordLabels } from "@/lib/clearance";
-import { featuresAlongRoute, type DrivePath, type Place } from "@/lib/path";
+import { featuresAlongRoute, formatDriveMiles, formatDriveMinutes, type DrivePath, type DriveRoute, type Place } from "@/lib/path";
 import { DriveForm } from "./drive-form";
 import { HeightForm } from "./height-form";
 import type { Viewport } from "./clearance-map";
@@ -22,6 +22,38 @@ function updateUrl(values: Record<string, string | null>) {
     else url.searchParams.set(key, value);
   }
   window.history.replaceState(null, "", url);
+}
+
+
+async function copyLink(href: string, onMessage: (message: string) => void) {
+  try {
+    await navigator.clipboard.writeText(href);
+    onMessage("Link copied");
+  } catch {
+    onMessage("Copy the link from your browser’s address bar.");
+  }
+}
+
+function buildShareUrl(values: Record<string, string | null>) {
+  const url = new URL(window.location.origin + window.location.pathname);
+  for (const [key, value] of Object.entries(values)) {
+    if (value !== null && value !== "") url.searchParams.set(key, value);
+  }
+  return url.toString();
+}
+
+function scoreRoute(features: ReturnType<typeof featuresAlongRoute>, vehicleHeight: number) {
+  let danger = 0;
+  let caution = 0;
+  let lowest: number | null = null;
+  for (const feature of features) {
+    const inches = feature.properties.postedClearanceInches;
+    const severity = getClearanceSeverity(inches, vehicleHeight);
+    if (severity === "danger") danger += 1;
+    else if (severity === "caution") caution += 1;
+    if (lowest === null || inches < lowest) lowest = inches;
+  }
+  return { danger, caution, lowest, count: features.length };
 }
 
 function viewportNumber(value: string | null, fallback: number, min: number, max: number) {
@@ -53,6 +85,7 @@ export function MapExplorer() {
   const pendingPlaces = useRef<{ from: Place | string; to: Place | string } | null>(null);
   const fromParam = params.get("from") || "";
   const toParam = params.get("to") || "";
+  const routeParam = Number(params.get("route") || "0");
   const initialViewport: Viewport = {
     lng: viewportNumber(params.get("lng"), -73.63, -180, 180),
     lat: viewportNumber(params.get("lat"), 40.74, -80, 80),
@@ -97,12 +130,21 @@ export function MapExplorer() {
       body: JSON.stringify(body),
       signal: controller.signal,
     }).then(async response => {
-      const json = await response.json() as DrivePath & { error?: string };
+      const json = await response.json() as DrivePath & { error?: string; routes?: DriveRoute[] };
       if (!response.ok) throw new Error(json.error || "Couldn’t check that path.");
-      if (!Array.isArray(json.coordinates) || json.coordinates.length < 2) {
-        throw new Error("Couldn’t trace a driving path between those places.");
-      }
-      setDrive(json);
+      const routes = Array.isArray(json.routes) && json.routes.length
+        ? json.routes.filter(route => Array.isArray(route.coordinates) && route.coordinates.length >= 2)
+        : (Array.isArray(json.coordinates) && json.coordinates.length >= 2
+          ? [{ coordinates: json.coordinates, distanceMeters: json.distanceMeters || 0, durationSeconds: 0 }]
+          : []);
+      if (!routes.length) throw new Error("Couldn’t trace a driving path between those places.");
+      setDrive({
+        from: json.from,
+        to: json.to,
+        routes,
+        coordinates: routes[0].coordinates,
+        distanceMeters: routes[0].distanceMeters,
+      });
     }).catch(error => {
       if (error.name !== "AbortError") {
         setDrive(null);
@@ -113,6 +155,14 @@ export function MapExplorer() {
     });
     return () => controller.abort();
   }, [fromParam, toParam, driveRetry]);
+  useEffect(() => {
+    if (!drive?.routes?.length) return;
+    const max = drive.routes.length - 1;
+    const index = Number.isFinite(routeParam) ? Math.trunc(routeParam) : 0;
+    if (index < 0 || index > max) updateUrl({ route: null });
+    else if (index === 0 && params.get("route")) updateUrl({ route: null });
+  }, [drive, routeParam, params]);
+
 
   const onSelect = useCallback((id: string) => updateUrl({ bridge: id }), []);
   const onViewport = useCallback((viewport: Viewport, nextBounds: [number, number, number, number]) => {
@@ -120,9 +170,31 @@ export function MapExplorer() {
     updateUrl({ lng: viewport.lng.toFixed(5), lat: viewport.lat.toFixed(5), z: viewport.z.toFixed(2) });
   }, []);
 
+  const routeOptions = drive?.routes?.length ? drive.routes : (drive ? [{ coordinates: drive.coordinates, distanceMeters: drive.distanceMeters, durationSeconds: 0 }] : []);
+  const selectedRouteIndex = Math.min(Math.max(0, Number.isFinite(routeParam) ? Math.trunc(routeParam) : 0), Math.max(routeOptions.length - 1, 0));
+  const activeDrive = useMemo(() => {
+    if (!drive || !routeOptions.length) return null;
+    const selected = routeOptions[selectedRouteIndex] || routeOptions[0];
+    return {
+      ...drive,
+      coordinates: selected.coordinates,
+      distanceMeters: selected.distanceMeters,
+      routes: routeOptions,
+    } satisfies DrivePath;
+  }, [drive, routeOptions, selectedRouteIndex]);
   const alongPath = useMemo(
-    () => (drive && data ? featuresAlongRoute(data.features, drive.coordinates) : null),
-    [drive, data],
+    () => (activeDrive && data ? featuresAlongRoute(data.features, activeDrive.coordinates) : null),
+    [activeDrive, data],
+  );
+  const routeScores = useMemo(() => {
+    if (!data || routeOptions.length < 2) return [];
+    return routeOptions.map(route => scoreRoute(featuresAlongRoute(data.features, route.coordinates), height ?? 0));
+  }, [data, routeOptions, height]);
+  const altRoutes = useMemo(
+    () => routeOptions.length > 1
+      ? routeOptions.filter((_, index) => index !== selectedRouteIndex).map(route => route.coordinates)
+      : [],
+    [routeOptions, selectedRouteIndex],
   );
   const mapCollection = useMemo(
     () => (data ? { ...data, features: alongPath || data.features } : null),
@@ -189,18 +261,76 @@ export function MapExplorer() {
             const fromText = asLabel(from);
             const toText = asLabel(to);
             if (fromText === fromParam && toText === toParam) setDriveRetry(n => n + 1);
-            updateUrl({ from: fromText, to: toText, bridge: null });
+            updateUrl({ from: fromText, to: toText, bridge: null, route: null });
           }}
           onClear={() => {
             setDrive(null);
             setDriveError("");
             pendingPlaces.current = null;
-            updateUrl({ from: null, to: null, bridge: null });
+            updateUrl({ from: null, to: null, bridge: null, route: null });
           }}
         />
+
+        {routeOptions.length > 1 && activeDrive && (
+          <div className="route-compare" role="group" aria-label="Compare driving paths">
+            <div className="panel-heading">
+              <span className="eyebrow">PATH OPTIONS</span>
+              <button
+                className="text-button"
+                type="button"
+                onClick={() => copyLink(buildShareUrl({
+                  height: String(height),
+                  from: fromParam,
+                  to: toParam,
+                  route: selectedRouteIndex === 0 ? null : String(selectedRouteIndex),
+                }), setShareMessage)}
+              >Share path</button>
+            </div>
+            <p className="route-compare-note">OSRM found more than one path. Pick one to inspect posted lows nearby — only shown when the lines actually differ.</p>
+            <div className="route-options">
+              {routeOptions.map((route, index) => {
+                const score = routeScores[index];
+                const selected = index === selectedRouteIndex;
+                return <button
+                  key={`route-${index}`}
+                  type="button"
+                  className={`route-option ${selected ? "selected" : ""}`}
+                  aria-pressed={selected}
+                  onClick={() => updateUrl({ route: index === 0 ? null : String(index), bridge: null })}
+                >
+                  <strong>Path {index + 1}</strong>
+                  <span>{formatDriveMiles(route.distanceMeters)} · {formatDriveMinutes(route.durationSeconds)}</span>
+                  <span>
+                    {score ? (
+                      score.danger > 0
+                        ? `${score.danger} at/below`
+                        : score.caution > 0
+                          ? `${score.caution} within 12″`
+                          : "No red/orange nearby"
+                    ) : "—"}
+                    {score?.lowest != null ? ` · lowest ${formatHeight(score.lowest)}` : ""}
+                  </span>
+                </button>;
+              })}
+            </div>
+          </div>
+        )}
+        {routeOptions.length === 1 && activeDrive && (
+          <div className="route-share-row">
+            <button
+              className="text-button"
+              type="button"
+              onClick={() => copyLink(buildShareUrl({
+                height: String(height),
+                from: fromParam,
+                to: toParam,
+              }), setShareMessage)}
+            >Share this path</button>
+          </div>
+        )}
       </div>
       <div className="list-heading">
-        <h1>{drive ? "On this path" : "In this map view"}</h1>
+        <h1>{activeDrive ? "On this path" : "In this map view"}</h1>
         <span>{visible.length} records</span>
       </div>
       <div className="clearance-list">
@@ -215,7 +345,7 @@ export function MapExplorer() {
           <p className="list-message" role="status">Finding posted clearances near this path…</p>
         ) : !visible.length ? (
           <p className="list-message">
-            {drive
+            {activeDrive
               ? "No matching posted clearances near this path. Missing markers do not mean the road is clear."
               : "No matching posted clearances in this view. Pan or zoom to explore. A missing marker does not mean a road is clear."}
           </p>
@@ -254,15 +384,10 @@ export function MapExplorer() {
     </aside>
     <section className="map-area" aria-label="Clearance map">
       <div className="map-topline">
-        <span className="coverage-chip">{drive ? "THIS PATH" : "NYC + LONG ISLAND"} <span>· Partial coverage</span></span>
-        <button className="share-button" onClick={async () => {
-          try {
-            await navigator.clipboard.writeText(window.location.href);
-            setShareMessage("Link copied");
-          } catch {
-            setShareMessage("Copy the link from your browser’s address bar.");
-          }
-        }}>Share map ↗</button>
+        <span className="coverage-chip">{activeDrive ? "THIS PATH" : "NYC + LONG ISLAND"} <span>· Partial coverage</span></span>
+        <button className="share-button" onClick={() => copyLink(window.location.href, setShareMessage)}>
+          {activeDrive ? "Share path ↗" : selectedId ? "Share clearance ↗" : "Share map ↗"}
+        </button>
       </div>
       {shareMessage && <div className="share-status" role="status">{shareMessage}</div>}
       {mapCollection && (
@@ -271,7 +396,8 @@ export function MapExplorer() {
           height={height}
           showAll={showAll}
           selectedId={selectedId}
-          drive={drive}
+          drive={activeDrive}
+          altRoutes={altRoutes}
           initialViewport={initialViewport}
           onSelect={onSelect}
           onViewport={onViewport}
@@ -279,7 +405,7 @@ export function MapExplorer() {
       )}
       {!data && <div className="map-message">{fetchError ? "Map data unavailable. Retry from the clearance list." : "Preparing your map…"}</div>}
       <div className="map-footnote">
-        {drive
+        {activeDrive
           ? "Posted records near this path. Check signs. Missing markers do not guarantee clearance."
           : "Check posted signs. Missing markers do not guarantee clearance."}
       </div>
@@ -307,6 +433,21 @@ export function MapExplorer() {
           {selected.location && selectedLabels.title !== selected.location && (
             <p className="source-location">Source location: {selected.location}</p>
           )}
+          <button
+            className="share-clearance"
+            type="button"
+            onClick={() => {
+              const feature = data?.features.find(f => f.properties.id === selectedId);
+              const [lng, lat] = feature?.geometry.coordinates || [];
+              copyLink(buildShareUrl({
+                height: String(height),
+                bridge: selected.id,
+                lng: typeof lng === "number" ? lng.toFixed(5) : null,
+                lat: typeof lat === "number" ? lat.toFixed(5) : null,
+                z: "15",
+              }), setShareMessage);
+            }}
+          >Share this clearance</button>
           <a className="source-link" href={selected.sources[0].sourceUrl} target="_blank" rel="noreferrer">NYSDOT source record ↗</a>
           <p className="detail-note">Posted values only. This map does not determine road access or whether your vehicle will physically fit.</p>
         </section>

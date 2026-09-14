@@ -45,6 +45,21 @@ function addOverlayLayers(map: MapInstance) {
       paint: { "line-color": "#0a84ff", "line-width": 5.5, "line-opacity": 0.98 },
     });
   }
+  if (!map.getSource("drive-alts")) {
+    map.addSource("drive-alts", { type: "geojson", data: EMPTY_DRIVE });
+    map.addLayer({
+      id: "drive-alts-line",
+      type: "line",
+      source: "drive-alts",
+      layout: { "line-cap": "round", "line-join": "round" },
+      paint: {
+        "line-color": "#8aa0b3",
+        "line-width": 4,
+        "line-opacity": 0.7,
+        "line-dasharray": [1.2, 1.8],
+      },
+    }, "drive-casing");
+  }
   if (!map.getSource("clearances")) {
     map.addSource("clearances", {
       type: "geojson",
@@ -74,6 +89,7 @@ export function ClearanceMap({
   showAll,
   selectedId,
   drive,
+  altRoutes = [],
   initialViewport,
   onSelect,
   onViewport,
@@ -83,6 +99,7 @@ export function ClearanceMap({
   showAll: boolean;
   selectedId: string | null;
   drive: DrivePath | null;
+  altRoutes?: number[][][];
   initialViewport: Viewport;
   onSelect: (id: string) => void;
   onViewport: (viewport: Viewport, bounds: [number, number, number, number]) => void;
@@ -236,28 +253,42 @@ export function ClearanceMap({
   useEffect(() => {
     const map = mapRef.current;
     const source = map?.getSource("drive") as GeoJSONSource | undefined;
-    if (!ready || !map || !source) return;
+    const altSource = map?.getSource("drive-alts") as GeoJSONSource | undefined;
+    if (!ready || !map || !source || !altSource) return;
     for (const marker of ends.current) marker.remove();
     ends.current = [];
     if (!drive) {
       source.setData(EMPTY_DRIVE).catch(() => undefined);
+      altSource.setData(EMPTY_DRIVE).catch(() => undefined);
       return;
     }
     source.setData(toDriveGeoJSON(drive.coordinates)).catch(() => {
       setError("The driving path couldn’t be drawn. Posted records remain in the list.");
     });
+    altSource.setData({
+      type: "FeatureCollection",
+      features: altRoutes
+        .filter(line => Array.isArray(line) && line.length >= 2)
+        .map(coordinates => ({
+          type: "Feature" as const,
+          properties: {},
+          geometry: { type: "LineString" as const, coordinates },
+        })),
+    }).catch(() => undefined);
     ends.current = [
       new maplibregl.Marker({ element: createEndpoint("A", `Start: ${drive.from.label}`), anchor: "center" })
         .setLngLat([drive.from.lng, drive.from.lat]).addTo(map),
       new maplibregl.Marker({ element: createEndpoint("B", `End: ${drive.to.label}`), anchor: "center" })
         .setLngLat([drive.to.lng, drive.to.lat]).addTo(map),
     ];
-    const bounds = drive.coordinates.reduce(
-      (box, pair) => box.extend(pair as [number, number]),
-      new maplibregl.LngLatBounds(drive.coordinates[0] as [number, number], drive.coordinates[0] as [number, number]),
+    const allLines = [drive.coordinates, ...altRoutes.filter(line => line.length >= 2)];
+    const seed = allLines[0][0] as [number, number];
+    const bounds = allLines.reduce(
+      (box, line) => line.reduce((inner, pair) => inner.extend(pair as [number, number]), box),
+      new maplibregl.LngLatBounds(seed, seed),
     );
     map.fitBounds(bounds, { padding: 56, duration: 700, maxZoom: 14 });
-  }, [drive, ready]);
+  }, [drive, altRoutes, ready]);
 
   // Only fly when the selected record changes. Re-running on every data refresh
   // was forcing zoom back up and blocking zoom-out while the detail card stayed open.
