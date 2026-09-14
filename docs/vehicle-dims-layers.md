@@ -2,6 +2,19 @@
 
 Kickoff + **data research** (2026-09-14). Still awareness, not legal routing. Missing data ≠ clear road.
 
+## Shipped on this branch
+
+| Input | Unlocks on map |
+|---|---|
+| Height (existing) | Clearance pins |
+| **Width (in)** | Crossing-limit lines (11 parsed `restrictio` patterns) |
+| **Weight (tons)** | Posted-load bridge pins (~75) |
+| **Commercial** | Parkway ban lines |
+
+Also toggleable with legend: bridges / tunnels / expressways (+ labels), major crossings, truck routes, closures, loading zones.
+
+GeoJSON in `public/data/`: `posted-load-nyc-li`, `parkways-nyc-li`, `road-features-nyc`, `road-labels-nyc`, `crossing-limits-nyc`, `major-crossings`.
+
 ## What we already ship
 
 | Layer | Source | Structured dims? |
