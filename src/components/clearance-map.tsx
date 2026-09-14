@@ -33,6 +33,7 @@ export type AwarenessLayers = {
   truckRoutes: boolean;
   truckRestrictions: boolean;
   streetClosures: boolean;
+  loadingZones: boolean;
 };
 
 function addOverlayLayers(map: MapInstance) {
@@ -85,6 +86,27 @@ function addOverlayLayers(map: MapInstance) {
         "line-color": "#dc2626",
         "line-width": ["interpolate", ["linear"], ["zoom"], 10, 2.5, 14, 6],
         "line-opacity": 0.9,
+      },
+    });
+  }
+  if (!map.getSource("loading-zones")) {
+    map.addSource("loading-zones", { type: "geojson", data: EMPTY_FC });
+    map.addLayer({
+      id: "loading-zones-circle",
+      type: "circle",
+      source: "loading-zones",
+      layout: { visibility: "none" },
+      paint: {
+        "circle-radius": ["interpolate", ["linear"], ["zoom"], 10, 2.5, 14, 5.5],
+        "circle-color": [
+          "match",
+          ["get", "zoneType"],
+          "neighborhood", "#0f766e",
+          "#047857",
+        ],
+        "circle-opacity": 0.85,
+        "circle-stroke-width": 1,
+        "circle-stroke-color": "#ffffff",
       },
     });
   }
@@ -153,6 +175,7 @@ export function ClearanceMap({
   awareness,
   truckRoutesData,
   streetClosuresData,
+  loadingZonesData,
   initialViewport,
   onSelect,
   onViewport,
@@ -166,6 +189,7 @@ export function ClearanceMap({
   awareness: AwarenessLayers;
   truckRoutesData: FeatureCollection | null;
   streetClosuresData: FeatureCollection | null;
+  loadingZonesData: FeatureCollection | null;
   initialViewport: Viewport;
   onSelect: (id: string) => void;
   onViewport: (viewport: Viewport, bounds: [number, number, number, number]) => void;
@@ -352,6 +376,24 @@ export function ClearanceMap({
       );
     }
   }, [streetClosuresData, awareness.streetClosures, ready]);
+
+  useEffect(() => {
+    const map = mapRef.current;
+    const source = map?.getSource("loading-zones") as GeoJSONSource | undefined;
+    if (!ready || !map || !source) return;
+    if (loadingZonesData) {
+      source.setData(loadingZonesData).catch(() => {
+        setError("Loading zone overlay couldn’t load.");
+      });
+    }
+    if (map.getLayer("loading-zones-circle")) {
+      map.setLayoutProperty(
+        "loading-zones-circle",
+        "visibility",
+        awareness.loadingZones ? "visible" : "none",
+      );
+    }
+  }, [loadingZonesData, awareness.loadingZones, ready]);
 
   useEffect(() => {
     const map = mapRef.current;
