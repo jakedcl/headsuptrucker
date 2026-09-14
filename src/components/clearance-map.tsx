@@ -33,6 +33,16 @@ export type AwarenessLayers = {
   truckRoutes: boolean;
   streetClosures: boolean;
   loadingZones: boolean;
+  /** Bridges / tunnels / expressways + labels */
+  roadFeatures: boolean;
+  /** Commercial-vehicle-banned parkways */
+  parkways: boolean;
+  /** Posted load (weight) bridges */
+  postedLoad: boolean;
+  /** Parsed crossing limit segments (width/weight notes) */
+  crossingLimits: boolean;
+  /** Curated major bridge/tunnel pins */
+  majorCrossings: boolean;
 };
 
 function addOverlayLayers(map: MapInstance) {
@@ -89,6 +99,154 @@ function addOverlayLayers(map: MapInstance) {
         "circle-stroke-width": 1,
         "circle-stroke-color": "#ffffff",
       },
+    });
+  }
+  if (!map.getSource("road-features")) {
+    map.addSource("road-features", { type: "geojson", data: EMPTY_FC });
+    map.addLayer({
+      id: "road-features-line",
+      type: "line",
+      source: "road-features",
+      layout: { "line-cap": "round", "line-join": "round", visibility: "none" },
+      paint: {
+        "line-color": [
+          "match",
+          ["get", "kind"],
+          "bridge", "#b45309",
+          "tunnel", "#6d28d9",
+          "expressway", "#0f766e",
+          "#64748b",
+        ],
+        "line-width": ["interpolate", ["linear"], ["zoom"], 9, 1.4, 14, 4],
+        "line-opacity": 0.7,
+      },
+    });
+  }
+  if (!map.getSource("road-labels")) {
+    map.addSource("road-labels", { type: "geojson", data: EMPTY_FC });
+    map.addLayer({
+      id: "road-labels-symbol",
+      type: "symbol",
+      source: "road-labels",
+      layout: {
+        visibility: "none",
+        "text-field": ["get", "name"],
+        "text-size": ["interpolate", ["linear"], ["zoom"], 10, 10, 14, 13],
+        "text-font": ["Open Sans Semibold", "Arial Unicode MS Bold"],
+        "text-offset": [0, 0.2],
+        "text-anchor": "top",
+        "text-max-width": 10,
+        "text-optional": true,
+      },
+      paint: {
+        "text-color": [
+          "match",
+          ["get", "kind"],
+          "bridge", "#92400e",
+          "tunnel", "#5b21b6",
+          "expressway", "#115e59",
+          "parkway", "#9f1239",
+          "#334155",
+        ],
+        "text-halo-color": "#ffffff",
+        "text-halo-width": 1.4,
+      },
+      minzoom: 10,
+    });
+  }
+  if (!map.getSource("parkways")) {
+    map.addSource("parkways", { type: "geojson", data: EMPTY_FC });
+    map.addLayer({
+      id: "parkways-line",
+      type: "line",
+      source: "parkways",
+      layout: { "line-cap": "round", "line-join": "round", visibility: "none" },
+      paint: {
+        "line-color": "#e11d48",
+        "line-width": ["interpolate", ["linear"], ["zoom"], 9, 2, 14, 5],
+        "line-opacity": 0.75,
+        "line-dasharray": [1.2, 1.4],
+      },
+    });
+  }
+  if (!map.getSource("posted-load")) {
+    map.addSource("posted-load", { type: "geojson", data: EMPTY_FC });
+    map.addLayer({
+      id: "posted-load-circle",
+      type: "circle",
+      source: "posted-load",
+      layout: { visibility: "none" },
+      paint: {
+        "circle-radius": ["interpolate", ["linear"], ["zoom"], 9, 4, 14, 8],
+        "circle-color": [
+          "case",
+          ["==", ["get", "conflict"], "danger"], "#7f1d1d",
+          ["==", ["get", "conflict"], "ok"], "#a78bfa",
+          "#7c3aed",
+        ],
+        "circle-opacity": 0.9,
+        "circle-stroke-width": 1.5,
+        "circle-stroke-color": "#fff",
+      },
+    });
+  }
+  if (!map.getSource("crossing-limits")) {
+    map.addSource("crossing-limits", { type: "geojson", data: EMPTY_FC });
+    map.addLayer({
+      id: "crossing-limits-line",
+      type: "line",
+      source: "crossing-limits",
+      layout: { "line-cap": "round", "line-join": "round", visibility: "none" },
+      paint: {
+        "line-color": [
+          "case",
+          ["==", ["get", "conflict"], "danger"], "#b91c1c",
+          "#ea580c",
+        ],
+        "line-width": ["interpolate", ["linear"], ["zoom"], 10, 2.5, 14, 6],
+        "line-opacity": 0.85,
+      },
+    });
+  }
+  if (!map.getSource("major-crossings")) {
+    map.addSource("major-crossings", { type: "geojson", data: EMPTY_FC });
+    map.addLayer({
+      id: "major-crossings-circle",
+      type: "circle",
+      source: "major-crossings",
+      layout: { visibility: "none" },
+      paint: {
+        "circle-radius": ["interpolate", ["linear"], ["zoom"], 8, 5, 13, 9],
+        "circle-color": [
+          "match",
+          ["get", "kind"],
+          "tunnel", "#6d28d9",
+          "#b45309",
+        ],
+        "circle-opacity": 0.92,
+        "circle-stroke-width": 2,
+        "circle-stroke-color": "#fff",
+      },
+    });
+    map.addLayer({
+      id: "major-crossings-label",
+      type: "symbol",
+      source: "major-crossings",
+      layout: {
+        visibility: "none",
+        "text-field": ["get", "name"],
+        "text-size": 12,
+        "text-font": ["Open Sans Semibold", "Arial Unicode MS Bold"],
+        "text-offset": [0, 1.1],
+        "text-anchor": "top",
+        "text-optional": true,
+      },
+      paint: {
+        "text-color": "#1e293b",
+        "text-halo-color": "#ffffff",
+        "text-halo-width": 1.5,
+      },
+      minzoom: 9,
     });
   }
   if (!map.getSource("drive")) {
@@ -169,6 +327,12 @@ export function ClearanceMap({
   truckRoutesData,
   streetClosuresData,
   loadingZonesData,
+  roadFeaturesData = null,
+  roadLabelsData = null,
+  parkwaysData = null,
+  postedLoadData = null,
+  crossingLimitsData = null,
+  majorCrossingsData = null,
   initialViewport,
   onSelect,
   onViewport,
@@ -183,6 +347,12 @@ export function ClearanceMap({
   truckRoutesData: FeatureCollection | null;
   streetClosuresData: FeatureCollection | null;
   loadingZonesData: FeatureCollection | null;
+  roadFeaturesData?: FeatureCollection | null;
+  roadLabelsData?: FeatureCollection | null;
+  parkwaysData?: FeatureCollection | null;
+  postedLoadData?: FeatureCollection | null;
+  crossingLimitsData?: FeatureCollection | null;
+  majorCrossingsData?: FeatureCollection | null;
   initialViewport: Viewport;
   onSelect: (id: string) => void;
   onViewport: (viewport: Viewport, bounds: [number, number, number, number]) => void;
@@ -401,6 +571,44 @@ export function ClearanceMap({
       );
     }
   }, [loadingZonesData, awareness.loadingZones, ready]);
+
+  useEffect(() => {
+    const map = mapRef.current;
+    if (!ready || !map) return;
+    const pairs: Array<[string, string, FeatureCollection | null, boolean]> = [
+      ["road-features", "road-features-line", roadFeaturesData, awareness.roadFeatures],
+      ["road-labels", "road-labels-symbol", roadLabelsData, awareness.roadFeatures],
+      ["parkways", "parkways-line", parkwaysData, awareness.parkways],
+      ["posted-load", "posted-load-circle", postedLoadData, awareness.postedLoad],
+      ["crossing-limits", "crossing-limits-line", crossingLimitsData, awareness.crossingLimits],
+      ["major-crossings", "major-crossings-circle", majorCrossingsData, awareness.majorCrossings],
+      ["major-crossings", "major-crossings-label", majorCrossingsData, awareness.majorCrossings],
+    ];
+    for (const [sourceId, layerId, dataFc, on] of pairs) {
+      const source = map.getSource(sourceId) as GeoJSONSource | undefined;
+      if (source && dataFc) {
+        source.setData(dataFc).catch(() => {
+          setError("A map overlay couldn’t load.");
+        });
+      }
+      if (map.getLayer(layerId)) {
+        map.setLayoutProperty(layerId, "visibility", on ? "visible" : "none");
+      }
+    }
+  }, [
+    ready,
+    awareness.roadFeatures,
+    awareness.parkways,
+    awareness.postedLoad,
+    awareness.crossingLimits,
+    awareness.majorCrossings,
+    roadFeaturesData,
+    roadLabelsData,
+    parkwaysData,
+    postedLoadData,
+    crossingLimitsData,
+    majorCrossingsData,
+  ]);
 
   useEffect(() => {
     const map = mapRef.current;
