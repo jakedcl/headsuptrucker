@@ -1,0 +1,119 @@
+{
+  "id" : "rn6h-i66u",
+  "name" : "Citywide Low Bridges",
+  "assetType" : "href",
+  "attribution" : "Department of Transportation (DOT)",
+  "averageRating" : 0,
+  "category" : "Transportation",
+  "createdAt" : 1413925797,
+  "description" : "Contains the locations with low vertical clearances on the limited access highway system.\r\n\r\nClick here for metadata - http://www.nyc.gov/html/dot/downloads/pdf/lowbridge_kml_readme_july09.pdf",
+  "diciBackend" : false,
+  "displayType" : "href",
+  "downloadCount" : 95,
+  "hideFromCatalog" : false,
+  "hideFromDataJson" : false,
+  "indexUpdatedAt" : 1536700473,
+  "locked" : false,
+  "newBackend" : false,
+  "numberOfComments" : 0,
+  "oid" : 9184931,
+  "provenance" : "official",
+  "publicationAppendEnabled" : false,
+  "publicationDate" : 1413925814,
+  "publicationGroup" : 1821975,
+  "publicationStage" : "published",
+  "rowsUpdatedAt" : 1413925797,
+  "tableId" : 1821975,
+  "totalTimesRated" : 0,
+  "viewCount" : 4637,
+  "viewLastModified" : 1730298474,
+  "viewType" : "href",
+  "approvals" : [ {
+    "reviewedAt" : 1413925996,
+    "reviewedAutomatically" : true,
+    "state" : "approved",
+    "submissionId" : 1065162,
+    "submissionObject" : "public_audience_request",
+    "submissionOutcome" : "change_audience",
+    "submittedAt" : 1413925996,
+    "targetAudience" : "public",
+    "workflowId" : 2285,
+    "submissionDetails" : {
+      "permissionType" : "READ"
+    },
+    "submissionOutcomeApplication" : {
+      "failureCount" : 0,
+      "status" : "success"
+    },
+    "submitter" : {
+      "id" : "5fuc-pqz2",
+      "displayName" : "NYC OpenData"
+    }
+  } ],
+  "clientContext" : {
+    "clientContextVariables" : [ ],
+    "inheritedVariables" : { }
+  },
+  "columns" : [ ],
+  "grants" : [ {
+    "inherited" : false,
+    "type" : "viewer",
+    "flags" : [ "public" ]
+  } ],
+  "metadata" : {
+    "attachments" : [ {
+      "filename" : "lowbridge_kml_readme_july09.pdf",
+      "assetId" : "BF79kJglFwXlti2wBbx7LDyhYiFjJKGCu8z8K3N69_I",
+      "blobId" : "",
+      "name" : "lowbridge_kml_readme_july09.pdf"
+    } ],
+    "additionalAccessPoints" : [ {
+      "urls" : {
+        "citywide low bridges" : "http://www.nyc.gov/html/dot/downloads/misc/lowbridges_citywide_data_71309.kml"
+      }
+    } ],
+    "custom_fields" : {
+      "Update" : {
+        "Automation" : "N/A",
+        "Date Made Public" : "10/21/2014",
+        "Update Frequency" : "Annually"
+      },
+      "Dataset Information" : {
+        "Agency" : "Department of Transportation (DOT)"
+      }
+    },
+    "accessPoints" : {
+      "citywide low bridges" : "http://www.nyc.gov/html/dot/downloads/misc/lowbridges_citywide_data_71309.kml"
+    },
+    "availableDisplayTypes" : [ "href" ],
+    "renderTypeConfig" : {
+      "visible" : {
+        "href" : true
+      }
+    }
+  },
+  "owner" : {
+    "id" : "5fuc-pqz2",
+    "displayName" : "NYC OpenData",
+    "profileImageUrlLarge" : "/api/users/5fuc-pqz2/profile_images/LARGE",
+    "profileImageUrlMedium" : "/api/users/5fuc-pqz2/profile_images/THUMB",
+    "profileImageUrlSmall" : "/api/users/5fuc-pqz2/profile_images/TINY",
+    "screenName" : "NYC OpenData",
+    "type" : "interactive",
+    "flags" : [ "acceptedEula", "mayBeStoriesCoOwner" ]
+  },
+  "query" : { },
+  "rights" : [ "read" ],
+  "tableAuthor" : {
+    "id" : "5fuc-pqz2",
+    "displayName" : "NYC OpenData",
+    "profileImageUrlLarge" : "/api/users/5fuc-pqz2/profile_images/LARGE",
+    "profileImageUrlMedium" : "/api/users/5fuc-pqz2/profile_images/THUMB",
+    "profileImageUrlSmall" : "/api/users/5fuc-pqz2/profile_images/TINY",
+    "screenName" : "NYC OpenData",
+    "type" : "interactive",
+    "flags" : [ "acceptedEula", "mayBeStoriesCoOwner" ]
+  },
+  "tags" : [ "dot", "low bridges", "citywide low bridges" ],
+  "flags" : [ "default", "ownerMayBeContacted" ]
+}

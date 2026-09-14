@@ -1,0 +1,379 @@
+{
+ "currentVersion": 11.5,
+ "cimVersion": "3.5.0",
+ "id": 1,
+ "name": "Posted Height Bridges",
+ "type": "Feature Layer",
+ "description": "",
+ "geometryType": "esriGeometryPoint",
+ "sourceSpatialReference": {
+  "wkid": 26918,
+  "latestWkid": 26918,
+  "xyTolerance": 0.001,
+  "zTolerance": 0.001,
+  "mTolerance": 0.001,
+  "falseX": -5120900,
+  "falseY": -9998100,
+  "xyUnits": 10000,
+  "falseZ": 0,
+  "zUnits": 1,
+  "falseM": 0,
+  "mUnits": 1
+ },
+ "spatialReference": {
+  "wkid": 4269,
+  "latestWkid": 4269,
+  "xyTolerance": 8.983152841195212E-9,
+  "zTolerance": 2.0E-4,
+  "mTolerance": 2.0E-4,
+  "falseX": -400,
+  "falseY": -400,
+  "xyUnits": 1.125899906842624E13,
+  "falseZ": -100000,
+  "zUnits": 10000,
+  "falseM": -100000,
+  "mUnits": 10000
+ },
+ "copyrightText": "",
+ "parentLayer": null,
+ "subLayers": [],
+ "minScale": 6000000,
+ "maxScale": 0,
+ "drawingInfo": {
+  "renderer": {
+   "type": "simple",
+   "symbol": {
+    "type": "esriPMS",
+    "url": "0cb070409c125801263fd92bb3a77dce",
+    "imageData": "iVBORw0KGgoAAAANSUhEUgAAABMAAAATCAYAAAByUDbMAAAACXBIWXMAAA7EAAAOxAGVKw4bAAAAb0lEQVQ4jWNhoCJgoaVhPmSYcYqBgeEVhmElDAx98QwMwsSa8o6BgSmLgSH/KgPDIgzDBBgYOIQZGISINYyRgYGBlYGBiS5hRhFgoUw7Khg1jHTAMgINO83AwM1NguZv+AzbyMAgvJFaLqMUUNUwALmSCpLVovmbAAAAAElFTkSuQmCC",
+    "contentType": "image/png",
+    "width": 14,
+    "height": 14,
+    "angle": 0,
+    "xoffset": 0,
+    "yoffset": 0
+   }
+  },
+  "scaleSymbols": false,
+  "transparency": 0,
+  "labelingInfo": null
+ },
+ "defaultVisibility": true,
+ "extent": {
+  "xmin": -79.98536349217791,
+  "ymin": 40.42257218901007,
+  "xmax": -71.918496855521,
+  "ymax": 45.01059129177611,
+  "spatialReference": {
+   "wkid": 4269,
+   "latestWkid": 4269,
+   "xyTolerance": 8.983152841195212E-9,
+   "zTolerance": 2.0E-4,
+   "mTolerance": 2.0E-4,
+   "falseX": -400,
+   "falseY": -400,
+   "xyUnits": 1.125899906842624E13,
+   "falseZ": -100000,
+   "zUnits": 10000,
+   "falseM": -100000,
+   "mUnits": 10000
+  }
+ },
+ "hasAttachments": false,
+ "htmlPopupType": "esriServerHTMLPopupTypeNone",
+ "displayField": "COUNTY_NAME",
+ "typeIdField": null,
+ "subtypeFieldName": null,
+ "subtypeField": null,
+ "defaultSubtypeCode": null,
+ "fields": [
+  {
+   "name": "BIN",
+   "type": "esriFieldTypeString",
+   "alias": "BIN",
+   "length": 7,
+   "domain": null
+  },
+  {
+   "name": "CARRIED_LABEL",
+   "type": "esriFieldTypeString",
+   "alias": "CARRIED_LABEL",
+   "length": 134,
+   "domain": null
+  },
+  {
+   "name": "COMMON_NAME",
+   "type": "esriFieldTypeString",
+   "alias": "COMMON_NAME",
+   "length": 100,
+   "domain": null
+  },
+  {
+   "name": "COUNTY_NAME",
+   "type": "esriFieldTypeString",
+   "alias": "COUNTY_NAME",
+   "length": 4000,
+   "domain": null
+  },
+  {
+   "name": "CROSSED_MIN_VERT_DESC",
+   "type": "esriFieldTypeString",
+   "alias": "CROSSED_MIN_VERT_DESC",
+   "length": 50,
+   "domain": null
+  },
+  {
+   "name": "CROSSED_TOTAL_HZ_CLNC_DESC",
+   "type": "esriFieldTypeString",
+   "alias": "CROSSED_TOTAL_HZ_CLNC_DESC",
+   "length": 50,
+   "domain": null
+  },
+  {
+   "name": "GTMS_STRUCTURE_DESC",
+   "type": "esriFieldTypeString",
+   "alias": "GTMS_STRUCTURE_DESC",
+   "length": 100,
+   "domain": null
+  },
+  {
+   "name": "LATITUDE",
+   "type": "esriFieldTypeDouble",
+   "alias": "LATITUDE",
+   "domain": null
+  },
+  {
+   "name": "LOCAL_BRIDGE_NUMBER",
+   "type": "esriFieldTypeString",
+   "alias": "LOCAL_BRIDGE_NUMBER",
+   "length": 25,
+   "domain": null
+  },
+  {
+   "name": "LOCATION",
+   "type": "esriFieldTypeString",
+   "alias": "LOCATION",
+   "length": 300,
+   "domain": null
+  },
+  {
+   "name": "LONGITUDE",
+   "type": "esriFieldTypeDouble",
+   "alias": "LONGITUDE",
+   "domain": null
+  },
+  {
+   "name": "OBJECTID",
+   "type": "esriFieldTypeOID",
+   "alias": "OBJECTID",
+   "domain": null
+  },
+  {
+   "name": "OTHER",
+   "type": "esriFieldTypeDouble",
+   "alias": "OTHER",
+   "domain": null
+  },
+  {
+   "name": "OTHER_POSTING",
+   "type": "esriFieldTypeString",
+   "alias": "OTHER_POSTING",
+   "length": 111,
+   "domain": null
+  },
+  {
+   "name": "PERMITTED_VC_ON",
+   "type": "esriFieldTypeDouble",
+   "alias": "PERMITTED_VC_ON",
+   "domain": null
+  },
+  {
+   "name": "PERMITTED_VC_UNDER",
+   "type": "esriFieldTypeDouble",
+   "alias": "PERMITTED_VC_UNDER",
+   "domain": null
+  },
+  {
+   "name": "POLITICAL_UNIT",
+   "type": "esriFieldTypeString",
+   "alias": "POLITICAL_UNIT",
+   "length": 100,
+   "domain": null
+  },
+  {
+   "name": "POSTED_LEGEND",
+   "type": "esriFieldTypeString",
+   "alias": "POSTED_LEGEND",
+   "length": 1,
+   "domain": null
+  },
+  {
+   "name": "POSTED_LOAD_TONS",
+   "type": "esriFieldTypeDouble",
+   "alias": "POSTED_LOAD_TONS",
+   "domain": null
+  },
+  {
+   "name": "POSTED_VRT_CLRNC_ON",
+   "type": "esriFieldTypeDouble",
+   "alias": "POSTED_VRT_CLRNC_ON",
+   "domain": null
+  },
+  {
+   "name": "POSTED_VRT_CLRNC_UNDER",
+   "type": "esriFieldTypeDouble",
+   "alias": "POSTED_VRT_CLRNC_UNDER",
+   "domain": null
+  },
+  {
+   "name": "PRIMARY_OWNER",
+   "type": "esriFieldTypeString",
+   "alias": "PRIMARY_OWNER",
+   "length": 100,
+   "domain": null
+  },
+  {
+   "name": "R_POSTED",
+   "type": "esriFieldTypeString",
+   "alias": "R_POSTED",
+   "length": 3,
+   "domain": null
+  },
+  {
+   "name": "RESTRICTED",
+   "type": "esriFieldTypeDouble",
+   "alias": "RESTRICTED",
+   "domain": null
+  },
+  {
+   "name": "STATE_OWNED",
+   "type": "esriFieldTypeString",
+   "alias": "STATE_OWNED",
+   "length": 3,
+   "domain": null
+  },
+  {
+   "name": "TOTAL_HZ_CLEARANCE_ON",
+   "type": "esriFieldTypeDouble",
+   "alias": "TOTAL_HZ_CLEARANCE_ON",
+   "domain": null
+  },
+  {
+   "name": "TOTAL_HZ_CLEARANCE_UNDER",
+   "type": "esriFieldTypeDouble",
+   "alias": "TOTAL_HZ_CLEARANCE_UNDER",
+   "domain": null
+  },
+  {
+   "name": "CARRIED_1",
+   "type": "esriFieldTypeString",
+   "alias": "CARRIED_1",
+   "length": 50,
+   "domain": null
+  },
+  {
+   "name": "CROSSED_1",
+   "type": "esriFieldTypeString",
+   "alias": "CROSSED_1",
+   "length": 50,
+   "domain": null
+  },
+  {
+   "name": "YEAR_BUILT",
+   "type": "esriFieldTypeDouble",
+   "alias": "YEAR_BUILT",
+   "domain": null
+  },
+  {
+   "name": "FILENET_GUID",
+   "type": "esriFieldTypeString",
+   "alias": "FILENET_GUID",
+   "length": 100,
+   "domain": null
+  },
+  {
+   "name": "Date_FC_Updated",
+   "type": "esriFieldTypeDate",
+   "alias": "Date_FC_Updated",
+   "length": 8,
+   "domain": null
+  }
+ ],
+ "geometryField": {},
+ "indexes": [
+  {
+   "name": "R41_pk",
+   "fields": "OBJECTID",
+   "isAscending": true,
+   "isUnique": true,
+   "description": ""
+  }
+ ],
+ "subtypes": [],
+ "relationships": [],
+ "canModifyLayer": true,
+ "canScaleSymbols": false,
+ "hasLabels": false,
+ "capabilities": "Map,Query,Data",
+ "maxRecordCount": 20000,
+ "maxSelectionCount": 2000,
+ "supportsStatistics": true,
+ "supportsExceedsLimitStatistics": true,
+ "supportsAdvancedQueries": true,
+ "supportedQueryFormats": "JSON, geoJSON, PBF",
+ "isDataVersioned": false,
+ "ownershipBasedAccessControlForFeatures": {"allowOthersToQuery": true},
+ "useStandardizedQueries": true,
+ "supportedSpatialRelationships": [
+  "esriSpatialRelIntersects",
+  "esriSpatialRelContains",
+  "esriSpatialRelCrosses",
+  "esriSpatialRelEnvelopeIntersects",
+  "esriSpatialRelIndexIntersects",
+  "esriSpatialRelOverlaps",
+  "esriSpatialRelTouches",
+  "esriSpatialRelWithin",
+  "esriSpatialRelRelation"
+ ],
+ "advancedQueryCapabilities": {
+  "useStandardizedQueries": true,
+  "supportsStatistics": true,
+  "supportsPercentileStatistics": true,
+  "supportsHavingClause": true,
+  "supportsOrderBy": true,
+  "supportsDistinct": true,
+  "supportsCountDistinct": true,
+  "supportsAdvancedQueryRelated": true,
+  "supportsQueryRelatedPagination": true,
+  "supportsPagination": true,
+  "supportsLod": false,
+  "supportsQueryWithLodSR": false,
+  "supportsTrueCurve": true,
+  "supportsQueryWithDatumTransformation": true,
+  "supportsReturningQueryExtent": true,
+  "supportsQueryWithDistance": true,
+  "supportsSqlExpression": true,
+  "supportsTimeRelation": true,
+  "supportsSqlFormat": false,
+  "supportsQueryAnalytic": true,
+  "supportsCurrentUserQueries": true
+ },
+ "supportsDatumTransformation": true,
+ "advancedQueryAnalyticCapabilities": {
+  "supportsLinearRegression": true,
+  "supportsAsync": false,
+  "supportsPercentileAnalytic": true
+ },
+ "dateFieldsTimeReference": null,
+ "preferredTimeReference": null,
+ "datesInUnknownTimezone": false,
+ "hasMetadata": false,
+ "isDataArchived": false,
+ "archivingInfo": {
+  "supportsQueryWithHistoricMoment": false,
+  "startArchivingMoment": -1
+ },
+ "supportsCoordinatesQuantization": true,
+ "supportsDynamicLegends": true,
+ "serviceItemId": "0070ccfa4f83431b98fea0d3af21e9a3"
+}
