@@ -61,7 +61,7 @@ function addOverlayLayers(map: MapInstance) {
           ["get", "routeType"],
           "Through", "#1d4ed8",
           "Limited Local", "#7c3aed",
-          "#2563eb",
+          "#334155",
         ],
         "line-width": ["interpolate", ["linear"], ["zoom"], 10, 1.2, 14, 3.5],
         "line-opacity": 0.55,
@@ -323,7 +323,7 @@ function addOverlayLayers(map: MapInstance) {
       source: "drive",
       layout: { "line-cap": "round", "line-join": "round" },
       paint: {
-        "line-color": "#828bff",
+        "line-color": "#d63b2f",
         "line-width": 16,
         "line-opacity": 0.28,
         "line-blur": 10,
@@ -341,7 +341,7 @@ function addOverlayLayers(map: MapInstance) {
       type: "line",
       source: "drive",
       layout: { "line-cap": "round", "line-join": "round" },
-      paint: { "line-color": "#828bff", "line-width": 5.5, "line-opacity": 0.98 },
+      paint: { "line-color": "#d63b2f", "line-width": 5.5, "line-opacity": 0.98 },
     });
   }
   if (!map.getSource("drive-alts")) {
