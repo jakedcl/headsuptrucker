@@ -3,7 +3,7 @@ import { useEffect, useRef, useState } from "react";
 import * as maplibregl from "maplibre-gl";
 import { type GeoJSONSource, type Map as MapInstance } from "maplibre-gl";
 import type { ClearanceCollection } from "@/lib/types";
-import { formatHeight, getClearanceSeverity } from "@/lib/clearance";
+import { formatHeight, getClearanceSeverity, recordLabels } from "@/lib/clearance";
 
 export type Viewport = { lng: number; lat: number; z: number };
 export function ClearanceMap({ data, height, showAll, selectedId, initialViewport, onSelect, onViewport }: {
@@ -49,7 +49,7 @@ export function ClearanceMap({ data, height, showAll, selectedId, initialViewpor
         const severity = p.cluster ? (p.dangerCount > 0 ? "danger" : p.cautionCount > 0 ? "caution" : "clear") : p.severity;
         button.className = `clearance-marker ${severity} ${p.cluster ? "cluster-marker" : ""}`;
         button.textContent = p.cluster ? `${p.point_count}` : formatHeight(p.postedClearanceInches);
-        button.setAttribute("aria-label", p.cluster ? `Zoom into ${p.point_count} clearance records` : `${formatHeight(p.postedClearanceInches)} posted clearance, ${p.road}`);
+        button.setAttribute("aria-label", p.cluster ? `Zoom into ${p.point_count} clearance records` : `${formatHeight(p.postedClearanceInches)} posted clearance, ${p.displayTitle}`);
         button.onclick = async () => {
           if (p.cluster) {
             const source = map.getSource("clearances") as GeoJSONSource;
@@ -86,7 +86,7 @@ export function ClearanceMap({ data, height, showAll, selectedId, initialViewpor
   useEffect(() => {
     const source = mapRef.current?.getSource("clearances") as GeoJSONSource | undefined;
     if (!ready || !source) return;
-    source.setData({ type: "FeatureCollection", features: data.features.filter(f => showAll || f.properties.postedClearanceInches <= height + 12).map(f => ({ ...f, properties: { ...f.properties, severity: getClearanceSeverity(f.properties.postedClearanceInches, height) } })) }).catch(() => setError("Clearance markers couldn’t load. The source records are still available in the list."));
+    source.setData({ type: "FeatureCollection", features: data.features.filter(f => showAll || f.properties.postedClearanceInches <= height + 12).map(f => ({ ...f, properties: { ...f.properties, severity: getClearanceSeverity(f.properties.postedClearanceInches, height), displayTitle: recordLabels(f.properties).title } })) }).catch(() => setError("Clearance markers couldn’t load. The source records are still available in the list."));
   }, [data, height, showAll, ready]);
   useEffect(() => {
     const feature = data.features.find(f => f.properties.id === selectedId);
