@@ -499,57 +499,91 @@ export function MapExplorer() {
           <button className="text-button" onClick={() => setEditing(!editing)}>{editing ? "Cancel" : "Edit"}</button>
         </div>
         {editing
-          ? <HeightForm key={height} initialHeight={height} compact onSubmit={h => { updateUrl({ height: String(h) }); setEditing(false); }} />
-          : <button
-              type="button"
-              className="vehicle-number vehicle-number-reset"
-              title="Reset map to the default view"
-              aria-label="Reset map to the default view"
-              onClick={() => {
-                setEditing(false);
-                setShowAll(false);
-                setAwareness(AWARENESS_OFF);
-                setBounds(null);
-                setListLimit(30);
-                setShareMessage("");
-                setDrive(null);
-                setDriveError("");
-                setDriveLoading(false);
-                pendingPlaces.current = null;
-                setMapEpoch(n => n + 1);
-                router.replace(`/?height=${height}`);
-              }}
-            >{formatHeight(height)}<span>↕</span></button>}
-        <div className="vehicle-dims">
-          <label>
-            <span>Width (in) · optional</span>
-            <input
-              inputMode="numeric"
-              type="text"
-              placeholder="e.g. 96"
-              value={widthDraft}
-              onChange={e => setWidthDraft(e.target.value)}
-              onBlur={commitWidthDraft}
-              onKeyDown={e => {
-                if (e.key === "Enter") e.currentTarget.blur();
-              }}
-            />
-          </label>
-          <label>
-            <span>Weight (tons) · optional</span>
-            <input
-              inputMode="decimal"
-              type="text"
-              placeholder="e.g. 10"
-              value={weightDraft}
-              onChange={e => setWeightDraft(e.target.value)}
-              onBlur={commitWeightDraft}
-              onKeyDown={e => {
-                if (e.key === "Enter") e.currentTarget.blur();
-              }}
-            />
-          </label>
-        </div>
+          ? <div className="vehicle-profile">
+              <HeightForm key={height} initialHeight={height} compact onSubmit={h => { updateUrl({ height: String(h) }); setEditing(false); }} />
+              <div className="vehicle-dims">
+                <label>
+                  <span>Width (in) · optional</span>
+                  <input
+                    inputMode="numeric"
+                    type="text"
+                    placeholder="e.g. 96"
+                    value={widthDraft}
+                    onChange={e => setWidthDraft(e.target.value)}
+                    onBlur={commitWidthDraft}
+                    onKeyDown={e => {
+                      if (e.key === "Enter") e.currentTarget.blur();
+                    }}
+                  />
+                </label>
+                <label>
+                  <span>Weight (tons) · optional</span>
+                  <input
+                    inputMode="decimal"
+                    type="text"
+                    placeholder="e.g. 10"
+                    value={weightDraft}
+                    onChange={e => setWeightDraft(e.target.value)}
+                    onBlur={commitWeightDraft}
+                    onKeyDown={e => {
+                      if (e.key === "Enter") e.currentTarget.blur();
+                    }}
+                  />
+                </label>
+              </div>
+            </div>
+          : <div className="vehicle-profile">
+              <button
+                type="button"
+                className="vehicle-number vehicle-number-reset"
+                title="Reset map to the default view"
+                aria-label="Reset map to the default view"
+                onClick={() => {
+                  setEditing(false);
+                  setShowAll(false);
+                  setAwareness(AWARENESS_OFF);
+                  setBounds(null);
+                  setListLimit(30);
+                  setShareMessage("");
+                  setDrive(null);
+                  setDriveError("");
+                  setDriveLoading(false);
+                  pendingPlaces.current = null;
+                  setMapEpoch(n => n + 1);
+                  router.replace(`/?height=${height}`);
+                }}
+              >{formatHeight(height)}<span>↕</span></button>
+              <div className="vehicle-dims">
+                <label>
+                  <span>Width (in) · optional</span>
+                  <input
+                    inputMode="numeric"
+                    type="text"
+                    placeholder="e.g. 96"
+                    value={widthDraft}
+                    onChange={e => setWidthDraft(e.target.value)}
+                    onBlur={commitWidthDraft}
+                    onKeyDown={e => {
+                      if (e.key === "Enter") e.currentTarget.blur();
+                    }}
+                  />
+                </label>
+                <label>
+                  <span>Weight (tons) · optional</span>
+                  <input
+                    inputMode="decimal"
+                    type="text"
+                    placeholder="e.g. 10"
+                    value={weightDraft}
+                    onChange={e => setWeightDraft(e.target.value)}
+                    onBlur={commitWeightDraft}
+                    onKeyDown={e => {
+                      if (e.key === "Enter") e.currentTarget.blur();
+                    }}
+                  />
+                </label>
+              </div>
+            </div>}
         <label className="all-toggle">
           <input
             type="checkbox"
@@ -621,6 +655,12 @@ export function MapExplorer() {
             updateUrl({ from: null, to: null, bridge: null, route: null });
           }}
         />
+        <ul className="facility-legend" aria-label="Facility status legend">
+          <li><span className="swatch ok" aria-hidden />OK</li>
+          <li><span className="swatch caution" aria-hidden />Caution</li>
+          <li><span className="swatch danger" aria-hidden />Do not go</li>
+          <li><span className="swatch unknown" aria-hidden />Unknown</li>
+        </ul>
 
         {routeOptions.length > 1 && activeDrive && (
           <div className="route-compare" role="group" aria-label="Compare driving paths">
@@ -740,12 +780,6 @@ export function MapExplorer() {
         </button>
       </div>
       {shareMessage && <div className="share-status" role="status">{shareMessage}</div>}
-      <ul className="map-legend" aria-label="Facility status legend">
-        <li><span className="swatch ok" aria-hidden />OK</li>
-        <li><span className="swatch caution" aria-hidden />Caution</li>
-        <li><span className="swatch danger" aria-hidden />Do not go</li>
-        <li><span className="swatch unknown" aria-hidden />Unknown</li>
-      </ul>
       {mapCollection && (
         <Map
           key={mapEpoch}
