@@ -760,7 +760,6 @@ export function MapExplorer() {
     </aside>
     <section className="map-area" aria-label="Clearance map">
       <div className="map-topline">
-        <span className="coverage-chip">{activeDrive ? "THIS PATH" : "NYC + LONG ISLAND"} <span>· Partial coverage</span></span>
         <button className="share-button" onClick={() => copyLink(window.location.href, setShareMessage)}>
           {activeDrive ? "Share path ↗" : selectedId ? "Share clearance ↗" : "Share map ↗"}
         </button>
