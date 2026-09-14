@@ -1,0 +1,10 @@
+{
+  "retrievedAt": "2026-09-14T00:32:53.132Z",
+  "nysdotCount": 1125,
+  "hashes": {
+    "nyc-metadata.json": "25d65eba2b91a0b1ee1b50414627043ddfcecbe5dd39ef21266cedeb7f82a7ee",
+    "nysdot-metadata.json": "ad085ecf46167e92c5753f56e7657a94174c988137b82705e66b45c184d1b1ac",
+    "nyc-low-bridges.kml": "f71ad6209571c84ebca54eb2aac14e1bf9eca8b86587610ca26869e2049423ec",
+    "nysdot-statewide.geojson": "893eeada815dcb2be88ae91a4e55a1fab2a7222e239322e21f21b5dc7172a553"
+  }
+}

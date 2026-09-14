@@ -1,0 +1,67 @@
+{
+  "retrievedAt": "2026-09-14T00:32:53.132Z",
+  "sourceUpdatedAt": "2026-09-13T09:05:27.000Z",
+  "nysdotStatewideStructures": 1125,
+  "postedRecords": 555,
+  "uniqueStructures": 535,
+  "counties": [
+    {
+      "county": "BRONX",
+      "sourceStructures": 48,
+      "postedUnder": 45,
+      "postedOn": 5
+    },
+    {
+      "county": "KINGS",
+      "sourceStructures": 49,
+      "postedUnder": 44,
+      "postedOn": 9
+    },
+    {
+      "county": "NEW YORK",
+      "sourceStructures": 83,
+      "postedUnder": 71,
+      "postedOn": 20
+    },
+    {
+      "county": "QUEENS",
+      "sourceStructures": 125,
+      "postedUnder": 115,
+      "postedOn": 16
+    },
+    {
+      "county": "RICHMOND",
+      "sourceStructures": 7,
+      "postedUnder": 7,
+      "postedOn": 0
+    },
+    {
+      "county": "NASSAU",
+      "sourceStructures": 146,
+      "postedUnder": 146,
+      "postedOn": 0
+    },
+    {
+      "county": "SUFFOLK",
+      "sourceStructures": 77,
+      "postedUnder": 77,
+      "postedOn": 0
+    }
+  ],
+  "nycLegacyRecords": 149,
+  "nycDirectionalRecords": 36,
+  "overlapCandidatePairs": 145,
+  "overlapLegacyRecords": 118,
+  "agreeingCandidatePairs": 53,
+  "mergedAcrossSources": 0,
+  "belowFeet": {
+    "8": 16,
+    "9": 36,
+    "10": 108,
+    "11": 225,
+    "12": 339,
+    "13": 539
+  },
+  "nullSourceGeometries": 1125,
+  "omittedFields": 515
+}
