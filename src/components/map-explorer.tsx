@@ -9,6 +9,16 @@ import { featuresAlongRoute, formatDriveMiles, formatDriveMinutes, type DrivePat
 import { DriveForm } from "./drive-form";
 import { HeightForm } from "./height-form";
 import type { Viewport, AwarenessLayers } from "./clearance-map";
+import {
+  EMPTY_VEHICLE_PROFILE,
+  formatTons,
+  formatWidth,
+  loadConflict,
+  parseWeightParam,
+  parseWidthParam,
+  widthConflict,
+  type VehicleProfile,
+} from "@/lib/vehicle-profile";
 
 const Map = dynamic(() => import("./clearance-map").then(m => m.ClearanceMap), {
   ssr: false,
@@ -19,6 +29,11 @@ const AWARENESS_OFF: AwarenessLayers = {
   truckRoutes: false,
   streetClosures: false,
   loadingZones: false,
+  roadFeatures: false,
+  parkways: false,
+  postedLoad: false,
+  crossingLimits: false,
+  majorCrossings: false,
 };
 
 function updateUrl(values: Record<string, string | null>) {
@@ -86,6 +101,18 @@ export function MapExplorer() {
   const [truckRoutesData, setTruckRoutesData] = useState<import("geojson").FeatureCollection | null>(null);
   const [streetClosuresData, setStreetClosuresData] = useState<import("geojson").FeatureCollection | null>(null);
   const [loadingZonesData, setLoadingZonesData] = useState<import("geojson").FeatureCollection | null>(null);
+  const [roadFeaturesData, setRoadFeaturesData] = useState<import("geojson").FeatureCollection | null>(null);
+  const [roadLabelsData, setRoadLabelsData] = useState<import("geojson").FeatureCollection | null>(null);
+  const [parkwaysData, setParkwaysData] = useState<import("geojson").FeatureCollection | null>(null);
+  const [postedLoadRaw, setPostedLoadRaw] = useState<import("geojson").FeatureCollection | null>(null);
+  const [crossingLimitsRaw, setCrossingLimitsRaw] = useState<import("geojson").FeatureCollection | null>(null);
+  const [majorCrossingsData, setMajorCrossingsData] = useState<import("geojson").FeatureCollection | null>(null);
+  const [vehicle, setVehicle] = useState<VehicleProfile>(() => ({
+    ...EMPTY_VEHICLE_PROFILE,
+    widthInches: parseWidthParam(params.get("width")),
+    weightTons: parseWeightParam(params.get("weight")),
+    commercial: params.get("commercial") === "1",
+  }));
   const [awarenessError, setAwarenessError] = useState("");
   const [awarenessLoading, setAwarenessLoading] = useState(false);
   const [bounds, setBounds] = useState<[number, number, number, number] | null>(null);
@@ -180,6 +207,104 @@ export function MapExplorer() {
     return () => controller.abort();
   }, [awareness.loadingZones, loadingZonesData]);
 
+  useEffect(() => {
+    const jobs: Array<{
+      need: boolean;
+      have: boolean;
+      url: string;
+      label: string;
+      set: (fc: import("geojson").FeatureCollection) => void;
+    }> = [
+      { need: awareness.roadFeatures, have: Boolean(roadFeaturesData), url: "/data/road-features-nyc.geojson", label: "Road features", set: setRoadFeaturesData },
+      { need: awareness.roadFeatures, have: Boolean(roadLabelsData), url: "/data/road-labels-nyc.geojson", label: "Road labels", set: setRoadLabelsData },
+      { need: awareness.parkways || vehicle.commercial, have: Boolean(parkwaysData), url: "/data/parkways-nyc-li.geojson", label: "Parkways", set: setParkwaysData },
+      { need: awareness.postedLoad || vehicle.weightTons !== null, have: Boolean(postedLoadRaw), url: "/data/posted-load-nyc-li.geojson", label: "Posted load bridges", set: setPostedLoadRaw },
+      { need: awareness.crossingLimits || vehicle.widthInches !== null, have: Boolean(crossingLimitsRaw), url: "/data/crossing-limits-nyc.geojson", label: "Crossing limits", set: setCrossingLimitsRaw },
+      { need: awareness.majorCrossings, have: Boolean(majorCrossingsData), url: "/data/major-crossings.geojson", label: "Major crossings", set: setMajorCrossingsData },
+    ];
+    const pending = jobs.filter(j => j.need && !j.have);
+    if (pending.length === 0) return;
+    const controller = new AbortController();
+    setAwarenessError("");
+    setAwarenessLoading(true);
+    Promise.all(
+      pending.map(async job => {
+        const response = await fetch(job.url, { signal: controller.signal });
+        if (!response.ok) throw new Error(`${job.label} couldn’t load.`);
+        job.set(await response.json());
+      }),
+    )
+      .catch(error => {
+        if (error.name !== "AbortError") setAwarenessError(error.message);
+      })
+      .finally(() => {
+        if (!controller.signal.aborted) setAwarenessLoading(false);
+      });
+    return () => controller.abort();
+  }, [
+    awareness.roadFeatures,
+    awareness.parkways,
+    awareness.postedLoad,
+    awareness.crossingLimits,
+    awareness.majorCrossings,
+    vehicle.commercial,
+    vehicle.weightTons,
+    vehicle.widthInches,
+    roadFeaturesData,
+    roadLabelsData,
+    parkwaysData,
+    postedLoadRaw,
+    crossingLimitsRaw,
+    majorCrossingsData,
+  ]);
+
+  // Unlock related layers when the driver enters width / weight / commercial.
+  useEffect(() => {
+    setAwareness(a => ({
+      ...a,
+      parkways: a.parkways || vehicle.commercial,
+      postedLoad: a.postedLoad || vehicle.weightTons !== null,
+      crossingLimits: a.crossingLimits || vehicle.widthInches !== null,
+    }));
+  }, [vehicle.commercial, vehicle.weightTons, vehicle.widthInches]);
+
+  const postedLoadData = useMemo(() => {
+    if (!postedLoadRaw) return null;
+    return {
+      type: "FeatureCollection" as const,
+      features: postedLoadRaw.features.map(f => ({
+        ...f,
+        properties: {
+          ...f.properties,
+          conflict: loadConflict(Number(f.properties?.postedLoadTons) || 0, vehicle.weightTons),
+        },
+      })),
+    };
+  }, [postedLoadRaw, vehicle.weightTons]);
+
+  const crossingLimitsData = useMemo(() => {
+    if (!crossingLimitsRaw) return null;
+    return {
+      type: "FeatureCollection" as const,
+      features: crossingLimitsRaw.features.map(f => ({
+        ...f,
+        properties: {
+          ...f.properties,
+          conflict: widthConflict(
+            typeof f.properties?.widthInches === "number" ? f.properties.widthInches : null,
+            vehicle.widthInches,
+          ),
+        },
+      })),
+    };
+  }, [crossingLimitsRaw, vehicle.widthInches]);
+
+  const activeAwareness: AwarenessLayers = {
+    ...awareness,
+    parkways: awareness.parkways || vehicle.commercial,
+    postedLoad: awareness.postedLoad || vehicle.weightTons !== null,
+    crossingLimits: awareness.crossingLimits || vehicle.widthInches !== null,
+  };
   useEffect(() => {
     if (!fromParam.trim() || !toParam.trim()) {
       setDrive(null);
@@ -340,6 +465,60 @@ export function MapExplorer() {
           Also show clearances more than 12″ above
         </label>
         <div className="awareness-panel" role="group" aria-label="Awareness layers">
+          <span className="eyebrow">YOUR VEHICLE · OPTIONAL</span>
+          <div className="vehicle-dims">
+            <label>
+              <span>Width (in)</span>
+              <input
+                inputMode="numeric"
+                type="number"
+                min={48}
+                max={120}
+                placeholder="e.g. 96"
+                value={vehicle.widthInches ?? ""}
+                onChange={e => {
+                  const widthInches = parseWidthParam(e.target.value || null);
+                  setVehicle(v => ({ ...v, widthInches }));
+                  updateUrl({ width: widthInches === null ? null : String(widthInches) });
+                }}
+              />
+            </label>
+            <label>
+              <span>Weight (tons)</span>
+              <input
+                inputMode="decimal"
+                type="number"
+                min={1}
+                max={80}
+                step={0.5}
+                placeholder="e.g. 10"
+                value={vehicle.weightTons ?? ""}
+                onChange={e => {
+                  const weightTons = parseWeightParam(e.target.value || null);
+                  setVehicle(v => ({ ...v, weightTons }));
+                  updateUrl({ weight: weightTons === null ? null : String(weightTons) });
+                }}
+              />
+            </label>
+          </div>
+          <label className="all-toggle">
+            <input
+              type="checkbox"
+              checked={vehicle.commercial}
+              onChange={e => {
+                const commercial = e.target.checked;
+                setVehicle(v => ({ ...v, commercial }));
+                updateUrl({ commercial: commercial ? "1" : null });
+              }}
+            />
+            Commercial / truck vehicle
+          </label>
+          <p className="awareness-note">
+            Width unlocks crossing limits{vehicle.widthInches != null ? ` (${formatWidth(vehicle.widthInches)})` : ""}.
+            Weight unlocks posted-load bridges{vehicle.weightTons != null ? ` (${formatTons(vehicle.weightTons)})` : ""}.
+            Commercial unlocks parkway bans.
+          </p>
+
           <span className="eyebrow">AWARENESS · NYC</span>
           <label className="all-toggle">
             <input
@@ -357,7 +536,6 @@ export function MapExplorer() {
             />
             Construction closures
           </label>
-
           <label className="all-toggle">
             <input
               type="checkbox"
@@ -366,17 +544,64 @@ export function MapExplorer() {
             />
             Loading zones
           </label>
+          <label className="all-toggle">
+            <input
+              type="checkbox"
+              checked={awareness.roadFeatures}
+              onChange={e => setAwareness(a => ({ ...a, roadFeatures: e.target.checked }))}
+            />
+            Bridges, tunnels & expressways
+          </label>
+          <label className="all-toggle">
+            <input
+              type="checkbox"
+              checked={activeAwareness.parkways}
+              onChange={e => setAwareness(a => ({ ...a, parkways: e.target.checked }))}
+            />
+            Parkways (no commercial)
+          </label>
+          <label className="all-toggle">
+            <input
+              type="checkbox"
+              checked={activeAwareness.postedLoad}
+              onChange={e => setAwareness(a => ({ ...a, postedLoad: e.target.checked }))}
+            />
+            Posted load bridges
+          </label>
+          <label className="all-toggle">
+            <input
+              type="checkbox"
+              checked={activeAwareness.crossingLimits}
+              onChange={e => setAwareness(a => ({ ...a, crossingLimits: e.target.checked }))}
+            />
+            Crossing width / weight notes
+          </label>
+          <label className="all-toggle">
+            <input
+              type="checkbox"
+              checked={awareness.majorCrossings}
+              onChange={e => setAwareness(a => ({ ...a, majorCrossings: e.target.checked }))}
+            />
+            Major crossings (labeled)
+          </label>
           <p className="awareness-note">
-            Routes = NYC truck network. Closures = DOT construction feed. Loading zones = curb sign points. Overlays only — not used for path check.
+            Overlays only — not routing. Missing data ≠ clear road. Parkway geometries from OSM; limits from NYSDOT / operators.
           </p>
-          {(awareness.truckRoutes || awareness.streetClosures || awareness.loadingZones) && (
+          {(activeAwareness.truckRoutes || activeAwareness.streetClosures || activeAwareness.loadingZones || activeAwareness.roadFeatures || activeAwareness.parkways || activeAwareness.postedLoad || activeAwareness.crossingLimits || activeAwareness.majorCrossings) && (
             <div className="awareness-legend" aria-hidden="true">
-              {awareness.truckRoutes && <span><i className="swatch route" />Route</span>}
-              {awareness.streetClosures && <span><i className="swatch closure" />Closed</span>}
-              {awareness.loadingZones && <span><i className="swatch loading" />Loading zone</span>}
+              {activeAwareness.truckRoutes && <span><i className="swatch route" />Route</span>}
+              {activeAwareness.streetClosures && <span><i className="swatch closure" />Closed</span>}
+              {activeAwareness.loadingZones && <span><i className="swatch loading" />Loading zone</span>}
+              {activeAwareness.roadFeatures && <span><i className="swatch bridge" />Bridge</span>}
+              {activeAwareness.roadFeatures && <span><i className="swatch tunnel" />Tunnel</span>}
+              {activeAwareness.roadFeatures && <span><i className="swatch expressway" />Expressway</span>}
+              {activeAwareness.parkways && <span><i className="swatch parkway" />Parkway</span>}
+              {activeAwareness.postedLoad && <span><i className="swatch load" />Posted load</span>}
+              {activeAwareness.crossingLimits && <span><i className="swatch crossing" />Crossing limit</span>}
+              {activeAwareness.majorCrossings && <span><i className="swatch major" />Major crossing</span>}
             </div>
           )}
-          {awarenessLoading && <p className="awareness-note" role="status">Loading NYC overlay…</p>}
+          {awarenessLoading && <p className="awareness-note" role="status">Loading overlay…</p>}
           {awarenessError && <p className="awareness-error" role="status">{awarenessError}</p>}
         </div>
         <DriveForm
@@ -527,10 +752,16 @@ export function MapExplorer() {
           data={mapCollection}
           height={height}
           showAll={showAll}
-          awareness={awareness}
+          awareness={activeAwareness}
           truckRoutesData={truckRoutesData}
           streetClosuresData={streetClosuresData}
           loadingZonesData={loadingZonesData}
+          roadFeaturesData={roadFeaturesData}
+          roadLabelsData={roadLabelsData}
+          parkwaysData={parkwaysData}
+          postedLoadData={postedLoadData}
+          crossingLimitsData={crossingLimitsData}
+          majorCrossingsData={majorCrossingsData}
           selectedId={selectedId}
           drive={activeDrive}
           altRoutes={altRoutes}
