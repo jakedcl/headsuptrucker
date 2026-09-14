@@ -27,7 +27,62 @@ function createEndpoint(letter: string, label: string) {
   return el;
 }
 
+const EMPTY_FC: FeatureCollection = { type: "FeatureCollection", features: [] };
+
+export type AwarenessLayers = {
+  truckRoutes: boolean;
+  truckRestrictions: boolean;
+  streetClosures: boolean;
+};
+
 function addOverlayLayers(map: MapInstance) {
+  if (!map.getSource("truck-routes")) {
+    map.addSource("truck-routes", { type: "geojson", data: EMPTY_FC });
+    map.addLayer({
+      id: "truck-routes-line",
+      type: "line",
+      source: "truck-routes",
+      layout: { "line-cap": "round", "line-join": "round", visibility: "none" },
+      paint: {
+        "line-color": [
+          "match",
+          ["get", "routeType"],
+          "Through", "#1d4ed8",
+          "Limited Local", "#7c3aed",
+          "#2563eb",
+        ],
+        "line-width": ["interpolate", ["linear"], ["zoom"], 10, 1.2, 14, 3.5],
+        "line-opacity": 0.55,
+      },
+    });
+    map.addLayer({
+      id: "truck-restrictions-line",
+      type: "line",
+      source: "truck-routes",
+      filter: ["all", ["has", "restriction"], ["!=", ["get", "restriction"], ""]],
+      layout: { "line-cap": "round", "line-join": "round", visibility: "none" },
+      paint: {
+        "line-color": "#b45309",
+        "line-width": ["interpolate", ["linear"], ["zoom"], 10, 2, 14, 5],
+        "line-opacity": 0.85,
+        "line-dasharray": [1.4, 1.2],
+      },
+    });
+  }
+  if (!map.getSource("street-closures")) {
+    map.addSource("street-closures", { type: "geojson", data: EMPTY_FC });
+    map.addLayer({
+      id: "street-closures-line",
+      type: "line",
+      source: "street-closures",
+      layout: { "line-cap": "round", "line-join": "round", visibility: "none" },
+      paint: {
+        "line-color": "#dc2626",
+        "line-width": ["interpolate", ["linear"], ["zoom"], 10, 2.5, 14, 6],
+        "line-opacity": 0.9,
+      },
+    });
+  }
   if (!map.getSource("drive")) {
     map.addSource("drive", { type: "geojson", data: EMPTY_DRIVE });
     map.addLayer({
@@ -90,6 +145,9 @@ export function ClearanceMap({
   selectedId,
   drive,
   altRoutes = [],
+  awareness,
+  truckRoutesData,
+  streetClosuresData,
   initialViewport,
   onSelect,
   onViewport,
@@ -100,6 +158,9 @@ export function ClearanceMap({
   selectedId: string | null;
   drive: DrivePath | null;
   altRoutes?: number[][][];
+  awareness: AwarenessLayers;
+  truckRoutesData: FeatureCollection | null;
+  streetClosuresData: FeatureCollection | null;
   initialViewport: Viewport;
   onSelect: (id: string) => void;
   onViewport: (viewport: Viewport, bounds: [number, number, number, number]) => void;
@@ -249,6 +310,43 @@ export function ClearanceMap({
         })),
     }).catch(() => setError("Clearance markers couldn’t load. The source records are still available in the list."));
   }, [data, height, showAll, ready]);
+
+  useEffect(() => {
+    const map = mapRef.current;
+    const source = map?.getSource("truck-routes") as GeoJSONSource | undefined;
+    if (!ready || !map || !source) return;
+    if (truckRoutesData) {
+      source.setData(truckRoutesData).catch(() => {
+        setError("Truck route overlay couldn’t load.");
+      });
+    }
+    const showRoutes = awareness.truckRoutes;
+    const showRestrictions = awareness.truckRestrictions;
+    if (map.getLayer("truck-routes-line")) {
+      map.setLayoutProperty("truck-routes-line", "visibility", showRoutes ? "visible" : "none");
+    }
+    if (map.getLayer("truck-restrictions-line")) {
+      map.setLayoutProperty("truck-restrictions-line", "visibility", showRestrictions ? "visible" : "none");
+    }
+  }, [truckRoutesData, awareness.truckRoutes, awareness.truckRestrictions, ready]);
+
+  useEffect(() => {
+    const map = mapRef.current;
+    const source = map?.getSource("street-closures") as GeoJSONSource | undefined;
+    if (!ready || !map || !source) return;
+    if (streetClosuresData) {
+      source.setData(streetClosuresData).catch(() => {
+        setError("Street closure overlay couldn’t load.");
+      });
+    }
+    if (map.getLayer("street-closures-line")) {
+      map.setLayoutProperty(
+        "street-closures-line",
+        "visibility",
+        awareness.streetClosures ? "visible" : "none",
+      );
+    }
+  }, [streetClosuresData, awareness.streetClosures, ready]);
 
   useEffect(() => {
     const map = mapRef.current;
