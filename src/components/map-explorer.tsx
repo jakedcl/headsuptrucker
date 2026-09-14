@@ -882,7 +882,7 @@ export function MapExplorer() {
           )}
           <dl>
             <div><dt>Your vehicle</dt><dd>{formatHeight(height)}</dd></div>
-            <div><dt>County</dt><dd>{selected.county}</dd></div>
+            <div><dt>County / town</dt><dd>{selected.county}{selected.state ? `, ${selected.state}` : ""}</dd></div>
             <div><dt>Direction</dt><dd>Not specified by source</dd></div>
             <div><dt>Structure ID</dt><dd>{selected.structureId}</dd></div>
             {isInventoryLabel(selected.road) && selected.road ? <div><dt>Agency road name</dt><dd>{selected.road}</dd></div> : null}
@@ -905,7 +905,7 @@ export function MapExplorer() {
               }), setShareMessage);
             }}
           >Share this clearance</button>
-          <a className="source-link" href={selected.sources[0].sourceUrl} target="_blank" rel="noreferrer">NYSDOT source record ↗</a>
+          <a className="source-link" href={selected.sources[0].sourceUrl} target="_blank" rel="noreferrer">{selected.state === "CT" ? "CTDOT" : "NYSDOT"} source record ↗</a>
           <p className="detail-note">Posted values only. This map does not determine road access or whether your vehicle will physically fit.</p>
         </section>
       )}
