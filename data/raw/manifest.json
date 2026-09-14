@@ -1,10 +1,13 @@
 {
-  "retrievedAt": "2026-09-14T00:32:53.132Z",
+  "retrievedAt": "2026-09-14T21:46:50.014Z",
   "nysdotCount": 1125,
+  "ctdotCount": 57,
   "hashes": {
-    "nyc-metadata.json": "25d65eba2b91a0b1ee1b50414627043ddfcecbe5dd39ef21266cedeb7f82a7ee",
+    "nyc-metadata.json": "7b1ea7a75b1725c91555da711c349e6dcb0da32171ac806676b501ddbee2d277",
     "nysdot-metadata.json": "ad085ecf46167e92c5753f56e7657a94174c988137b82705e66b45c184d1b1ac",
     "nyc-low-bridges.kml": "f71ad6209571c84ebca54eb2aac14e1bf9eca8b86587610ca26869e2049423ec",
-    "nysdot-statewide.geojson": "893eeada815dcb2be88ae91a4e55a1fab2a7222e239322e21f21b5dc7172a553"
+    "nysdot-statewide.geojson": "98ec3773925a9bbcf7d4e77c8341f82090c1a296fd3d825c51746a45c51fc412",
+    "ctdot-bridges.geojson": "2c9190074e5e133f33031e4ff16a92f0b74a0f42a000844150301a04f720f806",
+    "ctdot-metadata.json": "0c33dd7a071cab225e3130256a6673bd3aac5b126c9be4e1c45be6424a73e577"
   }
 }

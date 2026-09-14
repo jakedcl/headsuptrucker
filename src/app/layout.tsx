@@ -10,8 +10,8 @@ import "maplibre-gl/dist/maplibre-gl.css";
 import "./globals.css";
 
 export const metadata: Metadata = {
-  title: "Heads Up — NYC & Long Island clearance map",
-  description: "Enter your vehicle height to explore official posted-clearance records around NYC and Long Island. Free, no account required.",
+  title: "Heads Up — NYC, Long Island & SW CT clearance map",
+  description: "Enter your vehicle height to explore official posted-clearance records around NYC, Long Island, and southwest Connecticut. Free, no account required.",
   robots: { index: false, follow: false },
 };
 
