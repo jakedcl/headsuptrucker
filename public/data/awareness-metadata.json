@@ -1,0 +1,29 @@
+{
+  "builtAt": "2026-09-14T13:12:25.257Z",
+  "sources": {
+    "truckRoutes": {
+      "dataset": "jjja-shxy",
+      "url": "https://data.cityofnewyork.us/Transportation/New-York-City-Truck-Routes/jjja-shxy",
+      "segmentCount": 32628,
+      "withRestrictionText": 860,
+      "byRouteType": {
+        "Through": 13113,
+        "Local": 19292,
+        "Limited Local": 223,
+        "Other": 0
+      }
+    },
+    "streetClosures": {
+      "dataset": "ezy6-djsf",
+      "url": "https://data.cityofnewyork.us/Transportation/Street-Closures-due-to-Construction-Activities-by-/ezy6-djsf",
+      "activeCount": 1628,
+      "filter": "workenddate >= today (build day); LINESTRING/MULTILINESTRING only",
+      "geometryNote": "WKT in EPSG:2263 (NY Long Island State Plane ftUS), converted to WGS84"
+    }
+  },
+  "notes": [
+    "Awareness overlays only — not used for path routing.",
+    "NYC only; Long Island clearances remain separate.",
+    "Truck restrictions are segments with non-empty restrictio text."
+  ]
+}
