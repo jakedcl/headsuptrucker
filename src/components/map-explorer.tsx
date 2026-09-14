@@ -1,7 +1,7 @@
 "use client";
 import dynamic from "next/dynamic";
 import Link from "next/link";
-import { useSearchParams } from "next/navigation";
+import { useRouter, useSearchParams } from "next/navigation";
 import { useCallback, useEffect, useMemo, useRef, useState } from "react";
 import type { ClearanceCollection } from "@/lib/types";
 import { describeMargin, formatHeight, getClearanceSeverity, isInventoryLabel, parseHeightParam, recordLabels } from "@/lib/clearance";
@@ -68,6 +68,7 @@ function asLabel(value: Place | string) {
 
 export function MapExplorer() {
   const params = useSearchParams();
+  const router = useRouter();
   const height = parseHeightParam(params.get("height"));
   const selectedId = params.get("bridge");
   const [data, setData] = useState<ClearanceCollection | null>(null);
@@ -82,6 +83,7 @@ export function MapExplorer() {
   const [driveLoading, setDriveLoading] = useState(false);
   const [driveError, setDriveError] = useState("");
   const [driveRetry, setDriveRetry] = useState(0);
+  const [mapEpoch, setMapEpoch] = useState(0);
   const pendingPlaces = useRef<{ from: Place | string; to: Place | string } | null>(null);
   const fromParam = params.get("from") || "";
   const toParam = params.get("to") || "";
@@ -239,7 +241,25 @@ export function MapExplorer() {
         </div>
         {editing
           ? <HeightForm key={height} initialHeight={height} compact onSubmit={h => { updateUrl({ height: String(h) }); setEditing(false); }} />
-          : <div className="vehicle-number">{formatHeight(height)}<span>↕</span></div>}
+          : <button
+              type="button"
+              className="vehicle-number vehicle-number-reset"
+              title="Reset map to the default view"
+              aria-label="Reset map to the default view"
+              onClick={() => {
+                setEditing(false);
+                setShowAll(false);
+                setBounds(null);
+                setListLimit(30);
+                setShareMessage("");
+                setDrive(null);
+                setDriveError("");
+                setDriveLoading(false);
+                pendingPlaces.current = null;
+                setMapEpoch(n => n + 1);
+                router.replace(`/?height=${height}`);
+              }}
+            >{formatHeight(height)}<span>↕</span></button>}
         <div className="legend">
           <div><i className="swatch danger" /><span>At or below your height</span><strong>{dangerCount}</strong></div>
           <div><i className="swatch caution" /><span>1–12″ above your height</span><strong>{cautionCount}</strong></div>
@@ -392,6 +412,7 @@ export function MapExplorer() {
       {shareMessage && <div className="share-status" role="status">{shareMessage}</div>}
       {mapCollection && (
         <Map
+          key={mapEpoch}
           data={mapCollection}
           height={height}
           showAll={showAll}
