@@ -69,22 +69,43 @@ export function DriveForm({ initialFrom = "", initialTo = "", loading, error, ac
   initialFrom?: string; initialTo?: string; loading: boolean; error: string; active: boolean;
   onSubmit: (from: Place | string, to: Place | string) => void; onClear: () => void;
 }) {
+  const [open, setOpen] = useState(() => active || Boolean(initialFrom.trim() || initialTo.trim()));
   const [fromText, setFromText] = useState(initialFrom);
   const [toText, setToText] = useState(initialTo);
   const [fromPlace, setFromPlace] = useState<Place | null>(null);
   const [toPlace, setToPlace] = useState<Place | null>(null);
-  return <form className="drive-form" onSubmit={event => {
-    event.preventDefault();
-    const from = fromPlace && fromPlace.label === fromText.trim() ? fromPlace : fromText.trim();
-    const to = toPlace && toPlace.label === toText.trim() ? toPlace : toText.trim();
-    onSubmit(from, to);
-  }}>
-    <div className="panel-heading"><span className="eyebrow">CHECK A DRIVE</span>{active && <button className="text-button" type="button" onClick={onClear}>Clear</button>}</div>
-    <PlaceField label="From" inputId="drive-from" placeholder="JFK Airport" value={fromText} onChange={value => { setFromText(value); setFromPlace(null); }} onPick={place => { setFromText(place.label); setFromPlace(place); }} />
-    <PlaceField label="To" inputId="drive-to" placeholder="Jones Beach" value={toText} onChange={value => { setToText(value); setToPlace(null); }} onPick={place => { setToText(place.label); setToPlace(place); }} />
-    {error && <p role="alert" className="form-error">{error}</p>}
-    {loading && <p className="drive-status" role="status">Looking up those places and posted clearances nearby…</p>}
-    <button className="primary" type="submit" disabled={loading}>{loading ? "Checking this path" : "Show lows on this path"}<span aria-hidden="true">↗</span></button>
-    <p className="drive-status">Pick a suggestion when you can. Posted records near a driving path — not turn-by-turn, and not a guarantee the road is clear.</p>
-  </form>;
+
+  useEffect(() => {
+    if (active || loading) setOpen(true);
+  }, [active, loading]);
+
+  return <div className="drive-form">
+    <div className="panel-heading">
+      <button
+        type="button"
+        className="drive-toggle"
+        aria-expanded={open}
+        aria-controls="drive-form-fields"
+        onClick={() => setOpen(value => !value)}
+      >
+        <span className="eyebrow">CHECK A DRIVE</span>
+        <span className="drive-chevron" aria-hidden="true">{open ? "▴" : "▾"}</span>
+      </button>
+      {active && <button className="text-button" type="button" onClick={onClear}>Clear</button>}
+    </div>
+    {open && (
+      <form id="drive-form-fields" onSubmit={event => {
+        event.preventDefault();
+        const from = fromPlace && fromPlace.label === fromText.trim() ? fromPlace : fromText.trim();
+        const to = toPlace && toPlace.label === toText.trim() ? toPlace : toText.trim();
+        onSubmit(from, to);
+      }}>
+        <PlaceField label="From" inputId="drive-from" placeholder="JFK Airport" value={fromText} onChange={value => { setFromText(value); setFromPlace(null); }} onPick={place => { setFromText(place.label); setFromPlace(place); }} />
+        <PlaceField label="To" inputId="drive-to" placeholder="Jones Beach" value={toText} onChange={value => { setToText(value); setToPlace(null); }} onPick={place => { setToText(place.label); setToPlace(place); }} />
+        {error && <p role="alert" className="form-error">{error}</p>}
+        {loading && <p className="drive-status" role="status">Looking up those places and posted clearances nearby…</p>}
+        <button className="primary" type="submit" disabled={loading}>{loading ? "Checking this path" : "Show lows on this path"}<span aria-hidden="true">↗</span></button>
+      </form>
+    )}
+  </div>;
 }
