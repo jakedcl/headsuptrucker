@@ -21,7 +21,8 @@
     "data:hv-parkways": "tsx scripts/merge-hv-parkways.ts",
     "data:pipeline-status": "tsx scripts/pipeline-status.ts",
     "data:build-unified": "tsx scripts/build-unified-awareness.ts",
-    "data:enrich-parkway-heights": "tsx scripts/enrich-parkway-heights.ts"
+    "data:enrich-parkway-heights": "tsx scripts/enrich-parkway-heights.ts",
+    "data:apply-researched-heights": "tsx scripts/apply-researched-heights.ts"
   },
   "dependencies": {
     "@fontsource/barlow-condensed": "^5.3.0",

@@ -112,10 +112,10 @@ export function evaluateFacility(
     facility.kind === "tunnel" ||
     facility.kind === "underpass"
   ) {
-    // Yellow — not green — when we have no corridor / posted height to check.
+    // Gray unknown — not yellow — when we have no corridor / posted height.
     reasons.push({
       dimension: "height",
-      status: "caution",
+      status: "unknown",
       label: "Height",
       detail:
         facility.kind === "parkway"
@@ -237,10 +237,8 @@ export function evaluateFacility(
     });
   }
 
-  // Overall: missing limits (unknown) count as caution/yellow — never as a quiet green OK.
-  const ranked = reasons
-    .filter(r => r.label !== "Hazmat")
-    .map(r => (r.status === "unknown" ? ({ ...r, status: "caution" as LimitStatus }) : r));
+  // Overall: keep unknown as gray — do not promote missing data to yellow caution.
+  const ranked = reasons.filter(r => r.label !== "Hazmat");
   let status: LimitStatus = "ok";
   if (ranked.length === 0) status = "ok";
   else status = ranked.reduce<LimitStatus>((acc, r) => worst(acc, r.status), "ok");
@@ -249,10 +247,10 @@ export function evaluateFacility(
     status === "danger"
       ? "Not OK for your vehicle"
       : status === "caution"
-        ? "Tight, restricted, or incomplete data — check details"
-        : status === "ok"
-          ? "Looks OK for what we know"
-          : "Not enough posted limits to judge";
+        ? "Tight or restricted — check details"
+        : status === "unknown"
+          ? "Not enough posted limits to judge"
+          : "Looks OK for what we know";
 
   return { status, reasons, summary };
 }
