@@ -14,6 +14,15 @@ import path from "node:path";
 import type { FeatureCollection, LineString, MultiLineString, Position } from "geojson";
 
 const PUBLIC = path.join(process.cwd(), "public", "data");
+
+/** Never invent derived corridor heights for these — research left them blank. */
+const SKIP_DERIVED_IDS = new Set([
+  "parkway-lake-welch-parkway",
+  "parkway-ocean-parkway-n-y-c",
+  "parkway-long-mountain-parkway",
+  "parkway-cross-bay-parkway",
+  "parkway-farragut-parkway",
+]);
 const NAME_THRESH_DEG = 0.0011; // ~120 m
 const PROX_THRESH_DEG = 0.0005; // ~55 m
 
@@ -122,6 +131,16 @@ async function main() {
     const id = String(pw.properties?.id || "");
     const name = String(pw.properties?.name || "");
     if (!id || (pw.geometry?.type !== "LineString" && pw.geometry?.type !== "MultiLineString")) continue;
+    if (SKIP_DERIVED_IDS.has(id)) {
+      if (pw.properties?.heightSource === "derived-min-clearance") {
+        pw.properties.passengerOnlyHeightInches = null;
+        pw.properties.heightInches = null;
+        delete pw.properties.heightSource;
+        delete pw.properties.heightSampleCount;
+        delete pw.properties.heightMethod;
+      }
+      continue;
+    }
     const official = num(pw.properties?.passengerOnlyHeightInches) ?? num(pw.properties?.heightInches);
     // Keep official corridor heights (and prior derived only if re-running after wipe — we skip any existing)
     if (official != null && pw.properties?.heightSource !== "derived-min-clearance") continue;

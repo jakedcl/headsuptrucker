@@ -1,6 +1,6 @@
 {
-  "generatedAt": "2026-09-15T15:49:54.616Z",
-  "count": 9,
+  "generatedAt": "2026-09-15T16:51:47.214Z",
+  "count": 5,
   "byKind": {
     "parkway": [
       {
@@ -12,18 +12,10 @@
         "note": "No corridor height in our sources for this parkway — check signs and overpasses."
       },
       {
-        "id": "parkway-nj-garden-state-parkway",
-        "name": "Garden State Parkway (north of Exit 105)",
+        "id": "parkway-farragut-parkway",
+        "name": "Farragut Parkway",
         "kind": "parkway",
-        "operator": "NJ Turnpike Authority",
-        "commercialBan": true,
-        "note": "No corridor height in our sources for this parkway — check signs and overpasses."
-      },
-      {
-        "id": "parkway-korean-war-vets-parkway-richmond",
-        "name": "Korean War Vets Parkway (Richmond)",
-        "kind": "parkway",
-        "operator": "NYSDOT / NYC",
+        "operator": "NYSDOT",
         "commercialBan": true,
         "note": "No corridor height in our sources for this parkway — check signs and overpasses."
       },
@@ -50,30 +42,6 @@
         "operator": "NYSDOT / NYC",
         "commercialBan": true,
         "note": "No corridor height in our sources for this parkway — check signs and overpasses."
-      },
-      {
-        "id": "parkway-nj-pulaski-skyway",
-        "name": "Pulaski Skyway",
-        "kind": "parkway",
-        "operator": "NJDOT",
-        "commercialBan": true,
-        "note": "No corridor height in our sources for this parkway — check signs and overpasses."
-      },
-      {
-        "id": "parkway-seven-lakes-parkway",
-        "name": "Seven Lakes Parkway",
-        "kind": "parkway",
-        "operator": "NYSDOT",
-        "commercialBan": true,
-        "note": "No corridor height in our sources for this parkway — check signs and overpasses."
-      },
-      {
-        "id": "parkway-sprain-brook-state-parkway",
-        "name": "Sprain Brook State Parkway",
-        "kind": "parkway",
-        "operator": "NYSDOT",
-        "commercialBan": true,
-        "note": "No corridor height in our sources for this parkway — check signs and overpasses."
       }
     ]
   },
@@ -87,18 +55,10 @@
       "note": "No corridor height in our sources for this parkway — check signs and overpasses."
     },
     {
-      "id": "parkway-nj-garden-state-parkway",
-      "name": "Garden State Parkway (north of Exit 105)",
+      "id": "parkway-farragut-parkway",
+      "name": "Farragut Parkway",
       "kind": "parkway",
-      "operator": "NJ Turnpike Authority",
-      "commercialBan": true,
-      "note": "No corridor height in our sources for this parkway — check signs and overpasses."
-    },
-    {
-      "id": "parkway-korean-war-vets-parkway-richmond",
-      "name": "Korean War Vets Parkway (Richmond)",
-      "kind": "parkway",
-      "operator": "NYSDOT / NYC",
+      "operator": "NYSDOT",
       "commercialBan": true,
       "note": "No corridor height in our sources for this parkway — check signs and overpasses."
     },
@@ -123,30 +83,6 @@
       "name": "Ocean Parkway (N.Y.C.)",
       "kind": "parkway",
       "operator": "NYSDOT / NYC",
-      "commercialBan": true,
-      "note": "No corridor height in our sources for this parkway — check signs and overpasses."
-    },
-    {
-      "id": "parkway-nj-pulaski-skyway",
-      "name": "Pulaski Skyway",
-      "kind": "parkway",
-      "operator": "NJDOT",
-      "commercialBan": true,
-      "note": "No corridor height in our sources for this parkway — check signs and overpasses."
-    },
-    {
-      "id": "parkway-seven-lakes-parkway",
-      "name": "Seven Lakes Parkway",
-      "kind": "parkway",
-      "operator": "NYSDOT",
-      "commercialBan": true,
-      "note": "No corridor height in our sources for this parkway — check signs and overpasses."
-    },
-    {
-      "id": "parkway-sprain-brook-state-parkway",
-      "name": "Sprain Brook State Parkway",
-      "kind": "parkway",
-      "operator": "NYSDOT",
       "commercialBan": true,
       "note": "No corridor height in our sources for this parkway — check signs and overpasses."
     }

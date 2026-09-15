@@ -4,11 +4,11 @@
  */
 import { readFile, writeFile } from "node:fs/promises";
 import path from "node:path";
-import type { FeatureCollection } from "geojson";
+import type { Feature, FeatureCollection, Point } from "geojson";
 
 const PUBLIC = path.join(process.cwd(), "public", "data");
 
-/** Corridor mins from NYSDOT inventory structures over the parkway. */
+/** Corridor mins from NYSDOT inventory / NJ admin code. */
 const PARKWAY_HEIGHTS: Record<
   string,
   { inches: number; source: string; note: string }
@@ -43,17 +43,99 @@ const PARKWAY_HEIGHTS: Record<
     source: "nysdot-inventory-min",
     note: "CR 110 over PIP (NY) — NYSDOT BIN 1040880 posted 11′7″",
   },
+  "parkway-nj-garden-state-parkway": {
+    inches: 162,
+    source: "nj-admin-code",
+    note: "N.J.A.C. 19:9-1.9 legal vehicle-height ceiling 13′6″ north of Exit 105 — roadway regulation, not a verified minimum bridge clearance. Separate commercial-vehicle restrictions also apply north of 105.",
+  },
+  "parkway-sprain-brook-state-parkway": {
+    inches: 168,
+    source: "nysdot-inventory-min",
+    note: "NYSDOT inventory underclearance ≈14′0″ (4.27 m) at Kimball Ave / NY-100B overcrossings — physical inventory, not a signed whole-corridor regulatory max.",
+  },
+  "parkway-korean-war-vets-parkway-richmond": {
+    inches: 172,
+    source: "nysdot-inventory-min",
+    note: "NYSDOT inventory underclearance ≈14′4″ (4.37 m) at Huguenot Ave overcrossing — physical inventory, not a signed whole-corridor regulatory max.",
+  },
+  "parkway-seven-lakes-parkway": {
+    inches: 182,
+    source: "nysdot-inventory-min",
+    note: "NYSDOT inventory underclearance ≈15′2″ (4.62 m) under I-87 near Sloatsburg — location-specific overcrossing for Seven Lakes traffic; not a signed whole-road max.",
+  },
+  "parkway-nj-pulaski-skyway": {
+    inches: 163,
+    source: "bridge-inventory-min",
+    note: "Bridge inventory overhead mins ≈13′7″ / 14′0″ (4.15 m / 4.27 m), full width; not confirmed posted signs. NJDOT truck/bus ban remains primary.",
+  },
 };
+
+/**
+ * Corridors where research found no trustworthy height — wipe bad
+ * derived-min-clearance guesses so they stay gray unknown.
+ */
+const CLEAR_PARKWAY_HEIGHTS = new Set([
+  "parkway-lake-welch-parkway", // no verified numeric posting; 6′11″ claim is bogus/generic
+  "parkway-ocean-parkway-n-y-c", // Belt/Ocean reconstruction numbers are historical project specs, not verified current signs
+  "parkway-long-mountain-parkway",
+  "parkway-cross-bay-parkway", // parkway ban only — not the MTA Cross Bay bridge
+  "parkway-farragut-parkway",
+]);
+
+function clearHeightProps(props: Record<string, unknown>) {
+  props.passengerOnlyHeightInches = null;
+  props.heightInches = null;
+  delete props.heightSource;
+  delete props.heightNote;
+  delete props.heightSampleCount;
+  delete props.heightMethod;
+}
+
+const CROSS_BAY_NOTE =
+  "MTA publishes six directional height limits (page updated Mar 9, 2026): " +
+  "NB from 94th St 15′2″; NB from Beach Channel Dr traveling west 13′10″; " +
+  "NB from Beach Channel Dr traveling east 14′1″; SB to 95th St 15′2″; " +
+  "SB to Beach Channel Dr traveling west 15′2″; SB to Beach Channel Dr traveling east 14′0″. " +
+  "Vehicles exceeding a posted approach limit require special arrangements. " +
+  "https://www.mta.info/agency/bridges-and-tunnels/trucks-commercial-vehicle-information";
+
+const CROSS_BAY_APPROACHES = [
+  { label: "Northbound from 94th Street", heightInches: 182 },
+  { label: "Northbound from Beach Channel Drive traveling west", heightInches: 166 },
+  { label: "Northbound from Beach Channel Drive traveling east", heightInches: 169 },
+  { label: "Southbound to 95th Street", heightInches: 182 },
+  { label: "Southbound to Beach Channel Drive traveling west", heightInches: 182 },
+  { label: "Southbound to Beach Channel Drive traveling east", heightInches: 168 },
+];
 
 /** Operator-posted facility heights. */
 const FACILITY_HEIGHTS: Record<
   string,
-  { inches: number; source: string; note: string }
+  {
+    inches: number;
+    source: string;
+    note: string;
+    heightUpperInches?: number;
+    heightLowerInches?: number;
+    widthInches?: number;
+    restrictionNote?: string;
+    heightApproaches?: Array<{ label: string; heightInches: number }>;
+  }
 > = {
   brooklyn: {
     inches: 132,
     source: "operator-posted",
     note: "NYCDOT posted 11′0″ roadway clearance (trucks banned; 3 t posted load)",
+  },
+  "cross-bay": {
+    inches: 166,
+    heightLowerInches: 166,
+    heightUpperInches: 182,
+    widthInches: 114,
+    source: "mta-posted",
+    note: "MTA B&T published approach heights 13′10″–15′2″ (controlling 13′10″). Width 9′6″ bridges blanket.",
+    restrictionNote: CROSS_BAY_NOTE,
+    heightApproaches: CROSS_BAY_APPROACHES,
   },
 };
 
@@ -69,24 +151,94 @@ async function save(name: string, fc: FeatureCollection) {
   await writeFile(path.join(PUBLIC, name), `${JSON.stringify(fc)}\n`);
 }
 
+function upsertCrossBay(facilities: FeatureCollection, crossings: FeatureCollection) {
+  const geom: Point = { type: "Point", coordinates: [-73.8197, 40.592] };
+  const facilityProps = {
+    id: "cross-bay",
+    name: "Cross Bay Veterans Memorial Bridge",
+    kind: "bridge",
+    operator: "MTA",
+    heightInches: 166,
+    heightUpperInches: 182,
+    heightLowerInches: 166,
+    widthInches: 114,
+    weightTons: null,
+    postedLoadTons: null,
+    trucksBanned: false,
+    commercialBan: false,
+    gcpTruckException: false,
+    noTrucksLower: false,
+    noHazmat: false,
+    restrictionNote: CROSS_BAY_NOTE,
+    geometryRole: "point",
+    heightSource: "mta-posted",
+    heightNote:
+      "MTA B&T published approach heights 13′10″–15′2″ (controlling 13′10″). Width 9′6″ bridges blanket.",
+    heightApproaches: CROSS_BAY_APPROACHES,
+  };
+  const crossingProps = {
+    id: "cross-bay",
+    name: "Cross Bay Veterans Memorial Bridge",
+    kind: "bridge",
+    operator: "MTA",
+    heightIn: 166,
+    heightUpperIn: 182,
+    heightLowerIn: 166,
+    widthIn: 114,
+    restrictionNote: CROSS_BAY_NOTE,
+    heightSource: "mta-posted",
+    heightNote:
+      "MTA B&T published approach heights 13′10″–15′2″ (controlling 13′10″). Width 9′6″ bridges blanket.",
+  };
+
+  const facFeat: Feature = { type: "Feature", geometry: geom, properties: facilityProps };
+  const crossFeat: Feature = { type: "Feature", geometry: geom, properties: crossingProps };
+
+  facilities.features = [
+    ...facilities.features.filter(f => f.properties?.id !== "cross-bay"),
+    facFeat,
+  ].sort((a, b) => String(a.properties?.id).localeCompare(String(b.properties?.id)));
+
+  crossings.features = [
+    ...crossings.features.filter(f => f.properties?.id !== "cross-bay"),
+    crossFeat,
+  ].sort((a, b) => String(a.properties?.id).localeCompare(String(b.properties?.id)));
+}
+
 async function main() {
   const parkways = await load("parkways-nyc-li.geojson");
   const facilities = await load("facilities-nyc-li.geojson");
   const crossings = await load("major-crossings.geojson");
 
+  upsertCrossBay(facilities, crossings);
+
   let parkwayHits = 0;
+  let parkwayCleared = 0;
   for (const f of parkways.features) {
     const id = String(f.properties?.id || "");
+    if (!f.properties) continue;
+
+    if (CLEAR_PARKWAY_HEIGHTS.has(id)) {
+      const had =
+        num(f.properties.passengerOnlyHeightInches) != null ||
+        num(f.properties.heightInches) != null ||
+        f.properties.heightSource != null;
+      clearHeightProps(f.properties);
+      if (had) parkwayCleared += 1;
+      continue;
+    }
+
     const row = PARKWAY_HEIGHTS[id];
-    if (!row || !f.properties) continue;
+    if (!row) continue;
     const existing =
       num(f.properties.passengerOnlyHeightInches) ?? num(f.properties.heightInches);
     const src = f.properties.heightSource;
-    // Keep official LI (94″) / CT (96″) regulatory heights; replace gaps + prior derived.
     if (
       existing != null &&
       src !== "derived-min-clearance" &&
-      src !== "nysdot-inventory-min"
+      src !== "nysdot-inventory-min" &&
+      src !== "nj-admin-code" &&
+      src !== "bridge-inventory-min"
     ) {
       continue;
     }
@@ -96,13 +248,31 @@ async function main() {
     f.properties.heightNote = row.note;
     delete f.properties.heightSampleCount;
     delete f.properties.heightMethod;
+    if (id === "parkway-nj-garden-state-parkway") {
+      const base = String(f.properties.restriction || "");
+      if (!base.includes("13′6″") && !base.includes("13'6\"")) {
+        f.properties.restriction =
+          `${base} Legal vehicle height ceiling 13′6″ (N.J.A.C. 19:9-1.9).`.trim();
+      }
+    }
     parkwayHits += 1;
   }
 
   let facilityHits = 0;
+  let facilityCleared = 0;
   for (const f of facilities.features) {
     if (!f.properties) continue;
     const id = String(f.properties.id || "");
+
+    if (CLEAR_PARKWAY_HEIGHTS.has(id) && String(f.properties.kind) === "parkway") {
+      const had =
+        num(f.properties.passengerOnlyHeightInches) != null ||
+        num(f.properties.heightInches) != null ||
+        f.properties.heightSource != null;
+      clearHeightProps(f.properties);
+      if (had) facilityCleared += 1;
+      continue;
+    }
 
     const parkwayRow = PARKWAY_HEIGHTS[id];
     if (parkwayRow && String(f.properties.kind) === "parkway") {
@@ -110,6 +280,13 @@ async function main() {
       f.properties.heightInches = parkwayRow.inches;
       f.properties.heightSource = parkwayRow.source;
       f.properties.heightNote = parkwayRow.note;
+      if (id === "parkway-nj-garden-state-parkway") {
+        const base = String(f.properties.restrictionNote || "");
+        if (!base.includes("13′6″") && !base.includes("13'6\"")) {
+          f.properties.restrictionNote =
+            `${base} Legal vehicle height ceiling 13′6″ (N.J.A.C. 19:9-1.9).`.trim();
+        }
+      }
       facilityHits += 1;
       continue;
     }
@@ -119,6 +296,21 @@ async function main() {
       f.properties.heightInches = facilityRow.inches;
       f.properties.heightSource = facilityRow.source;
       f.properties.heightNote = facilityRow.note;
+      if (facilityRow.heightLowerInches != null) {
+        f.properties.heightLowerInches = facilityRow.heightLowerInches;
+      }
+      if (facilityRow.heightUpperInches != null) {
+        f.properties.heightUpperInches = facilityRow.heightUpperInches;
+      }
+      if (facilityRow.widthInches != null) {
+        f.properties.widthInches = facilityRow.widthInches;
+      }
+      if (facilityRow.restrictionNote) {
+        f.properties.restrictionNote = facilityRow.restrictionNote;
+      }
+      if (facilityRow.heightApproaches) {
+        f.properties.heightApproaches = facilityRow.heightApproaches;
+      }
       facilityHits += 1;
     }
   }
@@ -130,8 +322,24 @@ async function main() {
     const facilityRow = FACILITY_HEIGHTS[id];
     if (!facilityRow) continue;
     f.properties.heightInches = facilityRow.inches;
+    f.properties.heightIn = facilityRow.inches;
     f.properties.heightSource = facilityRow.source;
     f.properties.heightNote = facilityRow.note;
+    if (facilityRow.heightLowerInches != null) {
+      f.properties.heightLowerIn = facilityRow.heightLowerInches;
+      f.properties.heightLowerInches = facilityRow.heightLowerInches;
+    }
+    if (facilityRow.heightUpperInches != null) {
+      f.properties.heightUpperIn = facilityRow.heightUpperInches;
+      f.properties.heightUpperInches = facilityRow.heightUpperInches;
+    }
+    if (facilityRow.widthInches != null) {
+      f.properties.widthIn = facilityRow.widthInches;
+      f.properties.widthInches = facilityRow.widthInches;
+    }
+    if (facilityRow.restrictionNote) {
+      f.properties.restrictionNote = facilityRow.restrictionNote;
+    }
     crossingHits += 1;
   }
 
@@ -139,8 +347,8 @@ async function main() {
   await save("facilities-nyc-li.geojson", facilities);
   await save("major-crossings.geojson", crossings);
 
-  console.log(`Parkways updated: ${parkwayHits}`);
-  console.log(`Facilities updated: ${facilityHits}`);
+  console.log(`Parkways updated: ${parkwayHits} (cleared ${parkwayCleared})`);
+  console.log(`Facilities updated: ${facilityHits} (cleared ${facilityCleared})`);
   console.log(`Major crossings updated: ${crossingHits}`);
 }
 
