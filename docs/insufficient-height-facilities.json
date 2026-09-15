@@ -1,6 +1,6 @@
 {
-  "generatedAt": "2026-09-15T16:51:47.214Z",
-  "count": 5,
+  "generatedAt": "2026-09-15T19:48:15.960Z",
+  "count": 4,
   "byKind": {
     "parkway": [
       {
@@ -22,14 +22,6 @@
       {
         "id": "parkway-lake-welch-parkway",
         "name": "Lake Welch Parkway",
-        "kind": "parkway",
-        "operator": "NYSDOT",
-        "commercialBan": true,
-        "note": "No corridor height in our sources for this parkway — check signs and overpasses."
-      },
-      {
-        "id": "parkway-long-mountain-parkway",
-        "name": "Long Mountain Parkway",
         "kind": "parkway",
         "operator": "NYSDOT",
         "commercialBan": true,
@@ -65,14 +57,6 @@
     {
       "id": "parkway-lake-welch-parkway",
       "name": "Lake Welch Parkway",
-      "kind": "parkway",
-      "operator": "NYSDOT",
-      "commercialBan": true,
-      "note": "No corridor height in our sources for this parkway — check signs and overpasses."
-    },
-    {
-      "id": "parkway-long-mountain-parkway",
-      "name": "Long Mountain Parkway",
       "kind": "parkway",
       "operator": "NYSDOT",
       "commercialBan": true,

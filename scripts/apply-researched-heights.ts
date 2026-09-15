@@ -1,6 +1,7 @@
 /**
  * Apply researched corridor / facility heights where state GIS omitted them.
- * Sources documented in docs/researched-heights.md — never invent values.
+ * Sources documented in docs/researched-heights.md — never invent posted signs.
+ * `default-unrestricted` is a labeled 14′ stand-in only where there is no restriction.
  */
 import { readFile, writeFile } from "node:fs/promises";
 import path from "node:path";
@@ -68,6 +69,11 @@ const PARKWAY_HEIGHTS: Record<
     source: "bridge-inventory-min",
     note: "Bridge inventory overhead mins ≈13′7″ / 14′0″ (4.15 m / 4.27 m), full width; not confirmed posted signs. NJDOT truck/bus ban remains primary.",
   },
+  "parkway-long-mountain-parkway": {
+    inches: 168,
+    source: "default-unrestricted",
+    note: "No posted corridor height in NYSDOT inventory — default 14′0″ (no height restriction)",
+  },
 };
 
 /**
@@ -77,7 +83,6 @@ const PARKWAY_HEIGHTS: Record<
 const CLEAR_PARKWAY_HEIGHTS = new Set([
   "parkway-lake-welch-parkway", // no verified numeric posting; 6′11″ claim is bogus/generic
   "parkway-ocean-parkway-n-y-c", // Belt/Ocean reconstruction numbers are historical project specs, not verified current signs
-  "parkway-long-mountain-parkway",
   "parkway-cross-bay-parkway", // parkway ban only — not the MTA Cross Bay bridge
   "parkway-farragut-parkway",
 ]);
@@ -238,7 +243,8 @@ async function main() {
       src !== "derived-min-clearance" &&
       src !== "nysdot-inventory-min" &&
       src !== "nj-admin-code" &&
-      src !== "bridge-inventory-min"
+      src !== "bridge-inventory-min" &&
+      src !== "default-unrestricted"
     ) {
       continue;
     }
