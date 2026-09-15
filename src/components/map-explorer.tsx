@@ -655,12 +655,12 @@ export function MapExplorer() {
           <fieldset className="legend-radios">
             <legend className="sr-only">Clearance filter</legend>
             <label className="all-toggle">
-              <input type="radio" name="safe-clearances" checked={!showAll} onChange={() => setShowAll(false)} />
-              Tight clearances only
+              <input type="radio" name="clearance-filter" checked={showAll} onChange={() => setShowAll(true)} />
+              Show all
             </label>
             <label className="all-toggle">
-              <input type="radio" name="safe-clearances" checked={showAll} onChange={() => setShowAll(true)} />
-              Show safe clearances
+              <input type="radio" name="clearance-filter" checked={!showAll} onChange={() => setShowAll(false)} />
+              Show concerns
             </label>
           </fieldset>
           {awarenessLoading && <p className="awareness-note" role="status">Loading map layers…</p>}
