@@ -37,10 +37,51 @@ export default function Methodology() {
       </section>
       <section>
         <h2>What’s in this version</h2>
-        <p className="methodology-plain">Official NYSDOT posted clearances for NYC and Long Island. Here’s exactly what’s loaded and how we read it.</p>
-<p><strong>{metadata.postedRecords} posted-clearance records</strong> across {metadata.uniqueStructures} structures in NYC, Nassau, and Suffolk. A structure may have separate postings for the road on it and the road under it.</p>
-        <p>The warning map uses <a href="https://gis.dot.ny.gov/hostingny/rest/services/CommVehicleDataFeed/MapServer/1" target="_blank" rel="noreferrer">NYSDOT’s Posted Height Bridges layer</a>. We read its explicit posted fields, recover whole inches from decimal feet, reject unsupported values, and retain the agency’s road names and record links. Some source names are inventory codes. When that happens, the list leads with a readable crossing or location from the same record; the original name stays in the record details.</p>
-        <p>Source downloaded: {metadata.retrievedAt.slice(0, 10)}. Layer update: {metadata.sourceUpdatedAt?.slice(0, 10) || "not supplied"}. A layer refresh is not the date each sign was inspected.</p>
+        <p className="methodology-plain">
+          Official posted clearances for NYC, Long Island, and southwest Connecticut.
+          Here’s exactly what’s loaded and how we read it.
+        </p>
+        <p>
+          <strong>{metadata.postedRecords} posted-clearance records</strong> across {metadata.uniqueStructures} structures
+          in NYC, Nassau, Suffolk, and Fairfield County (CT). A structure may have separate postings for the road on it
+          and the road under it.
+        </p>
+        <p>
+          New York warnings use{" "}
+          <a href="https://gis.dot.ny.gov/hostingny/rest/services/CommVehicleDataFeed/MapServer/1" target="_blank" rel="noreferrer">
+            NYSDOT’s Posted Height Bridges layer
+          </a>
+          . We read its explicit posted fields, recover whole inches from decimal feet, reject unsupported values, and
+          retain the agency’s road names and record links. Some source names are inventory codes. When that happens,
+          the list leads with a readable crossing or location from the same record; the original name stays in the record details.
+        </p>
+        <p>
+          Source downloaded: {metadata.retrievedAt.slice(0, 10)}. Layer update:{" "}
+          {metadata.sourceUpdatedAt?.slice(0, 10) || "not supplied"}. A layer refresh is not the date each sign was inspected.
+        </p>
+      </section>
+      <section>
+        <h2>Connecticut (SW)</h2>
+        <p className="methodology-plain">
+          Southwest Connecticut uses CTDOT posted vertical clearances for Fairfield County towns near NYC
+          (Stamford, Greenwich, Norwalk, Bridgeport, and nearby). These are posted sign values from the agency bridge inventory — not inventing numbers from measured NBI fields.
+        </p>
+        <p>
+          {typeof metadata.ctdotPostedRecords === "number" ? (
+            <>This build includes <strong>{metadata.ctdotPostedRecords} CTDOT posted records</strong> after town filtering. </>
+          ) : null}
+          The source is{" "}
+          <a href="https://services1.arcgis.com/FCaUeJ5SOVtImake/arcgis/rest/services/CTDOT_Bridges/FeatureServer/0" target="_blank" rel="noreferrer">
+            CTDOT Bridges
+          </a>
+          . We read <code>PostedVertUnderClrncFt</code> / <code>PostedVertUnderClrncIN</code> (under) and
+          {" "}<code>PostedVertClrncFt_6000029</code> / <code>PostedVertClrncIN_6000030</code> (on), convert feet+inches to whole inches,
+          and place each record at the polygon centroid. Town names come from <code>Town_NBI4</code>.
+        </p>
+        <p>
+          Connecticut posting practice may differ from New York’s one-foot convention. We always warn off the posted number only;
+          we never add cushion inches back in.
+        </p>
       </section>
       <section>
         <h2>NYC Open Data: legacy comparison</h2>
@@ -50,24 +91,23 @@ export default function Methodology() {
       </section>
       <section>
         <h2>New York’s one-foot convention</h2>
-        <p className="methodology-plain">In New York, many clearance signs are posted one foot below the measured opening. We always warn off the <strong>posted</strong> number — we never add 12 inches back in to guess if you’ll fit.</p>
+        <p className="methodology-plain">In New York, many clearance signs are posted one foot below the measured opening. That NY-only rule does not automatically apply to Connecticut records. Everywhere, we warn off the <strong>posted</strong> number — we never add inches back in to guess if you’ll fit.</p>
 <p><a href="https://www.law.cornell.edu/regulations/new-york/17-NYCRR-2B.108" target="_blank" rel="noreferrer">New York’s clearance-sign regulation</a> specifies a legal posting one foot below measured clearance for qualifying structures under 14 feet. We use the posted number for every warning. We never add 12 inches to estimate whether a vehicle will fit.</p>
         <p>When a record is red or orange for your height, the detail card notes this convention: physical clearance may be about a foot higher than the posted number, but driving past the posted limit is still illegal.</p>
       </section>
       <section>
         <h2>Checking a route (A → B)</h2>
-        <p className="methodology-plain">Pick two places in NYC or Long Island. We draw a driving path and list posted clearances near that line — a nearby-records check, not turn-by-turn truck routing.</p>
-<p>From the map you can enter two places in NYC or Long Island. We look those up with OpenStreetMap Nominatim, trace a driving path with OSRM, and list posted-clearance records within about 120 meters of that path, in order from A to B. That is a nearby-records check, not turn-by-turn directions, truck routing, or a statement that the road is clear.</p>
+        <p className="methodology-plain">Pick two places in NYC, Long Island, southwest Connecticut, or NYC-facing New Jersey. We draw a driving path and list posted clearances near that line — a nearby-records check, not turn-by-turn truck routing.</p>
+<p>From the map you can enter two places in the coverage area. We look those up with OpenStreetMap Nominatim, trace a driving path with OSRM, and list posted-clearance records within about 120 meters of that path, in order from A to B. That is a nearby-records check, not turn-by-turn directions, truck routing, or a statement that the road is clear.</p>
         <p>Place lookup and the path line use public OpenStreetMap services. They have usage limits and no availability guarantee. No account is created. When OSRM returns meaningfully different alternatives, the map offers a path compare — we never invent extra routes. Your height, selected clearance, from/to places, and chosen path index stay in the shareable URL so a clearance card or a route check can be sent as a link.</p>
       </section>
       <section>
-        <h2>Awareness overlays (NYC)</h2>
-        <p className="methodology-plain">Extra layers stay off until you turn them on. They load only when requested and never feed the A→B path check. These overlays are NYC-only.</p>
-<p>Optional map layers help you see nearby truck network context. They stay off until you turn them on, load only when requested, and never feed the A→B path check.</p>
-        <p><strong>Truck routes</strong> come from <a href="https://data.cityofnewyork.us/Transportation/New-York-City-Truck-Routes/jjja-shxy" target="_blank" rel="noreferrer">NYC Truck Routes</a> (<code>jjja-shxy</code>) — the Through / Local / Limited Local network.</p>
-        <p><strong>Construction closures</strong> are a different feed: <a href="https://data.cityofnewyork.us/Transportation/Street-Closures-due-to-Construction-Activities-by-/ezy6-djsf" target="_blank" rel="noreferrer">Street Closures due to Construction (by block)</a> (<code>ezy6-djsf</code>). We keep rows whose work end date is still ahead, convert State Plane (EPSG:2263) WKT lines to WGS84, and skip point-only rows. These are construction block closures, not live traffic incidents.</p>
-        <p><strong>Loading zones</strong> come from DOT curb signs in <a href="https://data.cityofnewyork.us/Transportation/Street-Sign-Work-Orders/qt6m-xctn" target="_blank" rel="noreferrer">Street Sign Work Orders</a> (<code>qt6m-xctn</code>) for truck loading, plus <a href="https://data.cityofnewyork.us/Transportation/Neighborhood-Loading-Zone-signs-locations-NYCDOT/6pjf-tf5u" target="_blank" rel="noreferrer">Neighborhood Loading Zone signs</a> (<code>6pjf-tf5u</code>). We keep <code>Current</code> signs with State Plane coordinates and plot them as points. A sign marks a curb regulation, not a guarantee that space is open.</p>
-        <p>These overlays are NYC-only. Long Island still has posted clearances, but not these truck-route or closure feeds.</p>
+        <h2>Awareness overlays</h2>
+        <p className="methodology-plain">Extra layers stay off until you turn them on (or until your vehicle profile unlocks them). They load only when requested and never feed the A→B path check.</p>
+        <p><strong>Parkways &amp; posted loads</strong> are one shared map dataset across the coverage area — not separate state toggles. NY parkway bans and posted-load bridges come from NYSDOT’s commercial-vehicle feed. CT adds Merritt, Wilbur Cross, and Milford parkway restrictions from <a href="https://services1.arcgis.com/FCaUeJ5SOVtImake/arcgis/rest/services/CTDOT_Office_of_the_State_Traffic_Administration_OSTA/FeatureServer/11" target="_blank" rel="noreferrer">CTDOT OSTA Parkway Restrictions</a>, plus posted bridge weights from <a href="https://services1.arcgis.com/FCaUeJ5SOVtImake/arcgis/rest/services/CTDOT_Bridges/FeatureServer/0" target="_blank" rel="noreferrer">CTDOT Bridges</a>. NYC-facing New Jersey adds the Palisades Interstate Parkway, Garden State Parkway (north of Exit 105), and Pulaski Skyway using <a href="https://www.nj.gov/transportation/refdata/gis/data.shtm" target="_blank" rel="noreferrer">NJDOT Roadway Network</a> geometry with official restriction text (Palisades commission rules, N.J.A.C. 19:9-1.9 / NJTA, and the NJDOT Pulaski order). Checking Commercial / truck plates highlights parkway-style bans; entering a weight highlights posted-load bridges. CT parkways also carry the posted 8′ height / 7′6″ width / 24′ length limits from that layer. For the Garden State Parkway we keep the GVWR vs registered-weight wording difference in the note instead of collapsing them.</p>
+        <p><strong>Major Hudson crossings</strong> (GWB upper/lower, Lincoln, Holland, Bayonne, Goethals, Outerbridge) use curated Port Authority limits from the February 2026 truckers guide — height, width, and truck/tube rules — in the shared facilities / major-crossings data.</p>
+        <p><strong>Truck routes</strong>, <strong>construction closures</strong>, and <strong>loading zones</strong> remain NYC-only. Truck routes come from <a href="https://data.cityofnewyork.us/Transportation/New-York-City-Truck-Routes/jjja-shxy" target="_blank" rel="noreferrer">NYC Truck Routes</a> (<code>jjja-shxy</code>). Closures come from <a href="https://data.cityofnewyork.us/Transportation/Street-Closures-due-to-Construction-Activities-by-/ezy6-djsf" target="_blank" rel="noreferrer">Street Closures due to Construction (by block)</a> (<code>ezy6-djsf</code>). Loading zones come from <a href="https://data.cityofnewyork.us/Transportation/Street-Sign-Work-Orders/qt6m-xctn" target="_blank" rel="noreferrer">Street Sign Work Orders</a> (<code>qt6m-xctn</code>) plus <a href="https://data.cityofnewyork.us/Transportation/Neighborhood-Loading-Zone-signs-locations-NYCDOT/6pjf-tf5u" target="_blank" rel="noreferrer">Neighborhood Loading Zone signs</a> (<code>6pjf-tf5u</code>). Long Island, Connecticut, and New Jersey still get the shared clearance / parkway / posted-load layers where we have sources — but not these NYC curb feeds.</p>
+        <p>Not in this build: Fort Lee / Hoboken / Newark street-by-street tonnage bans, the full NJ large-truck access network, or statewide NBI measured clearances presented as posted signs. Those need cleaner geometry and rule fields before we draw them.</p>
       </section>
       <section>
         <h2>What the map cannot tell you</h2>

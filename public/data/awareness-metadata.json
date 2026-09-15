@@ -1,5 +1,5 @@
 {
-  "builtAt": "2026-09-14T16:55:00.000Z",
+  "builtAt": "2026-09-15T03:18:19.669593+00:00",
   "sources": {
     "truckRoutes": {
       "dataset": "jjja-shxy",
@@ -9,19 +9,27 @@
     "postedLoad": {
       "feed": "NYSDOT CommVehicleDataFeed /0",
       "file": "posted-load-nyc-li.geojson",
-      "count": 75,
-      "unit": "US tons"
+      "count": 89,
+      "unit": "US tons",
+      "ny": "NYSDOT CommVehicleDataFeed /0",
+      "ct": "CTDOT Bridges posted-load fields",
+      "ctCount": 14
     },
     "parkways": {
-      "attributes": "NYSDOT CommVehicleDataFeed /2 Regions 10–11",
+      "attributes": "NYSDOT CommVehicleDataFeed /2 Regions 10\u201311",
       "geometry": "OpenStreetMap ways (name match)",
       "file": "parkways-nyc-li.geojson",
-      "facilityCount": 23
+      "facilityCount": 29,
+      "ny": "NYSDOT CommVehicleDataFeed /2 Regions 10\u201311 + OSM geometry",
+      "ct": "CTDOT OSTA Parkway Restrictions",
+      "ctCount": 3,
+      "nj": "NJDOT Roadway Network geometry + Palisades / NJTA / NJDOT restriction text",
+      "njCount": 3
     },
     "majorCrossings": {
       "file": "major-crossings.geojson",
-      "count": 14,
-      "note": "Curated MTA / PANYNJ / NYCDOT limits — hand-maintained"
+      "count": 18,
+      "note": "Curated MTA / PANYNJ / NYCDOT limits \u2014 PANYNJ heights from Feb 2026 truckers guide"
     },
     "crossingLimits": {
       "file": "crossing-limits-nyc.geojson",
@@ -31,13 +39,19 @@
     },
     "roadFeatures": {
       "file": "road-features-nyc.geojson",
-      "kinds": ["bridge", "tunnel", "expressway"],
+      "kinds": [
+        "bridge",
+        "tunnel",
+        "expressway"
+      ],
       "note": "Filtered from NYC truck routes flags"
     }
   },
   "notes": [
-    "Awareness overlays only — not used for path routing.",
+    "Awareness overlays only \u2014 not used for path routing.",
     "Width / weight / commercial inputs unlock related layers.",
-    "Missing overlay data never means a road is clear."
+    "Missing overlay data never means a road is clear.",
+    "CTDOT parkways + posted-load bridges are merged into the same GeoJSON as NYC/LI.",
+    "NJ NYC-facing parkways (Palisades, GSP north of 105, Pulaski) and PANYNJ crossings are merged into the same GeoJSON as NYC/LI/CT."
   ]
 }

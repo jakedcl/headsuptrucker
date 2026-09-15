@@ -1,9 +1,9 @@
 {
-  "retrievedAt": "2026-09-14T00:32:53.132Z",
-  "sourceUpdatedAt": "2026-09-13T09:05:27.000Z",
+  "retrievedAt": "2026-09-14T21:46:50.014Z",
+  "sourceUpdatedAt": "2026-09-14T09:05:17.000Z",
   "nysdotStatewideStructures": 1125,
-  "postedRecords": 555,
-  "uniqueStructures": 535,
+  "postedRecords": 612,
+  "uniqueStructures": 592,
   "counties": [
     {
       "county": "BRONX",
@@ -48,20 +48,89 @@
       "postedOn": 0
     }
   ],
+  "ctdotSourceBridges": 57,
+  "ctdotPostedRecords": 57,
+  "ctdotTowns": [
+    {
+      "town": "BRIDGEPORT",
+      "postedUnder": 11,
+      "postedOn": 0
+    },
+    {
+      "town": "BROOKFIELD",
+      "postedUnder": 1,
+      "postedOn": 0
+    },
+    {
+      "town": "DANBURY",
+      "postedUnder": 3,
+      "postedOn": 0
+    },
+    {
+      "town": "DARIEN",
+      "postedUnder": 1,
+      "postedOn": 0
+    },
+    {
+      "town": "FAIRFIELD",
+      "postedUnder": 9,
+      "postedOn": 0
+    },
+    {
+      "town": "GREENWICH",
+      "postedUnder": 3,
+      "postedOn": 0
+    },
+    {
+      "town": "NEW CANAAN",
+      "postedUnder": 4,
+      "postedOn": 0
+    },
+    {
+      "town": "NORWALK",
+      "postedUnder": 10,
+      "postedOn": 0
+    },
+    {
+      "town": "SHELTON",
+      "postedUnder": 1,
+      "postedOn": 0
+    },
+    {
+      "town": "STAMFORD",
+      "postedUnder": 3,
+      "postedOn": 0
+    },
+    {
+      "town": "STRATFORD",
+      "postedUnder": 1,
+      "postedOn": 0
+    },
+    {
+      "town": "TRUMBULL",
+      "postedUnder": 4,
+      "postedOn": 0
+    },
+    {
+      "town": "WESTPORT",
+      "postedUnder": 4,
+      "postedOn": 2
+    }
+  ],
   "nycLegacyRecords": 149,
   "nycDirectionalRecords": 36,
   "overlapCandidatePairs": 145,
   "overlapLegacyRecords": 118,
   "agreeingCandidatePairs": 53,
-  "mergedAcrossSources": 0,
+  "mergedAcrossSources": 57,
   "belowFeet": {
     "8": 16,
     "9": 36,
     "10": 108,
-    "11": 225,
-    "12": 339,
-    "13": 539
+    "11": 227,
+    "12": 345,
+    "13": 552
   },
   "nullSourceGeometries": 1125,
-  "omittedFields": 515
+  "omittedFields": 572
 }
