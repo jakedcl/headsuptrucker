@@ -10,6 +10,8 @@ import {
   townName,
   type CtdotRawFeature,
 } from "../scripts/sources/ctdot-posted-height";
+import { normalizeCtdotParkways } from "../scripts/sources/ctdot-parkways";
+import { postedLoadTonsFromProps, normalizeCtdotPostedLoad } from "../scripts/sources/ctdot-posted-load";
 import { normalizeNyc, parseFeetInches } from "../scripts/sources/nyc-low-bridges";
 import type { ClearanceCollection } from "../src/lib/types";
 
@@ -110,6 +112,56 @@ test("CTDOT normalizer keeps Fairfield posted under/on records and drops others"
   empty.properties.PostedVertClrncIN_6000030 = 0;
   assert.equal(normalizeCtdot([empty], "2026-09-14").features.length, 0);
 });
+test("CTDOT parkways dissolve to Merritt / Wilbur Cross / Milford with commercial ban + 8′ height", () => {
+  const raw = JSON.parse(readFileSync("data/raw/ctdot-parkways.geojson", "utf8")).features;
+  const parkways = normalizeCtdotParkways(raw);
+  assert.equal(parkways.length, 3);
+  const names = parkways.map(f => f.properties.name).sort();
+  assert.deepEqual(names, ["Merritt Parkway", "Milford Parkway", "Wilbur Cross Parkway"]);
+  for (const f of parkways) {
+    assert.equal(f.properties.kind, "parkway");
+    assert.equal(f.properties.commercialBan, true);
+    assert.equal(f.properties.passengerOnlyHeightInches, 96);
+    assert.ok(f.properties.id.startsWith("parkway-ct-"));
+    assert.equal(f.geometry.type, "MultiLineString");
+    assert.ok(f.geometry.coordinates.length >= 1);
+  }
+});
+
+test("CTDOT posted-load prefers All posting and keeps coverage points only", () => {
+  assert.equal(
+    postedLoadTonsFromProps({
+      PostedLoadAll_6000042: "32",
+      PostedLdSingleUnit_6000034: "19",
+    }),
+    32,
+  );
+  assert.equal(
+    postedLoadTonsFromProps({
+      PostedLoadAll_6000042: null,
+      PostedLdSingleUnit_6000034: "19",
+      PostedLoadSemiTrlr_6000036: "23",
+    }),
+    19,
+  );
+  assert.equal(postedLoadTonsFromProps({}), null);
+
+  const raw = JSON.parse(readFileSync("data/raw/ctdot-posted-load.geojson", "utf8")).features;
+  const loads = normalizeCtdotPostedLoad(raw, { minLng: -74.3, maxLng: -71.8, minLat: 40.45, maxLat: 41.55 });
+  assert.ok(loads.length >= 10, `expected CT posted-load points in coverage, got ${loads.length}`);
+  for (const f of loads) {
+    assert.equal(f.properties.kind, "posted-load");
+    assert.ok(f.properties.id.startsWith("load-ct-"));
+    assert.ok(f.properties.postedLoadTons > 0);
+    assert.equal(f.geometry.type, "Point");
+  }
+
+  const parkways = JSON.parse(readFileSync("public/data/parkways-nyc-li.geojson", "utf8"));
+  const posted = JSON.parse(readFileSync("public/data/posted-load-nyc-li.geojson", "utf8"));
+  assert.ok(parkways.features.some((f: { properties: { id: string } }) => f.properties.id.startsWith("parkway-ct-")));
+  assert.ok(posted.features.some((f: { properties: { id: string } }) => f.properties.id.startsWith("load-ct-")));
+});
+
 test("snapshot regression: unique identities, valid geography, no legacy or sentinel postings", () => {
   const collection: ClearanceCollection = JSON.parse(readFileSync("public/data/clearances-nyc-li.geojson", "utf8"));
   assert.equal(collection.features.length, 612, "Review source changes before updating this snapshot baseline");

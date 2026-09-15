@@ -326,6 +326,9 @@ export function MapExplorer() {
   const activeAwareness: AwarenessLayers = {
     ...awareness,
     facilities: true,
+    // Same unlock behavior for NY + CT (shared GeoJSON): commercial → parkways, weight → posted load.
+    parkways: awareness.parkways || vehicle.commercial,
+    postedLoad: awareness.postedLoad || vehicle.weightTons !== null,
   };
   useEffect(() => {
     if (!fromParam.trim() || !toParam.trim()) {
