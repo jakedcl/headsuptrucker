@@ -667,12 +667,12 @@ export function MapExplorer() {
           <fieldset className="legend-radios">
             <legend className="sr-only">Clearance filter</legend>
             <label className="all-toggle">
-              <input type="radio" name="clearance-filter" checked={showAll} onChange={() => setShowAll(true)} />
-              Show all
-            </label>
-            <label className="all-toggle">
               <input type="radio" name="clearance-filter" checked={!showAll} onChange={() => setShowAll(false)} />
               Show concerns
+            </label>
+            <label className="all-toggle">
+              <input type="radio" name="clearance-filter" checked={showAll} onChange={() => setShowAll(true)} />
+              Show all
             </label>
           </fieldset>
           {awarenessLoading && <p className="awareness-note" role="status">Loading map layers…</p>}
@@ -809,6 +809,7 @@ export function MapExplorer() {
           majorCrossingsData={majorCrossingsData}
           facilitiesData={facilitiesData}
           selectedId={selectedId}
+          selectedFacilityId={selectedFacilityId}
           drive={activeDrive}
           altRoutes={altRoutes}
           initialViewport={initialViewport}
