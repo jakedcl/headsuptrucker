@@ -42,7 +42,7 @@ describe("unified awareness projection", () => {
     const crossings = majorCrossingsFromPoints(points);
     const facilities = facilitiesFromAwareness(points, lines);
     assert.ok(loads.features.length >= 89);
-    assert.equal(crossings.features.length, 18);
+    assert.equal(crossings.features.length, 19);
     assert.ok(facilities.features.length >= 40);
     const withExtras = facilities.features.find(f => f.properties?.extras);
     assert.ok(withExtras, "facilities keep extras for the info card");

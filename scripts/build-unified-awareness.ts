@@ -414,8 +414,17 @@ async function main() {
         geometryRole: "point",
         state: NJ_CROSSINGS.has(id) ? "NJ" : "NY",
         operator: str(p.operator) || null,
-        limits: { heightInches: num(p.heightIn), widthInches: num(p.widthIn) },
-        access: { hazmatBanned: flag(p.noHazmat) },
+        limits: {
+          heightInches: num(p.heightIn) ?? num(p.heightInches),
+          heightUpperInches: num(p.heightUpperIn) ?? num(p.heightUpperInches),
+          heightLowerInches: num(p.heightLowerIn) ?? num(p.heightLowerInches),
+          widthInches: num(p.widthIn) ?? num(p.widthInches),
+        },
+        access: {
+          hazmatBanned: flag(p.noHazmat),
+          trucksBanned: flag(p.trucksBanned),
+          restriction: str(p.restrictionNote) || null,
+        },
         sources: [
           {
             sourceId: "panynj-crossings",
@@ -429,7 +438,23 @@ async function main() {
         extras: {
           facilityKind: str(p.kind, "bridge"),
           layer: "major-crossing",
-          ...leftovers(p, ["id", "name", "kind", "operator", "heightIn", "widthIn", "noHazmat"]),
+          ...leftovers(p, [
+            "id",
+            "name",
+            "kind",
+            "operator",
+            "heightIn",
+            "heightInches",
+            "heightUpperIn",
+            "heightUpperInches",
+            "heightLowerIn",
+            "heightLowerInches",
+            "widthIn",
+            "widthInches",
+            "noHazmat",
+            "trucksBanned",
+            "restrictionNote",
+          ]),
         },
       }),
     });
