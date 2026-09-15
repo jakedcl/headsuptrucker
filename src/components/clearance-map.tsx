@@ -6,6 +6,7 @@ import type { Feature, FeatureCollection, LineString } from "geojson";
 import type { ClearanceCollection } from "@/lib/types";
 import type { DrivePath } from "@/lib/path";
 import { formatHeight, getClearanceSeverity, recordLabels } from "@/lib/clearance";
+import { shouldSurfaceMapError } from "@/lib/map-errors";
 
 export type Viewport = { lng: number; lat: number; z: number };
 
@@ -726,7 +727,15 @@ export function ClearanceMap({
     map.on("sourcedata", event => { if (event.sourceId === "clearances") updateMarkers(); });
     map.on("render", updateMarkers);
     map.on("moveend", reportViewport);
-    map.on("error", () => setError("Part of the map couldn’t load. Try reloading; clearance records remain available in the list."));
+    map.on("error", event => {
+      if (!shouldSurfaceMapError(event)) return;
+      const sourceId = "sourceId" in event ? String((event as { sourceId?: unknown }).sourceId ?? "") : "";
+      if (sourceId === "clearances") {
+        setError("Clearance markers couldn’t load. The source records are still available in the list.");
+        return;
+      }
+      setError("The basemap couldn’t load. Try reloading; clearance records remain available in the list.");
+    });
     map.on("dataloading", event => {
       if (event.dataType === "source" && event.sourceId === "clearances") {
         for (const marker of markers.values()) marker.remove();
