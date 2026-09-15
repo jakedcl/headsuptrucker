@@ -17,16 +17,37 @@ export function formatHeight(inches: number): string {
   return `${Math.floor(inches / 12)}′ ${inches % 12}″`;
 }
 
-export function parseVehicleHeight(feet: string, inches: string): number | null {
+/** 13′6″ — over that is an oversized load this map does not support yet. */
+export const MAX_VEHICLE_HEIGHT_INCHES = 162;
+export const MIN_VEHICLE_HEIGHT_INCHES = 12;
+export const OVERSIZED_LOAD_MESSAGE = "Sorry — we don’t support oversized loads yet.";
+
+function parsedFeetInches(feet: string, inches: string): number | null {
   if (!/^\d{1,2}$/.test(feet) || !/^\d{1,2}$/.test(inches)) return null;
-  const ft = Number(feet), inc = Number(inches), total = ft * 12 + inc;
-  return inc < 12 && total >= 12 && total <= 240 ? total : null;
+  const ft = Number(feet), inc = Number(inches);
+  if (inc >= 12) return null;
+  return ft * 12 + inc;
+}
+
+export function parseVehicleHeight(feet: string, inches: string): number | null {
+  const total = parsedFeetInches(feet, inches);
+  return total != null && total >= MIN_VEHICLE_HEIGHT_INCHES && total <= MAX_VEHICLE_HEIGHT_INCHES ? total : null;
+}
+
+export function isOversizedHeight(feet: string, inches: string): boolean {
+  const total = parsedFeetInches(feet, inches);
+  return total != null && total > MAX_VEHICLE_HEIGHT_INCHES;
 }
 
 export function parseHeightParam(value: string | null | undefined): number | null {
   if (!value || !/^\d{1,3}$/.test(value)) return null;
   const height = Number(value);
-  return height >= 12 && height <= 240 ? height : null;
+  return height >= MIN_VEHICLE_HEIGHT_INCHES && height <= MAX_VEHICLE_HEIGHT_INCHES ? height : null;
+}
+
+export function isOversizedHeightParam(value: string | null | undefined): boolean {
+  if (!value || !/^\d{1,3}$/.test(value)) return false;
+  return Number(value) > MAX_VEHICLE_HEIGHT_INCHES;
 }
 
 export function describeMargin(clearance: number, vehicle: number): string {

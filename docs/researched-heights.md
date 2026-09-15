@@ -23,6 +23,7 @@ whole-road “maximum height” regulations. Commercial bans stay primary where 
 | `parkway-korean-war-vets-parkway-richmond` | Korean War Vets Parkway (Richmond) | **172″ (14′4″)** | NYSDOT inventory ≈4.37 m under Huguenot Ave |
 | `parkway-seven-lakes-parkway` | Seven Lakes Parkway | **182″ (15′2″)** | NYSDOT inventory ≈4.62 m under I-87 near Sloatsburg (corridor traffic under that overcrossing) |
 | `parkway-nj-pulaski-skyway` | Pulaski Skyway | **163″ (13′7″)** | Bridge inventory overhead mins ≈4.15–4.27 m (full width; not confirmed signed); NJDOT truck/bus ban primary |
+| `parkway-long-mountain-parkway` | Long Mountain Parkway | **168″ (14′0″)** | No posted corridor height — default 14′ because this corridor has no height restriction |
 
 ### Cross Bay — exact published approaches (MTA)
 
@@ -44,7 +45,6 @@ Source: [MTA Bridges & Tunnels truck / commercial vehicle information](https://w
 | `parkway-cross-bay-parkway` | Commercial ban only (the **parkway**, not the MTA Cross Bay bridge) |
 | `parkway-ocean-parkway-n-y-c` | Belt Parkway / Ocean reconstruction clearance notes are historical project specs, not verified current posted corridor height |
 | `parkway-lake-welch-parkway` | No verified numeric posting. Geometry is in Harriman State Park (north of the default NYC view). Discarded a false/generic “6′11″” claim and a bad derived 12′ guess |
-| `parkway-long-mountain-parkway` | No verified numeric posting (commercial / tourist-bus context only) |
 | `parkway-farragut-parkway` | Commercial ban only; no corridor height found |
 
 ## Discarded (not used)

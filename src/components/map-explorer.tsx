@@ -1,10 +1,10 @@
 "use client";
 import dynamic from "next/dynamic";
 import Link from "next/link";
-import { useRouter, useSearchParams } from "next/navigation";
+import { useSearchParams } from "next/navigation";
 import { useCallback, useEffect, useMemo, useRef, useState } from "react";
 import type { ClearanceCollection } from "@/lib/types";
-import { describeMargin, formatHeight, getClearanceSeverity, isInventoryLabel, parseHeightParam, recordLabels } from "@/lib/clearance";
+import { describeMargin, formatHeight, getClearanceSeverity, isInventoryLabel, isOversizedHeightParam, OVERSIZED_LOAD_MESSAGE, parseHeightParam, recordLabels } from "@/lib/clearance";
 import { featuresAlongRoute, formatDriveMiles, formatDriveMinutes, type DrivePath, type DriveRoute, type Place } from "@/lib/path";
 import { DriveForm } from "./drive-form";
 import { HeightForm } from "./height-form";
@@ -129,7 +129,6 @@ function asLabel(value: Place | string) {
 
 export function MapExplorer() {
   const params = useSearchParams();
-  const router = useRouter();
   const height = parseHeightParam(params.get("height"));
   const selectedId = params.get("bridge");
   const [data, setData] = useState<ClearanceCollection | null>(null);
@@ -511,7 +510,13 @@ export function MapExplorer() {
     return <main className="height-required">
       <p className="eyebrow">FIRST, YOUR VEHICLE</p>
       <h1>How tall are you?</h1>
-      {params.has("height") && <p role="alert">That link doesn’t contain a valid vehicle height. Enter yours below.</p>}
+      {params.has("height") && (
+        <p role="alert">
+          {isOversizedHeightParam(params.get("height"))
+            ? OVERSIZED_LOAD_MESSAGE
+            : "That link doesn’t contain a valid vehicle height. Enter yours below."}
+        </p>
+      )}
       <HeightForm onSubmit={h => updateUrl({ height: String(h) })} />
     </main>;
   }
@@ -578,23 +583,10 @@ export function MapExplorer() {
           : <div className="vehicle-profile">
               <button
                 type="button"
-                className="vehicle-number vehicle-number-reset"
-                title="Reset map to the default view"
-                aria-label="Reset map to the default view"
-                onClick={() => {
-                  setEditing(false);
-                  setShowAll(false);
-                  setAwareness(AWARENESS_OFF);
-                  setBounds(null);
-                  setListLimit(30);
-                  setShareMessage("");
-                  setDrive(null);
-                  setDriveError("");
-                  setDriveLoading(false);
-                  pendingPlaces.current = null;
-                  setMapEpoch(n => n + 1);
-                  router.replace(`/?height=${height}`);
-                }}
+                className="vehicle-number"
+                title="Edit vehicle height"
+                aria-label="Edit vehicle height"
+                onClick={() => setEditing(true)}
               >{formatHeight(height)}<span>↕</span></button>
               <div className="vehicle-dims">
                 <label>
