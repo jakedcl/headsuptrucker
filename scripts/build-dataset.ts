@@ -3,6 +3,7 @@ import { createHash } from "node:crypto";
 import { COUNTIES, normalizeNysdot, type RawFeature } from "./sources/nysdot-posted-height";
 import { normalizeNyc } from "./sources/nyc-low-bridges";
 import { normalizeCtdot, type CtdotRawFeature } from "./sources/ctdot-posted-height";
+import { normalizeNysdotPostedLoad, type NysdotLoadRaw } from "./sources/nysdot-posted-load";
 
 const read = (path: string) => readFile(path, "utf8");
 const manifest = JSON.parse(await read("data/raw/manifest.json"));
@@ -93,6 +94,7 @@ const stats = {
   ctdotSourceBridges: ctdotRaw.features.length,
   ctdotPostedRecords: ctdot.features.length,
   ctdotTowns,
+  nysdotPostedLoadRecords: 0,
   nycLegacyRecords: nyc.length,
   nycDirectionalRecords: nyc.filter(n => Object.keys(n.directional).length).length,
   overlapCandidatePairs: candidates.length,
@@ -109,10 +111,30 @@ const stats = {
 await mkdir("data/audit", { recursive: true });
 await mkdir("public/data", { recursive: true });
 const save = (path: string, data: unknown) => writeFile(path, JSON.stringify(data, null, 2) + "\n");
+
+const loadRaw = JSON.parse(await read("data/raw/nysdot-posted-load.geojson"));
+if (!Array.isArray(loadRaw.features) || loadRaw.features.length === 0) {
+  throw new Error("Incomplete NYSDOT posted-load snapshot");
+}
+const nyLoads = normalizeNysdotPostedLoad(loadRaw.features as NysdotLoadRaw[]);
+if (nyLoads.length < 50) throw new Error("Unexpectedly few NY posted-load records; manual review required");
+let ctLoads: typeof nyLoads = [];
+try {
+  const existingLoads = JSON.parse(await read("public/data/posted-load-nyc-li.geojson"));
+  ctLoads = (existingLoads.features || []).filter(
+    (f: { properties?: { id?: string } }) => String(f.properties?.id || "").startsWith("load-ct-"),
+  );
+} catch {
+  ctLoads = [];
+}
+const postedLoadFeatures = [...nyLoads, ...ctLoads].sort((a, b) => a.properties.id.localeCompare(b.properties.id));
+stats.nysdotPostedLoadRecords = nyLoads.length;
+
 await save("data/audit/nyc-normalized.json", nyc);
 await save("data/audit/overlap-candidates.json", candidates);
 await save("data/audit/omitted-fields.json", [...normalized.rejected, ...ctdot.rejected]);
 await save("data/audit/statistics.json", stats);
 await save("public/data/metadata.json", stats);
 await save("public/data/clearances-nyc-li.geojson", { type: "FeatureCollection", features });
+await save("public/data/posted-load-nyc-li.geojson", { type: "FeatureCollection", features: postedLoadFeatures });
 console.log(JSON.stringify(stats, null, 2));

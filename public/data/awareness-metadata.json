@@ -1,5 +1,5 @@
 {
-  "builtAt": "2026-09-15T03:18:19.669593+00:00",
+  "builtAt": "2026-09-15T15:46:23.558Z",
   "sources": {
     "truckRoutes": {
       "dataset": "jjja-shxy",
@@ -9,15 +9,15 @@
     "postedLoad": {
       "feed": "NYSDOT CommVehicleDataFeed /0",
       "file": "posted-load-nyc-li.geojson",
-      "count": 89,
+      "count": 162,
       "unit": "US tons",
       "ny": "NYSDOT CommVehicleDataFeed /0",
       "ct": "CTDOT Bridges posted-load fields",
-      "ctCount": 14
+      "ctCount": 26
     },
     "parkways": {
       "file": "parkways-nyc-li.geojson",
-      "facilityCount": 38,
+      "facilityCount": 40,
       "hudsonValley": "NYSDOT CommVehicleDataFeed rules + Roadway Inventory geometry"
     },
     "majorCrossings": {
@@ -47,6 +47,7 @@
     "Missing overlay data never means a road is clear.",
     "CTDOT parkways + posted-load bridges are merged into the same GeoJSON as NYC/LI.",
     "NJ NYC-facing parkways (Palisades, GSP north of 105, Pulaski) and PANYNJ crossings are merged into the same GeoJSON as NYC/LI/CT.",
-    "Hudson Valley parkways (Saw Mill, Sprain Brook, Taconic, Cross County, Hutch Westchester, etc.) come from NYSDOT’s commercial-vehicle parkways feed and live in the same shared parkways layer as NYC/LI/CT/NJ."
+    "Hudson Valley parkways (Saw Mill, Sprain Brook, Taconic, Cross County, Hutch Westchester, etc.) come from NYSDOT’s commercial-vehicle parkways feed and live in the same shared parkways layer as NYC/LI/CT/NJ.",
+    "NJ NYC-facing parkways (Palisades, GSP north of 105, Pulaski) and PANYNJ crossings are merged into the same GeoJSON as NYC/LI/CT."
   ]
 }

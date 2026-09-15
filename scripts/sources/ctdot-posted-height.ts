@@ -1,4 +1,5 @@
 import type { Feature, Point, Position } from "geojson";
+import { COVERAGE } from "../../src/lib/path";
 import type { ClearanceRecord } from "../../src/lib/types";
 
 export const CTDOT_URL =
@@ -30,6 +31,39 @@ export const FAIRFIELD_TOWNS = new Set([
   "SHERMAN",
 ]);
 
+/** New Haven County (I-95 / Wilbur Cross ring toward NYC). */
+export const NEW_HAVEN_TOWNS = new Set([
+  "NEW HAVEN",
+  "WEST HAVEN",
+  "EAST HAVEN",
+  "NORTH HAVEN",
+  "HAMDEN",
+  "WOODBRIDGE",
+  "ORANGE",
+  "MILFORD",
+  "BRANFORD",
+  "NORTH BRANFORD",
+  "GUILFORD",
+  "MADISON",
+  "WALLINGFORD",
+  "MERIDEN",
+  "CHESHIRE",
+  "BETHANY",
+  "PROSPECT",
+  "WOLCOTT",
+  "WATERBURY",
+  "NAUGATUCK",
+  "BEACON FALLS",
+  "OXFORD",
+  "SOUTHBURY",
+  "MIDDLEBURY",
+  "SEYMOUR",
+  "ANSONIA",
+  "DERBY",
+]);
+
+export const COVERED_TOWNS = new Set([...FAIRFIELD_TOWNS, ...NEW_HAVEN_TOWNS]);
+
 export type CtdotRawFeature = {
   properties: Record<string, unknown>;
   geometry: { type: string; coordinates: Position[][] | Position[][][] } | null;
@@ -56,6 +90,26 @@ export function feetInchesToInches(feet: unknown, inches: unknown): number | nul
   if (ft < 0 || inch < 0 || inch >= 12) return null;
   const total = Math.round(ft * 12 + inch);
   return total > 0 ? total : null;
+}
+
+function postedLoadHint(props: Record<string, unknown>): number | null {
+  const candidates = [
+    props.PostedLoadAll_6000042,
+    props.PostedLdSingleUnit_6000034,
+    props.PostedLoadSemiTrlr_6000036,
+    props.PostedLoad4Axle_6000038,
+    props.PostedLoad3S2_6000040,
+  ]
+    .map(v => {
+      if (typeof v === "number" && Number.isFinite(v) && v > 0) return v;
+      if (typeof v === "string" && v.trim() !== "") {
+        const n = Number(v.trim());
+        return Number.isFinite(n) && n > 0 ? n : null;
+      }
+      return null;
+    })
+    .filter((n): n is number => n != null);
+  return candidates.length ? Math.min(...candidates) : null;
 }
 
 function ringCentroid(ring: Position[]): [number, number] | null {
@@ -97,7 +151,7 @@ export function normalizeCtdot(features: CtdotRawFeature[], retrievedAt: string)
   for (const feature of features) {
     const p = feature.properties;
     const town = townName(p.Town_NBI4);
-    if (!FAIRFIELD_TOWNS.has(town)) continue;
+    if (!COVERED_TOWNS.has(town)) continue;
 
     const structureId = text(p.BridgeStructureNumber);
     const centroid = polygonCentroid(feature.geometry);
@@ -111,9 +165,13 @@ export function normalizeCtdot(features: CtdotRawFeature[], retrievedAt: string)
       continue;
     }
     const [lng, lat] = centroid;
-    // SW CT envelope (Fairfield County + small buffer)
-    if (lng < -73.8 || lng > -73.0 || lat < 40.9 || lat > 41.6) {
-      rejected.push({ id: structureId, field: "coordinates", value: [lng, lat], reason: "Centroid outside SW CT envelope" });
+    if (
+      lng < COVERAGE.minLng ||
+      lng > COVERAGE.maxLng ||
+      lat < COVERAGE.minLat ||
+      lat > COVERAGE.maxLat
+    ) {
+      rejected.push({ id: structureId, field: "coordinates", value: [lng, lat], reason: "Centroid outside coverage envelope" });
       continue;
     }
 
@@ -136,6 +194,15 @@ export function normalizeCtdot(features: CtdotRawFeature[], retrievedAt: string)
         });
         continue;
       }
+
+      const extras: Record<string, string | number | boolean | null> = {};
+      const measuredUnder = feetInchesToInches(
+        p.MinVertClearanceUnderFt_NBI54B,
+        p.MinVertClearanceUnderIN_NBI54B,
+      );
+      if (measuredUnder != null) extras.measuredUnderInches = measuredUnder;
+      const relatedLoad = postedLoadHint(p);
+      if (relatedLoad != null) extras.relatedPostedLoadTons = relatedLoad;
 
       output.push({
         type: "Feature",
@@ -166,6 +233,7 @@ export function normalizeCtdot(features: CtdotRawFeature[], retrievedAt: string)
               retrievedAt,
             },
           ],
+          ...(Object.keys(extras).length ? { extras } : {}),
         },
       });
     }
