@@ -44,6 +44,10 @@ function postedLoadState(id: string, county: string): AwarenessState {
     "NASSAU",
     "SUFFOLK",
     "WESTCHESTER",
+    "ROCKLAND",
+    "PUTNAM",
+    "ORANGE",
+    "DUTCHESS",
   ]);
   return ny.has(county.toUpperCase()) ? "NY" : "CT";
 }
@@ -196,6 +200,10 @@ async function main() {
           structureId: str(p.structureId) || null,
           clearanceType: str(p.clearanceType, "posted"),
           layer: "clearance",
+          owner: str(p.owner) || null,
+          ...(p.extras && typeof p.extras === "object"
+            ? (p.extras as Record<string, string | number | boolean | null>)
+            : {}),
         },
       }),
     });
@@ -228,7 +236,13 @@ async function main() {
             retrievedAt: new Date().toISOString(),
           },
         ],
-        extras: { bin: str(p.bin) || null, layer: "posted-load" },
+        extras: {
+          bin: str(p.bin) || null,
+          layer: "posted-load",
+          ...(p.extras && typeof p.extras === "object"
+            ? (p.extras as Record<string, string | number | boolean | null>)
+            : {}),
+        },
       }),
     });
   }
@@ -248,7 +262,7 @@ async function main() {
         kind: "parkway",
         geometryRole: "line",
         state,
-        limits: { heightInches: num(p.passengerOnlyHeightInches) },
+        limits: { heightInches: num(p.passengerOnlyHeightInches), widthInches: num(p.widthInches), weightTons: num(p.weightTons) },
         access: {
           commercialBan: flag(p.commercialBan),
           commercialException: flag(p.gcpTruckException),
@@ -274,6 +288,21 @@ async function main() {
           labelLng: num(p.labelLng),
           labelLat: num(p.labelLat),
           layer: "parkway",
+          ...leftovers(p, [
+            "id",
+            "name",
+            "kind",
+            "restriction",
+            "commercialBan",
+            "gcpTruckException",
+            "passengerOnlyHeightInches",
+            "widthInches",
+            "weightTons",
+            "labelLng",
+            "labelLat",
+            "extras",
+          ]),
+          ...(p.extras && typeof p.extras === "object" ? (p.extras as Record<string, string | number | boolean | null>) : {}),
         },
       }),
     });

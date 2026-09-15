@@ -24,6 +24,8 @@ export type ClearanceRecord = {
   clearanceType: "posted";
   sources: SourceReference[];
   notes: string[];
+  /** Agency leftovers that must not replace posted height. */
+  extras?: Record<string, string | number | boolean | null>;
 };
 
 export type ClearanceCollection = FeatureCollection<Point, ClearanceRecord>;

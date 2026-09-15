@@ -24,8 +24,11 @@ export type ParkwayProps = {
   commercialBan: boolean;
   gcpTruckException: boolean;
   passengerOnlyHeightInches: number;
+  widthInches: number | null;
+  weightTons: number | null;
   labelLng: number;
   labelLat: number;
+  extras?: Record<string, string | number | boolean | null>;
 };
 
 const text = (v: unknown) => (typeof v === "string" ? v.trim().replace(/\s+/g, " ") : "");
@@ -99,6 +102,12 @@ export function normalizeCtdotParkways(features: CtdotParkwayRaw[]): Feature<Mul
       gvwLbs != null ? `${gvwLbs.toLocaleString("en-US")} lb combination GVW` : null,
     ].filter(Boolean);
 
+    const extras: Record<string, string | number | boolean | null> = {};
+    const widthInches = widthFt != null ? Math.round(widthFt * 12) : null;
+    const weightTons = gvwLbs != null ? Math.round((gvwLbs / 2000) * 100) / 100 : null;
+    if (lengthFt != null) extras.vehicleLengthInches = Math.round(lengthFt * 12);
+    if (gvwLbs != null) extras.gvwPounds = gvwLbs;
+
     output.push({
       type: "Feature",
       geometry: { type: "MultiLineString", coordinates: lines },
@@ -110,8 +119,11 @@ export function normalizeCtdotParkways(features: CtdotParkwayRaw[]): Feature<Mul
         commercialBan: true,
         gcpTruckException: false,
         passengerOnlyHeightInches: Math.round(heightFt * 12),
+        widthInches,
+        weightTons,
         labelLng: label[0],
         labelLat: label[1],
+        ...(Object.keys(extras).length ? { extras } : {}),
       },
     });
   }
@@ -132,8 +144,8 @@ export function parkwayToFacility(feature: Feature<MultiLineString | LineString,
       operator: "CTDOT / OSTA",
       heightInches: p.passengerOnlyHeightInches,
       passengerOnlyHeightInches: p.passengerOnlyHeightInches,
-      widthInches: null as number | null,
-      weightTons: null as number | null,
+      widthInches: p.widthInches,
+      weightTons: p.weightTons,
       postedLoadTons: null as number | null,
       trucksBanned: false,
       commercialBan: true,
@@ -144,6 +156,7 @@ export function parkwayToFacility(feature: Feature<MultiLineString | LineString,
       geometryRole: "line" as const,
       labelLng: p.labelLng,
       labelLat: p.labelLat,
+      extras: p.extras || {},
     },
   };
 }

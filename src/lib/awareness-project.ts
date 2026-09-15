@@ -45,6 +45,7 @@ export function toClearanceRecord(props: AwarenessProperties): ClearanceRecord {
     direction: props.direction ?? null,
     clearanceType: "posted",
     notes: props.notes || [],
+    extras: props.extras,
     sources: (props.sources || []).map(s => ({
       agency: s.agency,
       dataset: s.dataset,
@@ -94,6 +95,8 @@ export function parkwaysFromLines(lines: AwarenessLineCollection): FeatureCollec
             commercialBan: Boolean(p.access.commercialBan),
             gcpTruckException: Boolean(p.access.commercialException),
             passengerOnlyHeightInches: p.access.passengerOnlyHeightInches ?? null,
+            widthInches: p.limits.widthInches ?? null,
+            weightTons: p.limits.weightTons ?? null,
             labelLng: num(p.extras?.labelLng),
             labelLat: num(p.extras?.labelLat),
             state: p.state,
