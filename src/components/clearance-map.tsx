@@ -2,7 +2,7 @@
 import { useEffect, useRef, useState } from "react";
 import * as maplibregl from "maplibre-gl";
 import { type GeoJSONSource, type Map as MapInstance } from "maplibre-gl";
-import type { FeatureCollection, LineString } from "geojson";
+import type { Feature, FeatureCollection, LineString } from "geojson";
 import type { ClearanceCollection } from "@/lib/types";
 import type { DrivePath } from "@/lib/path";
 import { formatHeight, getClearanceSeverity, recordLabels } from "@/lib/clearance";
@@ -315,6 +315,88 @@ function addOverlayLayers(map: MapInstance) {
       minzoom: 9,
     });
   }
+  if (!map.getSource("focus-highlight")) {
+    map.addSource("focus-highlight", { type: "geojson", data: EMPTY_FC });
+    map.addLayer({
+      id: "focus-glow-line",
+      type: "line",
+      source: "focus-highlight",
+      filter: ["any", ["==", ["geometry-type"], "LineString"], ["==", ["geometry-type"], "MultiLineString"]],
+      layout: { "line-cap": "round", "line-join": "round" },
+      paint: {
+        "line-color": "#e11d48",
+        "line-width": ["interpolate", ["linear"], ["zoom"], 9, 10, 14, 18],
+        "line-opacity": 0.35,
+        "line-blur": 6,
+      },
+    });
+    map.addLayer({
+      id: "focus-line",
+      type: "line",
+      source: "focus-highlight",
+      filter: ["any", ["==", ["geometry-type"], "LineString"], ["==", ["geometry-type"], "MultiLineString"]],
+      layout: { "line-cap": "round", "line-join": "round" },
+      paint: {
+        "line-color": "#fff",
+        "line-width": ["interpolate", ["linear"], ["zoom"], 9, 3, 14, 7],
+        "line-opacity": 0.95,
+      },
+    });
+    map.addLayer({
+      id: "focus-glow-circle",
+      type: "circle",
+      source: "focus-highlight",
+      filter: ["==", ["geometry-type"], "Point"],
+      paint: {
+        "circle-radius": ["interpolate", ["linear"], ["zoom"], 8, 14, 13, 22],
+        "circle-color": "#e11d48",
+        "circle-opacity": 0.35,
+        "circle-blur": 0.6,
+        "circle-stroke-width": 0,
+      },
+    });
+    map.addLayer({
+      id: "focus-circle",
+      type: "circle",
+      source: "focus-highlight",
+      filter: ["==", ["geometry-type"], "Point"],
+      paint: {
+        "circle-radius": ["interpolate", ["linear"], ["zoom"], 8, 7, 13, 12],
+        "circle-color": "#fff",
+        "circle-opacity": 0.95,
+        "circle-stroke-width": 3,
+        "circle-stroke-color": "#e11d48",
+      },
+    });
+  }
+  if (!map.getSource("hover-highlight")) {
+    map.addSource("hover-highlight", { type: "geojson", data: EMPTY_FC });
+    map.addLayer({
+      id: "hover-glow-line",
+      type: "line",
+      source: "hover-highlight",
+      filter: ["any", ["==", ["geometry-type"], "LineString"], ["==", ["geometry-type"], "MultiLineString"]],
+      layout: { "line-cap": "round", "line-join": "round" },
+      paint: {
+        "line-color": "#0f172a",
+        "line-width": ["interpolate", ["linear"], ["zoom"], 9, 7, 14, 12],
+        "line-opacity": 0.28,
+        "line-blur": 2,
+      },
+    });
+    map.addLayer({
+      id: "hover-glow-circle",
+      type: "circle",
+      source: "hover-highlight",
+      filter: ["==", ["geometry-type"], "Point"],
+      paint: {
+        "circle-radius": ["interpolate", ["linear"], ["zoom"], 8, 11, 13, 16],
+        "circle-color": "#0f172a",
+        "circle-opacity": 0.22,
+        "circle-blur": 0.4,
+      },
+    });
+  }
   if (!map.getSource("drive")) {
     map.addSource("drive", { type: "geojson", data: EMPTY_DRIVE });
     map.addLayer({
@@ -423,6 +505,7 @@ export function ClearanceMap({
   crossingLimitsData = null,
   majorCrossingsData = null,
   facilitiesData = null,
+  selectedFacilityId = null,
   initialViewport,
   onSelect,
   onFacilitySelect,
@@ -433,6 +516,7 @@ export function ClearanceMap({
   height: number;
   showAll: boolean;
   selectedId: string | null;
+  selectedFacilityId?: string | null;
   drive: DrivePath | null;
   altRoutes?: number[][][];
   awareness: AwarenessLayers;
@@ -458,6 +542,9 @@ export function ClearanceMap({
   const initial = useRef(initialViewport);
   const ends = useRef<maplibregl.Marker[]>([]);
   const focusedId = useRef<string | null>(null);
+  const markersRef = useRef(new Map<string, maplibregl.Marker>());
+  const selectedIdRef = useRef(selectedId);
+  const selectedFacilityIdRef = useRef(selectedFacilityId ?? null);
   const [ready, setReady] = useState(false);
   const [error, setError] = useState("");
 
@@ -496,7 +583,18 @@ export function ClearanceMap({
       map.addControl(ShareControl(() => current.current.onShare?.()), "top-right");
     }
 
-    const markers = new Map<string, maplibregl.Marker>();
+    const markers = markersRef.current;
+    markers.clear();
+    function syncMarkerFocus() {
+      const focusId = selectedIdRef.current;
+      for (const [key, marker] of markers) {
+        const el = marker.getElement();
+        const on = Boolean(focusId) && key === focusId;
+        el.classList.toggle("is-focused", on);
+        if (on) el.setAttribute("aria-current", "true");
+        else el.removeAttribute("aria-current");
+      }
+    }
     function updateMarkers() {
       if (!map.getSource("clearances") || !map.isSourceLoaded("clearances")) return;
       const keep = new Set<string>();
@@ -548,7 +646,9 @@ export function ClearanceMap({
           markers.delete(key);
         }
       }
+      syncMarkerFocus();
     }
+
     function reportViewport() {
       const c = map.getCenter();
       const b = map.getBounds();
@@ -570,8 +670,26 @@ export function ClearanceMap({
       if (id) current.current.onFacilitySelect?.(String(id));
     });
     for (const layerId of ["facilities-line", "facilities-circle"]) {
-      map.on("mouseenter", layerId, () => { map.getCanvas().style.cursor = "pointer"; });
-      map.on("mouseleave", layerId, () => { map.getCanvas().style.cursor = ""; });
+      map.on("mouseenter", layerId, event => {
+        map.getCanvas().style.cursor = "pointer";
+        const feature = event.features?.[0];
+        if (!feature || !map.getSource("hover-highlight")) return;
+        const id = feature.properties?.id;
+        if (id && id === selectedFacilityIdRef.current) return;
+        (map.getSource("hover-highlight") as GeoJSONSource).setData({
+          type: "FeatureCollection",
+          features: [{
+            type: "Feature",
+            properties: feature.properties || {},
+            geometry: feature.geometry as never,
+          }],
+        }).catch(() => undefined);
+      });
+      map.on("mouseleave", layerId, () => {
+        map.getCanvas().style.cursor = "";
+        const source = map.getSource("hover-highlight") as GeoJSONSource | undefined;
+        source?.setData(EMPTY_FC);
+      });
     }
 
       setReady(true);
@@ -734,8 +852,8 @@ export function ClearanceMap({
     for (const marker of ends.current) marker.remove();
     ends.current = [];
     if (!drive) {
-      source.setData(EMPTY_DRIVE).catch(() => undefined);
-      altSource.setData(EMPTY_DRIVE).catch(() => undefined);
+      source.setData(EMPTY_DRIVE);
+      altSource.setData(EMPTY_DRIVE);
       return;
     }
     source.setData(toDriveGeoJSON(drive.coordinates)).catch(() => {
@@ -750,7 +868,7 @@ export function ClearanceMap({
           properties: {},
           geometry: { type: "LineString" as const, coordinates },
         })),
-    }).catch(() => undefined);
+    });
     ends.current = [
       new maplibregl.Marker({ element: createEndpoint("A", `Start: ${drive.from.label}`), anchor: "center" })
         .setLngLat([drive.from.lng, drive.from.lat]).addTo(map),
@@ -765,6 +883,68 @@ export function ClearanceMap({
     );
     map.fitBounds(bounds, { padding: 56, duration: 700, maxZoom: 14 });
   }, [drive, altRoutes, ready]);
+
+  // Keep focus refs + marker pulse class in sync with the open info card.
+  useEffect(() => {
+    selectedIdRef.current = selectedId;
+    selectedFacilityIdRef.current = selectedFacilityId ?? null;
+    for (const [key, marker] of markersRef.current) {
+      const el = marker.getElement();
+      const on = Boolean(selectedId) && key === selectedId;
+      el.classList.toggle("is-focused", on);
+      if (on) el.setAttribute("aria-current", "true");
+      else el.removeAttribute("aria-current");
+    }
+  }, [selectedId, selectedFacilityId]);
+
+  // Draw a pulsing highlight under the open info card (clearance pin or facility geometry).
+  useEffect(() => {
+    const map = mapRef.current;
+    const source = map?.getSource("focus-highlight") as GeoJSONSource | undefined;
+    if (!ready || !map || !source) return;
+
+    let feature: Feature | null = null;
+    if (selectedFacilityId && facilitiesData) {
+      const match = facilitiesData.features.find(f => f.properties?.id === selectedFacilityId);
+      if (match) feature = match as Feature;
+    } else if (selectedId) {
+      const match = data.features.find(f => f.properties.id === selectedId);
+      if (match) feature = match as Feature;
+    }
+
+    source.setData(
+      feature
+        ? { type: "FeatureCollection", features: [feature] }
+        : EMPTY_FC,
+    );
+
+    // Clear sticky hover when selection changes.
+    const hover = map.getSource("hover-highlight") as GeoJSONSource | undefined;
+    hover?.setData(EMPTY_FC);
+
+    if (!feature) return;
+
+    let frame = 0;
+    const start = performance.now();
+    const tick = (now: number) => {
+      if (!mapRef.current?.getLayer("focus-glow-line")) return;
+      const wave = 0.5 + 0.5 * Math.sin(((now - start) / 900) * Math.PI * 2);
+      const lineGlow = 0.22 + wave * 0.38;
+      const circleGlow = 0.2 + wave * 0.4;
+      mapRef.current.setPaintProperty("focus-glow-line", "line-opacity", lineGlow);
+      mapRef.current.setPaintProperty("focus-glow-circle", "circle-opacity", circleGlow);
+      const lineWidth = ["interpolate", ["linear"], ["zoom"], 9, 8 + wave * 4, 14, 14 + wave * 6];
+      const circleRadius = ["interpolate", ["linear"], ["zoom"], 8, 12 + wave * 4, 13, 18 + wave * 6];
+      mapRef.current.setPaintProperty("focus-glow-line", "line-width", lineWidth as never);
+      mapRef.current.setPaintProperty("focus-glow-circle", "circle-radius", circleRadius as never);
+      frame = requestAnimationFrame(tick);
+    };
+    frame = requestAnimationFrame(tick);
+    return () => {
+      cancelAnimationFrame(frame);
+      source.setData(EMPTY_FC);
+    };
+  }, [selectedId, selectedFacilityId, facilitiesData, data, ready]);
 
   // Only fly when the selected record changes. Re-running on every data refresh
   // was forcing zoom back up and blocking zoom-out while the detail card stayed open.
