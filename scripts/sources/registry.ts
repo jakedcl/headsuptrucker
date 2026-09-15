@@ -35,14 +35,14 @@ export const AWARENESS_SOURCES: AwarenessSource[] = [
   {
     id: "nysdot-posted-height",
     agency: "NYSDOT",
-    label: "Posted height bridges (NYC + LI counties)",
+    label: "Posted height bridges (NYC, LI, Hudson Valley)",
     states: ["NY"],
     geometry: "point",
     extracts: ["clearance"],
     status: "active",
     url: "https://gis.dot.ny.gov/hostingny/rest/services/CommVehicleDataFeed/MapServer/1",
     adapter: "nysdot-posted-height",
-    notes: "BIN + posted under/on vertical clearances. Geometry often null; use LON/LAT fields.",
+    notes: "BIN + posted under/on vertical clearances. Geometry often null; use LON/LAT fields. Counties: NYC, Nassau, Suffolk, Westchester, Rockland, Putnam, Orange, Dutchess.",
   },
   {
     id: "nyc-low-bridges",
@@ -58,14 +58,14 @@ export const AWARENESS_SOURCES: AwarenessSource[] = [
   {
     id: "ctdot-posted-height",
     agency: "CTDOT",
-    label: "CTDOT bridges — Fairfield posted vertical",
+    label: "CTDOT bridges — Fairfield + New Haven posted vertical",
     states: ["CT"],
     geometry: "point",
     extracts: ["clearance"],
     status: "active",
     url: "https://services1.arcgis.com/FCaUeJ5SOVtImake/arcgis/rest/services/CTDOT_Bridges/FeatureServer/0",
     adapter: "ctdot-posted-height",
-    notes: "Polygon → centroid. Only records with posted vertical fields.",
+    notes: "Polygon → centroid. Posted vertical fields only, Fairfield and New Haven County towns.",
   },
   {
     id: "ctdot-parkways",
@@ -97,7 +97,7 @@ export const AWARENESS_SOURCES: AwarenessSource[] = [
     geometry: "line",
     extracts: ["corridor", "facility"],
     status: "active",
-    notes: "Phase 1: Palisades, GSP north of 105, Pulaski. Not a full commercial-ban statewide feed.",
+    notes: "Phase 1: Palisades (including spur/secondary), GSP north of 105, Pulaski. Not a full commercial-ban statewide feed.",
   },
   {
     id: "panynj-crossings",
@@ -153,7 +153,19 @@ export const AWARENESS_SOURCES: AwarenessSource[] = [
     url: "https://gis.dot.ny.gov/hostingny/rest/services/CommVehicleDataFeed/MapServer/2",
     adapter: "merge-hv-parkways",
     notes:
-      "NYC/LI already in public GeoJSON. Hudson Valley adds Saw Mill, Sprain, Taconic, Cross County, Hutch Westchester, Bronx River Westchester, Lake Welch, Seven Lakes, Long Mountain; Palisades NY merges into the shared Palisades corridor. Rules from CommVehicleDataFeed; geometry from Roadway Inventory.",
+      "NYC/LI already in public GeoJSON. Hudson Valley adds Saw Mill, Sprain, Taconic, Cross County, Hutch Westchester, Bronx River Westchester, Lake Welch, Seven Lakes, Long Mountain, Farragut, Bear Mountain; Palisades NY merges into the shared Palisades corridor. Rules from CommVehicleDataFeed; geometry from Roadway Inventory.",
+  },
+  {
+    id: "nysdot-posted-load",
+    agency: "NYSDOT",
+    label: "Posted load bridges (NYC, LI, Hudson Valley)",
+    states: ["NY"],
+    geometry: "point",
+    extracts: ["posted_load"],
+    status: "active",
+    url: "https://gis.dot.ny.gov/hostingny/rest/services/CommVehicleDataFeed/MapServer/0",
+    adapter: "nysdot-posted-load",
+    notes: "POSTED_LOAD_TONS > 0. Geometry often null; use LON/LAT. Same county set as posted height.",
   },
   {
     id: "nj-posted-clearances",

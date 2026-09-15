@@ -257,7 +257,9 @@ const PANYNJ_CROSSINGS: Crossing[] = [
 async function main() {
   console.log("Fetching NJDOT Palisades / GSP / US 1…");
   const [palRaw, gspRaw, us1Raw] = await Promise.all([
-    fetchGeoJson("SLD_NAME = 'PALISADES INTERSTATE PARKWAY'"),
+    fetchGeoJson(
+      "SLD_NAME IN ('PALISADES INTERSTATE PARKWAY','PALISADES INTERSTATE PARKWAY SECONDARY','PALISADES INT. PARKWAY SPUR')",
+    ),
     fetchGeoJson("SLD_NAME = 'GARDEN STATE PARKWAY'"),
     fetchGeoJson("SLD_NAME = 'US 1'"),
   ]);

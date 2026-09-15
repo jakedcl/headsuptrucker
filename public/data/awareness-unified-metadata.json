@@ -1,18 +1,18 @@
 {
-  "builtAt": "2026-09-15T14:57:26.417Z",
+  "builtAt": "2026-09-15T15:46:27.047Z",
   "schema": "awareness-v1",
-  "points": 728,
-  "lines": 38,
+  "points": 1010,
+  "lines": 40,
   "pointKinds": {
     "crossing": 18,
     "road": 1,
-    "clearance": 612,
+    "clearance": 821,
     "bridge": 6,
-    "posted_load": 89,
+    "posted_load": 162,
     "tunnel": 2
   },
   "lineKinds": {
-    "parkway": 38
+    "parkway": 40
   },
   "sources": [
     "clearances-nyc-li.geojson",

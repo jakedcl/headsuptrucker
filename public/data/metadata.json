@@ -1,9 +1,9 @@
 {
-  "retrievedAt": "2026-09-14T21:46:50.014Z",
-  "sourceUpdatedAt": "2026-09-14T09:05:17.000Z",
+  "retrievedAt": "2026-09-15T15:46:10.267Z",
+  "sourceUpdatedAt": "2026-09-15T09:05:18.000Z",
   "nysdotStatewideStructures": 1125,
-  "postedRecords": 612,
-  "uniqueStructures": 592,
+  "postedRecords": 821,
+  "uniqueStructures": 801,
   "counties": [
     {
       "county": "BRONX",
@@ -46,11 +46,46 @@
       "sourceStructures": 77,
       "postedUnder": 77,
       "postedOn": 0
+    },
+    {
+      "county": "WESTCHESTER",
+      "sourceStructures": 101,
+      "postedUnder": 94,
+      "postedOn": 7
+    },
+    {
+      "county": "ROCKLAND",
+      "sourceStructures": 19,
+      "postedUnder": 18,
+      "postedOn": 1
+    },
+    {
+      "county": "PUTNAM",
+      "sourceStructures": 9,
+      "postedUnder": 9,
+      "postedOn": 0
+    },
+    {
+      "county": "ORANGE",
+      "sourceStructures": 15,
+      "postedUnder": 14,
+      "postedOn": 0
+    },
+    {
+      "county": "DUTCHESS",
+      "sourceStructures": 7,
+      "postedUnder": 3,
+      "postedOn": 0
     }
   ],
-  "ctdotSourceBridges": 57,
-  "ctdotPostedRecords": 57,
+  "ctdotSourceBridges": 213,
+  "ctdotPostedRecords": 122,
   "ctdotTowns": [
+    {
+      "town": "BRANFORD",
+      "postedUnder": 2,
+      "postedOn": 0
+    },
     {
       "town": "BRIDGEPORT",
       "postedUnder": 11,
@@ -72,6 +107,11 @@
       "postedOn": 0
     },
     {
+      "town": "EAST HAVEN",
+      "postedUnder": 1,
+      "postedOn": 0
+    },
+    {
       "town": "FAIRFIELD",
       "postedUnder": 9,
       "postedOn": 0
@@ -82,8 +122,43 @@
       "postedOn": 0
     },
     {
+      "town": "GUILFORD",
+      "postedUnder": 4,
+      "postedOn": 0
+    },
+    {
+      "town": "HAMDEN",
+      "postedUnder": 3,
+      "postedOn": 0
+    },
+    {
+      "town": "MADISON",
+      "postedUnder": 6,
+      "postedOn": 0
+    },
+    {
+      "town": "MERIDEN",
+      "postedUnder": 10,
+      "postedOn": 0
+    },
+    {
+      "town": "MILFORD",
+      "postedUnder": 4,
+      "postedOn": 0
+    },
+    {
       "town": "NEW CANAAN",
       "postedUnder": 4,
+      "postedOn": 0
+    },
+    {
+      "town": "NEW HAVEN",
+      "postedUnder": 14,
+      "postedOn": 0
+    },
+    {
+      "town": "NORTH HAVEN",
+      "postedUnder": 5,
       "postedOn": 0
     },
     {
@@ -92,7 +167,22 @@
       "postedOn": 0
     },
     {
+      "town": "ORANGE",
+      "postedUnder": 2,
+      "postedOn": 0
+    },
+    {
+      "town": "SEYMOUR",
+      "postedUnder": 1,
+      "postedOn": 0
+    },
+    {
       "town": "SHELTON",
+      "postedUnder": 1,
+      "postedOn": 0
+    },
+    {
+      "town": "SOUTHBURY",
       "postedUnder": 1,
       "postedOn": 0
     },
@@ -112,25 +202,46 @@
       "postedOn": 0
     },
     {
+      "town": "WALLINGFORD",
+      "postedUnder": 4,
+      "postedOn": 0
+    },
+    {
+      "town": "WATERBURY",
+      "postedUnder": 5,
+      "postedOn": 0
+    },
+    {
+      "town": "WEST HAVEN",
+      "postedUnder": 1,
+      "postedOn": 0
+    },
+    {
       "town": "WESTPORT",
       "postedUnder": 4,
       "postedOn": 2
+    },
+    {
+      "town": "WOODBRIDGE",
+      "postedUnder": 2,
+      "postedOn": 0
     }
   ],
+  "nysdotPostedLoadRecords": 136,
   "nycLegacyRecords": 149,
   "nycDirectionalRecords": 36,
   "overlapCandidatePairs": 145,
   "overlapLegacyRecords": 118,
   "agreeingCandidatePairs": 53,
-  "mergedAcrossSources": 57,
+  "mergedAcrossSources": 122,
   "belowFeet": {
-    "8": 16,
-    "9": 36,
-    "10": 108,
-    "11": 227,
-    "12": 345,
-    "13": 552
+    "8": 17,
+    "9": 44,
+    "10": 127,
+    "11": 275,
+    "12": 429,
+    "13": 700
   },
   "nullSourceGeometries": 1125,
-  "omittedFields": 572
+  "omittedFields": 788
 }

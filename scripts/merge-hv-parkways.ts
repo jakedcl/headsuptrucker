@@ -116,6 +116,20 @@ const TARGETS: Target[] = [
     roadwayWhere: "Parkway_Flag='T' AND Roadway_Name='Palisades Int Pkwy'",
     mergeIntoId: "parkway-nj-palisades-interstate-parkway",
   },
+  {
+    id: "parkway-farragut-parkway",
+    name: "Farragut Parkway",
+    operator: "NYSDOT",
+    rulesName: "Farragut Parkway",
+    roadwayWhere: "Roadway_Name='Farragut Pkwy'",
+  },
+  {
+    id: "parkway-bear-mountain-state-parkway",
+    name: "Bear Mountain State Parkway",
+    operator: "NYSDOT",
+    rulesName: "Bear Mountain State Parkway",
+    roadwayWhere: "Roadway_Name='Bear Mountain Pkwy'",
+  },
 ];
 
 const MANAGED_IDS = new Set(TARGETS.filter(t => !t.mergeIntoId).map(t => t.id));

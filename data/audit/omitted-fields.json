@@ -12,6 +12,216 @@
     "reason": "No active posting in this field"
   },
   {
+    "id": "7713210",
+    "field": "coordinates",
+    "value": [
+      -73.90076806,
+      41.71644701
+    ],
+    "reason": "Missing identity or outside launch-area coordinate envelope"
+  },
+  {
+    "id": "7713180",
+    "field": "POSTED_VRT_CLRNC_ON",
+    "value": 0,
+    "reason": "No active posting in this field"
+  },
+  {
+    "id": "7713130",
+    "field": "coordinates",
+    "value": [
+      -73.51446995,
+      41.92727199
+    ],
+    "reason": "Missing identity or outside launch-area coordinate envelope"
+  },
+  {
+    "id": "7713120",
+    "field": "coordinates",
+    "value": [
+      -73.51751606,
+      41.91780396
+    ],
+    "reason": "Missing identity or outside launch-area coordinate envelope"
+  },
+  {
+    "id": "7712970",
+    "field": "POSTED_VRT_CLRNC_ON",
+    "value": 0,
+    "reason": "No active posting in this field"
+  },
+  {
+    "id": "7712890",
+    "field": "coordinates",
+    "value": [
+      -74.68231,
+      41.36169597
+    ],
+    "reason": "Missing identity or outside launch-area coordinate envelope"
+  },
+  {
+    "id": "7712880",
+    "field": "POSTED_VRT_CLRNC_ON",
+    "value": 0,
+    "reason": "No active posting in this field"
+  },
+  {
+    "id": "7712860",
+    "field": "POSTED_VRT_CLRNC_ON",
+    "value": 0,
+    "reason": "No active posting in this field"
+  },
+  {
+    "id": "7712850",
+    "field": "POSTED_VRT_CLRNC_ON",
+    "value": 0,
+    "reason": "No active posting in this field"
+  },
+  {
+    "id": "7712830",
+    "field": "POSTED_VRT_CLRNC_ON",
+    "value": 0,
+    "reason": "No active posting in this field"
+  },
+  {
+    "id": "7712822",
+    "field": "POSTED_VRT_CLRNC_ON",
+    "value": 0,
+    "reason": "No active posting in this field"
+  },
+  {
+    "id": "7712810",
+    "field": "POSTED_VRT_CLRNC_ON",
+    "value": 0,
+    "reason": "No active posting in this field"
+  },
+  {
+    "id": "7712770",
+    "field": "POSTED_VRT_CLRNC_UNDER",
+    "value": 0,
+    "reason": "No active posting in this field"
+  },
+  {
+    "id": "7712750",
+    "field": "POSTED_VRT_CLRNC_ON",
+    "value": 0,
+    "reason": "No active posting in this field"
+  },
+  {
+    "id": "7712690",
+    "field": "POSTED_VRT_CLRNC_ON",
+    "value": 0,
+    "reason": "No active posting in this field"
+  },
+  {
+    "id": "7712640",
+    "field": "POSTED_VRT_CLRNC_ON",
+    "value": 0,
+    "reason": "No active posting in this field"
+  },
+  {
+    "id": "7712630",
+    "field": "POSTED_VRT_CLRNC_ON",
+    "value": 0,
+    "reason": "No active posting in this field"
+  },
+  {
+    "id": "7712610",
+    "field": "POSTED_VRT_CLRNC_ON",
+    "value": 0,
+    "reason": "No active posting in this field"
+  },
+  {
+    "id": "7712600",
+    "field": "POSTED_VRT_CLRNC_ON",
+    "value": 0,
+    "reason": "No active posting in this field"
+  },
+  {
+    "id": "7712590",
+    "field": "POSTED_VRT_CLRNC_ON",
+    "value": 0,
+    "reason": "No active posting in this field"
+  },
+  {
+    "id": "7712580",
+    "field": "POSTED_VRT_CLRNC_ON",
+    "value": 0,
+    "reason": "No active posting in this field"
+  },
+  {
+    "id": "7712570",
+    "field": "POSTED_VRT_CLRNC_ON",
+    "value": 0,
+    "reason": "No active posting in this field"
+  },
+  {
+    "id": "7712550",
+    "field": "POSTED_VRT_CLRNC_ON",
+    "value": 0,
+    "reason": "No active posting in this field"
+  },
+  {
+    "id": "7712520",
+    "field": "POSTED_VRT_CLRNC_ON",
+    "value": 0,
+    "reason": "No active posting in this field"
+  },
+  {
+    "id": "7712510",
+    "field": "POSTED_VRT_CLRNC_ON",
+    "value": 0,
+    "reason": "No active posting in this field"
+  },
+  {
+    "id": "7712500",
+    "field": "POSTED_VRT_CLRNC_ON",
+    "value": 0,
+    "reason": "No active posting in this field"
+  },
+  {
+    "id": "7712470",
+    "field": "POSTED_VRT_CLRNC_ON",
+    "value": 0,
+    "reason": "No active posting in this field"
+  },
+  {
+    "id": "7712460",
+    "field": "POSTED_VRT_CLRNC_ON",
+    "value": 0,
+    "reason": "No active posting in this field"
+  },
+  {
+    "id": "7712450",
+    "field": "POSTED_VRT_CLRNC_ON",
+    "value": 0,
+    "reason": "No active posting in this field"
+  },
+  {
+    "id": "7712420",
+    "field": "POSTED_VRT_CLRNC_ON",
+    "value": 0,
+    "reason": "No active posting in this field"
+  },
+  {
+    "id": "7712280",
+    "field": "POSTED_VRT_CLRNC_ON",
+    "value": 0,
+    "reason": "No active posting in this field"
+  },
+  {
+    "id": "7712270",
+    "field": "POSTED_VRT_CLRNC_ON",
+    "value": 0,
+    "reason": "No active posting in this field"
+  },
+  {
+    "id": "7712200",
+    "field": "POSTED_VRT_CLRNC_ON",
+    "value": 0,
+    "reason": "No active posting in this field"
+  },
+  {
     "id": "7709590",
     "field": "POSTED_VRT_CLRNC_ON",
     "value": 0,
@@ -66,7 +276,31 @@
     "reason": "No active posting in this field"
   },
   {
+    "id": "7701720",
+    "field": "POSTED_VRT_CLRNC_ON",
+    "value": 0,
+    "reason": "No active posting in this field"
+  },
+  {
+    "id": "7700540",
+    "field": "POSTED_VRT_CLRNC_ON",
+    "value": 0,
+    "reason": "No active posting in this field"
+  },
+  {
     "id": "7700430",
+    "field": "POSTED_VRT_CLRNC_ON",
+    "value": 0,
+    "reason": "No active posting in this field"
+  },
+  {
+    "id": "7500990",
+    "field": "POSTED_VRT_CLRNC_ON",
+    "value": 0,
+    "reason": "No active posting in this field"
+  },
+  {
+    "id": "7345730",
     "field": "POSTED_VRT_CLRNC_ON",
     "value": 0,
     "reason": "No active posting in this field"
@@ -192,6 +426,54 @@
     "reason": "No active posting in this field"
   },
   {
+    "id": "7041390",
+    "field": "POSTED_VRT_CLRNC_ON",
+    "value": 0,
+    "reason": "No active posting in this field"
+  },
+  {
+    "id": "7041380",
+    "field": "POSTED_VRT_CLRNC_ON",
+    "value": 0,
+    "reason": "No active posting in this field"
+  },
+  {
+    "id": "7041370",
+    "field": "POSTED_VRT_CLRNC_ON",
+    "value": 0,
+    "reason": "No active posting in this field"
+  },
+  {
+    "id": "7040920",
+    "field": "POSTED_VRT_CLRNC_ON",
+    "value": 0,
+    "reason": "No active posting in this field"
+  },
+  {
+    "id": "7040570",
+    "field": "POSTED_VRT_CLRNC_ON",
+    "value": 0,
+    "reason": "No active posting in this field"
+  },
+  {
+    "id": "7040470",
+    "field": "POSTED_VRT_CLRNC_ON",
+    "value": 0,
+    "reason": "No active posting in this field"
+  },
+  {
+    "id": "7037300",
+    "field": "POSTED_VRT_CLRNC_ON",
+    "value": 0,
+    "reason": "No active posting in this field"
+  },
+  {
+    "id": "7037280",
+    "field": "POSTED_VRT_CLRNC_ON",
+    "value": 0,
+    "reason": "No active posting in this field"
+  },
+  {
     "id": "7037050",
     "field": "POSTED_VRT_CLRNC_ON",
     "value": 0,
@@ -223,6 +505,48 @@
   },
   {
     "id": "7019520",
+    "field": "POSTED_VRT_CLRNC_ON",
+    "value": 0,
+    "reason": "No active posting in this field"
+  },
+  {
+    "id": "7016650",
+    "field": "POSTED_VRT_CLRNC_ON",
+    "value": 0,
+    "reason": "No active posting in this field"
+  },
+  {
+    "id": "7006260",
+    "field": "POSTED_VRT_CLRNC_ON",
+    "value": 0,
+    "reason": "No active posting in this field"
+  },
+  {
+    "id": "7003350",
+    "field": "POSTED_VRT_CLRNC_ON",
+    "value": 0,
+    "reason": "No active posting in this field"
+  },
+  {
+    "id": "7003040",
+    "field": "coordinates",
+    "value": [
+      -74.68480006,
+      41.36340797
+    ],
+    "reason": "Missing identity or outside launch-area coordinate envelope"
+  },
+  {
+    "id": "7003030",
+    "field": "coordinates",
+    "value": [
+      -74.69418703,
+      41.37441901
+    ],
+    "reason": "Missing identity or outside launch-area coordinate envelope"
+  },
+  {
+    "id": "7000110",
     "field": "POSTED_VRT_CLRNC_ON",
     "value": 0,
     "reason": "No active posting in this field"
@@ -272,6 +596,18 @@
   {
     "id": "5524187",
     "field": "POSTED_VRT_CLRNC_UNDER",
+    "value": 0,
+    "reason": "No active posting in this field"
+  },
+  {
+    "id": "5523362",
+    "field": "POSTED_VRT_CLRNC_ON",
+    "value": 0,
+    "reason": "No active posting in this field"
+  },
+  {
+    "id": "5523270",
+    "field": "POSTED_VRT_CLRNC_ON",
     "value": 0,
     "reason": "No active posting in this field"
   },
@@ -360,6 +696,24 @@
     "reason": "No active posting in this field"
   },
   {
+    "id": "552163A",
+    "field": "POSTED_VRT_CLRNC_ON",
+    "value": 0,
+    "reason": "No active posting in this field"
+  },
+  {
+    "id": "5521609",
+    "field": "POSTED_VRT_CLRNC_ON",
+    "value": 0,
+    "reason": "No active posting in this field"
+  },
+  {
+    "id": "5521430",
+    "field": "POSTED_VRT_CLRNC_ON",
+    "value": 0,
+    "reason": "No active posting in this field"
+  },
+  {
     "id": "552126B",
     "field": "POSTED_VRT_CLRNC_UNDER",
     "value": 0,
@@ -396,6 +750,141 @@
     "reason": "No active posting in this field"
   },
   {
+    "id": "5514779",
+    "field": "POSTED_VRT_CLRNC_ON",
+    "value": 0,
+    "reason": "No active posting in this field"
+  },
+  {
+    "id": "5502440",
+    "field": "coordinates",
+    "value": [
+      -73.77216898,
+      41.82496802
+    ],
+    "reason": "Missing identity or outside launch-area coordinate envelope"
+  },
+  {
+    "id": "5502140",
+    "field": "POSTED_VRT_CLRNC_ON",
+    "value": 0,
+    "reason": "No active posting in this field"
+  },
+  {
+    "id": "5501209",
+    "field": "POSTED_VRT_CLRNC_ON",
+    "value": 0,
+    "reason": "No active posting in this field"
+  },
+  {
+    "id": "5501192",
+    "field": "POSTED_VRT_CLRNC_ON",
+    "value": 0,
+    "reason": "No active posting in this field"
+  },
+  {
+    "id": "5500950",
+    "field": "POSTED_VRT_CLRNC_ON",
+    "value": 0,
+    "reason": "No active posting in this field"
+  },
+  {
+    "id": "5500919",
+    "field": "POSTED_VRT_CLRNC_ON",
+    "value": 0,
+    "reason": "No active posting in this field"
+  },
+  {
+    "id": "5500890",
+    "field": "POSTED_VRT_CLRNC_UNDER",
+    "value": 0,
+    "reason": "No active posting in this field"
+  },
+  {
+    "id": "5500870",
+    "field": "POSTED_VRT_CLRNC_UNDER",
+    "value": 0,
+    "reason": "No active posting in this field"
+  },
+  {
+    "id": "5500860",
+    "field": "POSTED_VRT_CLRNC_ON",
+    "value": 0,
+    "reason": "No active posting in this field"
+  },
+  {
+    "id": "5500551",
+    "field": "POSTED_VRT_CLRNC_ON",
+    "value": 0,
+    "reason": "No active posting in this field"
+  },
+  {
+    "id": "5500542",
+    "field": "POSTED_VRT_CLRNC_ON",
+    "value": 0,
+    "reason": "No active posting in this field"
+  },
+  {
+    "id": "5500541",
+    "field": "POSTED_VRT_CLRNC_ON",
+    "value": 0,
+    "reason": "No active posting in this field"
+  },
+  {
+    "id": "5500530",
+    "field": "POSTED_VRT_CLRNC_ON",
+    "value": 0,
+    "reason": "No active posting in this field"
+  },
+  {
+    "id": "5500529",
+    "field": "POSTED_VRT_CLRNC_ON",
+    "value": 0,
+    "reason": "No active posting in this field"
+  },
+  {
+    "id": "5500200",
+    "field": "POSTED_VRT_CLRNC_ON",
+    "value": 0,
+    "reason": "No active posting in this field"
+  },
+  {
+    "id": "5500160",
+    "field": "POSTED_VRT_CLRNC_ON",
+    "value": 0,
+    "reason": "No active posting in this field"
+  },
+  {
+    "id": "5500150",
+    "field": "POSTED_VRT_CLRNC_ON",
+    "value": 0,
+    "reason": "No active posting in this field"
+  },
+  {
+    "id": "5500119",
+    "field": "POSTED_VRT_CLRNC_ON",
+    "value": 0,
+    "reason": "No active posting in this field"
+  },
+  {
+    "id": "5500060",
+    "field": "POSTED_VRT_CLRNC_ON",
+    "value": 0,
+    "reason": "No active posting in this field"
+  },
+  {
+    "id": "5500029",
+    "field": "POSTED_VRT_CLRNC_ON",
+    "value": 0,
+    "reason": "No active posting in this field"
+  },
+  {
+    "id": "5500019",
+    "field": "POSTED_VRT_CLRNC_ON",
+    "value": 0,
+    "reason": "No active posting in this field"
+  },
+  {
     "id": "5075449",
     "field": "POSTED_VRT_CLRNC_ON",
     "value": 0,
@@ -409,6 +898,30 @@
   },
   {
     "id": "5066651",
+    "field": "POSTED_VRT_CLRNC_ON",
+    "value": 0,
+    "reason": "No active posting in this field"
+  },
+  {
+    "id": "5027149",
+    "field": "POSTED_VRT_CLRNC_ON",
+    "value": 0,
+    "reason": "No active posting in this field"
+  },
+  {
+    "id": "5003390",
+    "field": "POSTED_VRT_CLRNC_ON",
+    "value": 0,
+    "reason": "No active posting in this field"
+  },
+  {
+    "id": "3365070",
+    "field": "POSTED_VRT_CLRNC_ON",
+    "value": 0,
+    "reason": "No active posting in this field"
+  },
+  {
+    "id": "3365050",
     "field": "POSTED_VRT_CLRNC_ON",
     "value": 0,
     "reason": "No active posting in this field"
@@ -432,6 +945,108 @@
     "reason": "No active posting in this field"
   },
   {
+    "id": "3358530",
+    "field": "POSTED_VRT_CLRNC_ON",
+    "value": 0,
+    "reason": "No active posting in this field"
+  },
+  {
+    "id": "3348999",
+    "field": "POSTED_VRT_CLRNC_ON",
+    "value": 0,
+    "reason": "No active posting in this field"
+  },
+  {
+    "id": "3348970",
+    "field": "POSTED_VRT_CLRNC_ON",
+    "value": 0,
+    "reason": "No active posting in this field"
+  },
+  {
+    "id": "3348950",
+    "field": "POSTED_VRT_CLRNC_ON",
+    "value": 0,
+    "reason": "No active posting in this field"
+  },
+  {
+    "id": "3348860",
+    "field": "POSTED_VRT_CLRNC_ON",
+    "value": 0,
+    "reason": "No active posting in this field"
+  },
+  {
+    "id": "3348850",
+    "field": "POSTED_VRT_CLRNC_ON",
+    "value": 0,
+    "reason": "No active posting in this field"
+  },
+  {
+    "id": "3348840",
+    "field": "POSTED_VRT_CLRNC_ON",
+    "value": 0,
+    "reason": "No active posting in this field"
+  },
+  {
+    "id": "3348790",
+    "field": "POSTED_VRT_CLRNC_ON",
+    "value": 0,
+    "reason": "No active posting in this field"
+  },
+  {
+    "id": "3348740",
+    "field": "POSTED_VRT_CLRNC_ON",
+    "value": 0,
+    "reason": "No active posting in this field"
+  },
+  {
+    "id": "3348720",
+    "field": "POSTED_VRT_CLRNC_ON",
+    "value": 0,
+    "reason": "No active posting in this field"
+  },
+  {
+    "id": "3348690",
+    "field": "POSTED_VRT_CLRNC_ON",
+    "value": 0,
+    "reason": "No active posting in this field"
+  },
+  {
+    "id": "3348560",
+    "field": "POSTED_VRT_CLRNC_UNDER",
+    "value": 0,
+    "reason": "No active posting in this field"
+  },
+  {
+    "id": "3348440",
+    "field": "POSTED_VRT_CLRNC_ON",
+    "value": 0,
+    "reason": "No active posting in this field"
+  },
+  {
+    "id": "3348230",
+    "field": "POSTED_VRT_CLRNC_ON",
+    "value": 0,
+    "reason": "No active posting in this field"
+  },
+  {
+    "id": "3348160",
+    "field": "POSTED_VRT_CLRNC_ON",
+    "value": 0,
+    "reason": "No active posting in this field"
+  },
+  {
+    "id": "3348000",
+    "field": "POSTED_VRT_CLRNC_ON",
+    "value": 0,
+    "reason": "No active posting in this field"
+  },
+  {
+    "id": "3347990",
+    "field": "POSTED_VRT_CLRNC_ON",
+    "value": 0,
+    "reason": "No active posting in this field"
+  },
+  {
     "id": "3300580",
     "field": "POSTED_VRT_CLRNC_ON",
     "value": 0,
@@ -446,6 +1061,18 @@
   {
     "id": "3056639",
     "field": "POSTED_VRT_CLRNC_ON",
+    "value": 0,
+    "reason": "No active posting in this field"
+  },
+  {
+    "id": "3037170",
+    "field": "POSTED_VRT_CLRNC_ON",
+    "value": 0,
+    "reason": "No active posting in this field"
+  },
+  {
+    "id": "2346230",
+    "field": "POSTED_VRT_CLRNC_UNDER",
     "value": 0,
     "reason": "No active posting in this field"
   },
@@ -470,6 +1097,12 @@
   {
     "id": "2268497",
     "field": "POSTED_VRT_CLRNC_UNDER",
+    "value": 0,
+    "reason": "No active posting in this field"
+  },
+  {
+    "id": "2268380",
+    "field": "POSTED_VRT_CLRNC_ON",
     "value": 0,
     "reason": "No active posting in this field"
   },
@@ -542,6 +1175,42 @@
   {
     "id": "2266129",
     "field": "POSTED_VRT_CLRNC_ON",
+    "value": 0,
+    "reason": "No active posting in this field"
+  },
+  {
+    "id": "2265509",
+    "field": "POSTED_VRT_CLRNC_ON",
+    "value": 0,
+    "reason": "No active posting in this field"
+  },
+  {
+    "id": "2265490",
+    "field": "POSTED_VRT_CLRNC_ON",
+    "value": 0,
+    "reason": "No active posting in this field"
+  },
+  {
+    "id": "2265450",
+    "field": "POSTED_VRT_CLRNC_UNDER",
+    "value": 0,
+    "reason": "No active posting in this field"
+  },
+  {
+    "id": "2265210",
+    "field": "POSTED_VRT_CLRNC_ON",
+    "value": 0,
+    "reason": "No active posting in this field"
+  },
+  {
+    "id": "2263210",
+    "field": "POSTED_VRT_CLRNC_ON",
+    "value": 0,
+    "reason": "No active posting in this field"
+  },
+  {
+    "id": "2262070",
+    "field": "POSTED_VRT_CLRNC_UNDER",
     "value": 0,
     "reason": "No active posting in this field"
   },
@@ -1512,6 +2181,12 @@
     "reason": "No active posting in this field"
   },
   {
+    "id": "2225180",
+    "field": "POSTED_VRT_CLRNC_UNDER",
+    "value": 0,
+    "reason": "No active posting in this field"
+  },
+  {
     "id": "2076129",
     "field": "POSTED_VRT_CLRNC_ON",
     "value": 0,
@@ -1561,6 +2236,12 @@
   },
   {
     "id": "2058380",
+    "field": "POSTED_VRT_CLRNC_ON",
+    "value": 0,
+    "reason": "No active posting in this field"
+  },
+  {
+    "id": "2000050",
     "field": "POSTED_VRT_CLRNC_ON",
     "value": 0,
     "reason": "No active posting in this field"
@@ -1699,6 +2380,30 @@
   },
   {
     "id": "1520160",
+    "field": "POSTED_VRT_CLRNC_ON",
+    "value": 0,
+    "reason": "No active posting in this field"
+  },
+  {
+    "id": "1091440",
+    "field": "POSTED_VRT_CLRNC_ON",
+    "value": 0,
+    "reason": "No active posting in this field"
+  },
+  {
+    "id": "1091211",
+    "field": "POSTED_VRT_CLRNC_ON",
+    "value": 0,
+    "reason": "No active posting in this field"
+  },
+  {
+    "id": "1091192",
+    "field": "POSTED_VRT_CLRNC_ON",
+    "value": 0,
+    "reason": "No active posting in this field"
+  },
+  {
+    "id": "1091191",
     "field": "POSTED_VRT_CLRNC_ON",
     "value": 0,
     "reason": "No active posting in this field"
@@ -1897,6 +2602,66 @@
   },
   {
     "id": "1069711",
+    "field": "POSTED_VRT_CLRNC_ON",
+    "value": 0,
+    "reason": "No active posting in this field"
+  },
+  {
+    "id": "1068970",
+    "field": "POSTED_VRT_CLRNC_ON",
+    "value": 0,
+    "reason": "No active posting in this field"
+  },
+  {
+    "id": "1068790",
+    "field": "POSTED_VRT_CLRNC_ON",
+    "value": 0,
+    "reason": "No active posting in this field"
+  },
+  {
+    "id": "1068770",
+    "field": "POSTED_VRT_CLRNC_ON",
+    "value": 0,
+    "reason": "No active posting in this field"
+  },
+  {
+    "id": "1068749",
+    "field": "POSTED_VRT_CLRNC_ON",
+    "value": 0,
+    "reason": "No active posting in this field"
+  },
+  {
+    "id": "1068730",
+    "field": "POSTED_VRT_CLRNC_ON",
+    "value": 0,
+    "reason": "No active posting in this field"
+  },
+  {
+    "id": "1068720",
+    "field": "POSTED_VRT_CLRNC_ON",
+    "value": 0,
+    "reason": "No active posting in this field"
+  },
+  {
+    "id": "1068710",
+    "field": "POSTED_VRT_CLRNC_ON",
+    "value": 0,
+    "reason": "No active posting in this field"
+  },
+  {
+    "id": "1068689",
+    "field": "POSTED_VRT_CLRNC_ON",
+    "value": 0,
+    "reason": "No active posting in this field"
+  },
+  {
+    "id": "1068679",
+    "field": "POSTED_VRT_CLRNC_ON",
+    "value": 0,
+    "reason": "No active posting in this field"
+  },
+  {
+    "id": "1068619",
     "field": "POSTED_VRT_CLRNC_ON",
     "value": 0,
     "reason": "No active posting in this field"
@@ -2964,7 +3729,37 @@
     "reason": "No active posting in this field"
   },
   {
+    "id": "1053111",
+    "field": "POSTED_VRT_CLRNC_ON",
+    "value": 0,
+    "reason": "No active posting in this field"
+  },
+  {
+    "id": "1053041",
+    "field": "POSTED_VRT_CLRNC_ON",
+    "value": 0,
+    "reason": "No active posting in this field"
+  },
+  {
+    "id": "1052792",
+    "field": "POSTED_VRT_CLRNC_ON",
+    "value": 0,
+    "reason": "No active posting in this field"
+  },
+  {
+    "id": "1052782",
+    "field": "POSTED_VRT_CLRNC_ON",
+    "value": 0,
+    "reason": "No active posting in this field"
+  },
+  {
     "id": "1050480",
+    "field": "POSTED_VRT_CLRNC_ON",
+    "value": 0,
+    "reason": "No active posting in this field"
+  },
+  {
+    "id": "1049889",
     "field": "POSTED_VRT_CLRNC_ON",
     "value": 0,
     "reason": "No active posting in this field"
@@ -2988,7 +3783,37 @@
     "reason": "No active posting in this field"
   },
   {
+    "id": "1045340",
+    "field": "POSTED_VRT_CLRNC_ON",
+    "value": 0,
+    "reason": "No active posting in this field"
+  },
+  {
+    "id": "1045300",
+    "field": "POSTED_VRT_CLRNC_ON",
+    "value": 0,
+    "reason": "No active posting in this field"
+  },
+  {
     "id": "1042180",
+    "field": "POSTED_VRT_CLRNC_ON",
+    "value": 0,
+    "reason": "No active posting in this field"
+  },
+  {
+    "id": "1040880",
+    "field": "POSTED_VRT_CLRNC_ON",
+    "value": 0,
+    "reason": "No active posting in this field"
+  },
+  {
+    "id": "1040090",
+    "field": "POSTED_VRT_CLRNC_ON",
+    "value": 0,
+    "reason": "No active posting in this field"
+  },
+  {
+    "id": "1037990",
     "field": "POSTED_VRT_CLRNC_ON",
     "value": 0,
     "reason": "No active posting in this field"
@@ -3007,6 +3832,30 @@
   },
   {
     "id": "1037819",
+    "field": "POSTED_VRT_CLRNC_ON",
+    "value": 0,
+    "reason": "No active posting in this field"
+  },
+  {
+    "id": "1037570",
+    "field": "POSTED_VRT_CLRNC_ON",
+    "value": 0,
+    "reason": "No active posting in this field"
+  },
+  {
+    "id": "1037520",
+    "field": "POSTED_VRT_CLRNC_ON",
+    "value": 0,
+    "reason": "No active posting in this field"
+  },
+  {
+    "id": "1037390",
+    "field": "POSTED_VRT_CLRNC_ON",
+    "value": 0,
+    "reason": "No active posting in this field"
+  },
+  {
+    "id": "1037360",
     "field": "POSTED_VRT_CLRNC_ON",
     "value": 0,
     "reason": "No active posting in this field"
@@ -3060,6 +3909,24 @@
     "reason": "No active posting in this field"
   },
   {
+    "id": "1036200",
+    "field": "POSTED_VRT_CLRNC_ON",
+    "value": 0,
+    "reason": "No active posting in this field"
+  },
+  {
+    "id": "1027740",
+    "field": "POSTED_VRT_CLRNC_ON",
+    "value": 0,
+    "reason": "No active posting in this field"
+  },
+  {
+    "id": "1025630",
+    "field": "POSTED_VRT_CLRNC_ON",
+    "value": 0,
+    "reason": "No active posting in this field"
+  },
+  {
     "id": "1018399",
     "field": "POSTED_VRT_CLRNC_ON",
     "value": 0,
@@ -3090,6 +3957,75 @@
     "reason": "No active posting in this field"
   },
   {
+    "id": "1006300",
+    "field": "POSTED_VRT_CLRNC_ON",
+    "value": 0,
+    "reason": "No active posting in this field"
+  },
+  {
+    "id": "1006230",
+    "field": "POSTED_VRT_CLRNC_ON",
+    "value": 0,
+    "reason": "No active posting in this field"
+  },
+  {
+    "id": "1006210",
+    "field": "POSTED_VRT_CLRNC_ON",
+    "value": 0,
+    "reason": "No active posting in this field"
+  },
+  {
+    "id": "1006200",
+    "field": "POSTED_VRT_CLRNC_ON",
+    "value": 0,
+    "reason": "No active posting in this field"
+  },
+  {
+    "id": "1006160",
+    "field": "POSTED_VRT_CLRNC_ON",
+    "value": 0,
+    "reason": "No active posting in this field"
+  },
+  {
+    "id": "1006140",
+    "field": "POSTED_VRT_CLRNC_ON",
+    "value": 0,
+    "reason": "No active posting in this field"
+  },
+  {
+    "id": "1005279",
+    "field": "POSTED_VRT_CLRNC_ON",
+    "value": 0,
+    "reason": "No active posting in this field"
+  },
+  {
+    "id": "1003480",
+    "field": "POSTED_VRT_CLRNC_ON",
+    "value": 0,
+    "reason": "No active posting in this field"
+  },
+  {
+    "id": "1003420",
+    "field": "POSTED_VRT_CLRNC_ON",
+    "value": 0,
+    "reason": "No active posting in this field"
+  },
+  {
+    "id": "1003380",
+    "field": "POSTED_VRT_CLRNC_ON",
+    "value": 0,
+    "reason": "No active posting in this field"
+  },
+  {
+    "id": "03014C",
+    "field": "PostedVertClrnc",
+    "value": [
+      null,
+      null
+    ],
+    "reason": "No active posted clearance in this field"
+  },
+  {
     "id": "00740",
     "field": "PostedVertClrnc",
     "value": [
@@ -3099,7 +4035,25 @@
     "reason": "No active posted clearance in this field"
   },
   {
+    "id": "00772",
+    "field": "PostedVertClrnc",
+    "value": [
+      null,
+      null
+    ],
+    "reason": "No active posted clearance in this field"
+  },
+  {
     "id": "01190",
+    "field": "PostedVertClrnc",
+    "value": [
+      null,
+      null
+    ],
+    "reason": "No active posted clearance in this field"
+  },
+  {
+    "id": "00768",
     "field": "PostedVertClrnc",
     "value": [
       null,
@@ -3153,7 +4107,34 @@
     "reason": "No active posted clearance in this field"
   },
   {
+    "id": "00206",
+    "field": "PostedVertClrnc",
+    "value": [
+      null,
+      null
+    ],
+    "reason": "No active posted clearance in this field"
+  },
+  {
+    "id": "03190B",
+    "field": "PostedVertClrnc",
+    "value": [
+      null,
+      null
+    ],
+    "reason": "No active posted clearance in this field"
+  },
+  {
     "id": "00071",
+    "field": "PostedVertClrnc",
+    "value": [
+      null,
+      null
+    ],
+    "reason": "No active posted clearance in this field"
+  },
+  {
+    "id": "03090",
     "field": "PostedVertClrnc",
     "value": [
       null,
@@ -3171,7 +4152,70 @@
     "reason": "No active posted clearance in this field"
   },
   {
+    "id": "00799",
+    "field": "PostedVertClrnc",
+    "value": [
+      null,
+      null
+    ],
+    "reason": "No active posted clearance in this field"
+  },
+  {
+    "id": "00183",
+    "field": "PostedVertClrnc",
+    "value": [
+      null,
+      null
+    ],
+    "reason": "No active posted clearance in this field"
+  },
+  {
     "id": "00060",
+    "field": "PostedVertClrnc",
+    "value": [
+      null,
+      null
+    ],
+    "reason": "No active posted clearance in this field"
+  },
+  {
+    "id": "03121",
+    "field": "PostedVertClrnc",
+    "value": [
+      null,
+      null
+    ],
+    "reason": "No active posted clearance in this field"
+  },
+  {
+    "id": "03089",
+    "field": "PostedVertClrnc",
+    "value": [
+      null,
+      null
+    ],
+    "reason": "No active posted clearance in this field"
+  },
+  {
+    "id": "00161",
+    "field": "PostedVertClrnc",
+    "value": [
+      null,
+      null
+    ],
+    "reason": "No active posted clearance in this field"
+  },
+  {
+    "id": "00802",
+    "field": "PostedVertClrnc",
+    "value": [
+      null,
+      null
+    ],
+    "reason": "No active posted clearance in this field"
+  },
+  {
+    "id": "01828",
     "field": "PostedVertClrnc",
     "value": [
       null,
@@ -3207,7 +4251,70 @@
     "reason": "No active posted clearance in this field"
   },
   {
+    "id": "00216",
+    "field": "PostedVertClrnc",
+    "value": [
+      null,
+      null
+    ],
+    "reason": "No active posted clearance in this field"
+  },
+  {
+    "id": "00140",
+    "field": "PostedVertClrnc",
+    "value": [
+      null,
+      null
+    ],
+    "reason": "No active posted clearance in this field"
+  },
+  {
+    "id": "03117A",
+    "field": "PostedVertClrnc",
+    "value": [
+      null,
+      null
+    ],
+    "reason": "No active posted clearance in this field"
+  },
+  {
     "id": "00066",
+    "field": "PostedVertClrnc",
+    "value": [
+      null,
+      null
+    ],
+    "reason": "No active posted clearance in this field"
+  },
+  {
+    "id": "00788",
+    "field": "PostedVertClrnc",
+    "value": [
+      null,
+      null
+    ],
+    "reason": "No active posted clearance in this field"
+  },
+  {
+    "id": "00766",
+    "field": "PostedVertClrnc",
+    "value": [
+      null,
+      null
+    ],
+    "reason": "No active posted clearance in this field"
+  },
+  {
+    "id": "00765",
+    "field": "PostedVertClrnc",
+    "value": [
+      null,
+      null
+    ],
+    "reason": "No active posted clearance in this field"
+  },
+  {
+    "id": "03084",
     "field": "PostedVertClrnc",
     "value": [
       null,
@@ -3261,6 +4368,24 @@
     "reason": "No active posted clearance in this field"
   },
   {
+    "id": "03086",
+    "field": "PostedVertClrnc",
+    "value": [
+      null,
+      null
+    ],
+    "reason": "No active posted clearance in this field"
+  },
+  {
+    "id": "03111",
+    "field": "PostedVertClrnc",
+    "value": [
+      null,
+      null
+    ],
+    "reason": "No active posted clearance in this field"
+  },
+  {
     "id": "00067",
     "field": "PostedVertClrnc",
     "value": [
@@ -3270,7 +4395,52 @@
     "reason": "No active posted clearance in this field"
   },
   {
+    "id": "03194",
+    "field": "PostedVertClrnc",
+    "value": [
+      null,
+      null
+    ],
+    "reason": "No active posted clearance in this field"
+  },
+  {
+    "id": "00138",
+    "field": "PostedVertClrnc",
+    "value": [
+      null,
+      null
+    ],
+    "reason": "No active posted clearance in this field"
+  },
+  {
+    "id": "02160",
+    "field": "PostedVertClrnc",
+    "value": [
+      null,
+      null
+    ],
+    "reason": "No active posted clearance in this field"
+  },
+  {
+    "id": "00188",
+    "field": "PostedVertClrnc",
+    "value": [
+      null,
+      null
+    ],
+    "reason": "No active posted clearance in this field"
+  },
+  {
     "id": "00118",
+    "field": "PostedVertClrnc",
+    "value": [
+      null,
+      null
+    ],
+    "reason": "No active posted clearance in this field"
+  },
+  {
+    "id": "03085",
     "field": "PostedVertClrnc",
     "value": [
       null,
@@ -3289,6 +4459,33 @@
   },
   {
     "id": "00079",
+    "field": "PostedVertClrnc",
+    "value": [
+      null,
+      null
+    ],
+    "reason": "No active posted clearance in this field"
+  },
+  {
+    "id": "00783",
+    "field": "PostedVertClrnc",
+    "value": [
+      null,
+      null
+    ],
+    "reason": "No active posted clearance in this field"
+  },
+  {
+    "id": "00214",
+    "field": "PostedVertClrnc",
+    "value": [
+      null,
+      null
+    ],
+    "reason": "No active posted clearance in this field"
+  },
+  {
+    "id": "00218",
     "field": "PostedVertClrnc",
     "value": [
       null,
@@ -3324,6 +4521,24 @@
     "reason": "No active posted clearance in this field"
   },
   {
+    "id": "00215",
+    "field": "PostedVertClrnc",
+    "value": [
+      null,
+      null
+    ],
+    "reason": "No active posted clearance in this field"
+  },
+  {
+    "id": "00209",
+    "field": "PostedVertClrnc",
+    "value": [
+      null,
+      null
+    ],
+    "reason": "No active posted clearance in this field"
+  },
+  {
     "id": "03549",
     "field": "PostedVertClrnc",
     "value": [
@@ -3351,7 +4566,34 @@
     "reason": "No active posted clearance in this field"
   },
   {
+    "id": "00787",
+    "field": "PostedVertClrnc",
+    "value": [
+      null,
+      null
+    ],
+    "reason": "No active posted clearance in this field"
+  },
+  {
     "id": "00713",
+    "field": "PostedVertClrnc",
+    "value": [
+      null,
+      null
+    ],
+    "reason": "No active posted clearance in this field"
+  },
+  {
+    "id": "01079",
+    "field": "PostedVertClrnc",
+    "value": [
+      null,
+      null
+    ],
+    "reason": "No active posted clearance in this field"
+  },
+  {
+    "id": "00776",
     "field": "PostedVertClrnc",
     "value": [
       null,
@@ -3378,6 +4620,24 @@
     "reason": "No active posted clearance in this field"
   },
   {
+    "id": "03190D",
+    "field": "PostedVertClrnc",
+    "value": [
+      null,
+      null
+    ],
+    "reason": "No active posted clearance in this field"
+  },
+  {
+    "id": "00333",
+    "field": "PostedVertClrnc",
+    "value": [
+      null,
+      null
+    ],
+    "reason": "No active posted clearance in this field"
+  },
+  {
     "id": "03568B",
     "field": "PostedVertClrnc",
     "value": [
@@ -3387,7 +4647,25 @@
     "reason": "No active posted clearance in this field"
   },
   {
+    "id": "10019",
+    "field": "PostedVertClrnc",
+    "value": [
+      null,
+      null
+    ],
+    "reason": "No active posted clearance in this field"
+  },
+  {
     "id": "00717",
+    "field": "PostedVertClrnc",
+    "value": [
+      null,
+      null
+    ],
+    "reason": "No active posted clearance in this field"
+  },
+  {
+    "id": "03122",
     "field": "PostedVertClrnc",
     "value": [
       null,
@@ -3414,6 +4692,24 @@
     "reason": "No active posted clearance in this field"
   },
   {
+    "id": "00345",
+    "field": "PostedVertClrnc",
+    "value": [
+      null,
+      null
+    ],
+    "reason": "No active posted clearance in this field"
+  },
+  {
+    "id": "05386",
+    "field": "PostedVertClrnc",
+    "value": [
+      null,
+      null
+    ],
+    "reason": "No active posted clearance in this field"
+  },
+  {
     "id": "06211",
     "field": "PostedVertClrnc",
     "value": [
@@ -3432,7 +4728,34 @@
     "reason": "No active posted clearance in this field"
   },
   {
+    "id": "00212",
+    "field": "PostedVertClrnc",
+    "value": [
+      null,
+      null
+    ],
+    "reason": "No active posted clearance in this field"
+  },
+  {
     "id": "03550",
+    "field": "PostedVertClrnc",
+    "value": [
+      null,
+      null
+    ],
+    "reason": "No active posted clearance in this field"
+  },
+  {
+    "id": "06534",
+    "field": "PostedVertClrnc",
+    "value": [
+      null,
+      null
+    ],
+    "reason": "No active posted clearance in this field"
+  },
+  {
+    "id": "03193",
     "field": "PostedVertClrnc",
     "value": [
       null,
@@ -3459,7 +4782,52 @@
     "reason": "No active posted clearance in this field"
   },
   {
+    "id": "02071",
+    "field": "PostedVertClrnc",
+    "value": [
+      null,
+      null
+    ],
+    "reason": "No active posted clearance in this field"
+  },
+  {
+    "id": "00796",
+    "field": "PostedVertClrnc",
+    "value": [
+      null,
+      null
+    ],
+    "reason": "No active posted clearance in this field"
+  },
+  {
+    "id": "01829",
+    "field": "PostedVertClrnc",
+    "value": [
+      null,
+      null
+    ],
+    "reason": "No active posted clearance in this field"
+  },
+  {
     "id": "00737",
+    "field": "PostedVertClrnc",
+    "value": [
+      null,
+      null
+    ],
+    "reason": "No active posted clearance in this field"
+  },
+  {
+    "id": "00166",
+    "field": "PostedVertClrnc",
+    "value": [
+      null,
+      null
+    ],
+    "reason": "No active posted clearance in this field"
+  },
+  {
+    "id": "03014A",
     "field": "PostedVertClrnc",
     "value": [
       null,
@@ -3495,6 +4863,42 @@
     "reason": "No active posted clearance in this field"
   },
   {
+    "id": "03018",
+    "field": "PostedVertClrnc",
+    "value": [
+      null,
+      null
+    ],
+    "reason": "No active posted clearance in this field"
+  },
+  {
+    "id": "00149",
+    "field": "PostedVertClrnc",
+    "value": [
+      null,
+      null
+    ],
+    "reason": "No active posted clearance in this field"
+  },
+  {
+    "id": "02055",
+    "field": "PostedVertClrnc",
+    "value": [
+      null,
+      null
+    ],
+    "reason": "No active posted clearance in this field"
+  },
+  {
+    "id": "00207",
+    "field": "PostedVertClrnc",
+    "value": [
+      null,
+      null
+    ],
+    "reason": "No active posted clearance in this field"
+  },
+  {
     "id": "00127",
     "field": "PostedVertClrnc",
     "value": [
@@ -3505,6 +4909,15 @@
   },
   {
     "id": "00023",
+    "field": "PostedVertClrnc",
+    "value": [
+      null,
+      null
+    ],
+    "reason": "No active posted clearance in this field"
+  },
+  {
+    "id": "00789",
     "field": "PostedVertClrnc",
     "value": [
       null,
@@ -3567,6 +4980,42 @@
     "reason": "No active posted clearance in this field"
   },
   {
+    "id": "03052",
+    "field": "PostedVertClrnc",
+    "value": [
+      null,
+      null
+    ],
+    "reason": "No active posted clearance in this field"
+  },
+  {
+    "id": "03020",
+    "field": "PostedVertClrnc",
+    "value": [
+      null,
+      null
+    ],
+    "reason": "No active posted clearance in this field"
+  },
+  {
+    "id": "00769",
+    "field": "PostedVertClrnc",
+    "value": [
+      null,
+      null
+    ],
+    "reason": "No active posted clearance in this field"
+  },
+  {
+    "id": "03185",
+    "field": "PostedVertClrnc",
+    "value": [
+      null,
+      null
+    ],
+    "reason": "No active posted clearance in this field"
+  },
+  {
     "id": "03852",
     "field": "PostedVertUnderClrnc",
     "value": [
@@ -3576,7 +5025,52 @@
     "reason": "No active posted clearance in this field"
   },
   {
+    "id": "00780",
+    "field": "PostedVertClrnc",
+    "value": [
+      null,
+      null
+    ],
+    "reason": "No active posted clearance in this field"
+  },
+  {
+    "id": "01826",
+    "field": "PostedVertClrnc",
+    "value": [
+      null,
+      null
+    ],
+    "reason": "No active posted clearance in this field"
+  },
+  {
     "id": "00050",
+    "field": "PostedVertClrnc",
+    "value": [
+      null,
+      null
+    ],
+    "reason": "No active posted clearance in this field"
+  },
+  {
+    "id": "00588",
+    "field": "PostedVertClrnc",
+    "value": [
+      null,
+      null
+    ],
+    "reason": "No active posted clearance in this field"
+  },
+  {
+    "id": "01445",
+    "field": "PostedVertClrnc",
+    "value": [
+      null,
+      null
+    ],
+    "reason": "No active posted clearance in this field"
+  },
+  {
+    "id": "01158",
     "field": "PostedVertClrnc",
     "value": [
       null,
@@ -3595,6 +5089,24 @@
   },
   {
     "id": "00109",
+    "field": "PostedVertClrnc",
+    "value": [
+      null,
+      null
+    ],
+    "reason": "No active posted clearance in this field"
+  },
+  {
+    "id": "03022",
+    "field": "PostedVertClrnc",
+    "value": [
+      null,
+      null
+    ],
+    "reason": "No active posted clearance in this field"
+  },
+  {
+    "id": "01371",
     "field": "PostedVertClrnc",
     "value": [
       null,

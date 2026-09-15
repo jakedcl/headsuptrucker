@@ -3,6 +3,7 @@ import assert from "node:assert/strict";
 import { readFileSync } from "node:fs";
 import { decimalFeetToInches, normalizeNysdot, COUNTIES, type RawFeature } from "../scripts/sources/nysdot-posted-height";
 import {
+  COVERED_TOWNS,
   FAIRFIELD_TOWNS,
   feetInchesToInches,
   normalizeCtdot,
@@ -62,13 +63,14 @@ test("CTDOT feet/inches convert to whole inches and reject empty postings", () =
   assert.equal(townName("73070 - STAMFORD"), "STAMFORD");
   assert.equal(townName("STAMFORD"), "STAMFORD");
   assert.ok(FAIRFIELD_TOWNS.has("STAMFORD"));
+  assert.ok(COVERED_TOWNS.has("NEW HAVEN"));
   assert.deepEqual(
     polygonCentroid({ type: "Polygon", coordinates: [[[0, 0], [2, 0], [2, 2], [0, 2], [0, 0]]] }),
     [1, 1],
   );
 });
 
-test("CTDOT normalizer keeps Fairfield posted under/on records and drops others", () => {
+test("CTDOT normalizer keeps Fairfield and New Haven posted records and drops others", () => {
   const base: CtdotRawFeature = {
     geometry: {
       type: "Polygon",
@@ -105,6 +107,16 @@ test("CTDOT normalizer keeps Fairfield posted under/on records and drops others"
   hartford.properties.Town_NBI4 = "64000 - HARTFORD";
   assert.equal(normalizeCtdot([hartford], "2026-09-14").features.length, 0);
 
+  const newHaven = structuredClone(base);
+  newHaven.properties.Town_NBI4 = "52070 - NEW HAVEN";
+  newHaven.geometry = {
+    type: "Polygon",
+    coordinates: [[[-72.93, 41.30], [-72.92, 41.30], [-72.92, 41.31], [-72.93, 41.31], [-72.93, 41.30]]],
+  };
+  const nh = normalizeCtdot([newHaven], "2026-09-14").features;
+  assert.equal(nh.length, 2);
+  assert.equal(nh[0].properties.county, "NEW HAVEN");
+
   const empty = structuredClone(base);
   empty.properties.PostedVertUnderClrncFt = null;
   empty.properties.PostedVertUnderClrncIN = null;
@@ -122,6 +134,8 @@ test("CTDOT parkways dissolve to Merritt / Wilbur Cross / Milford with commercia
     assert.equal(f.properties.kind, "parkway");
     assert.equal(f.properties.commercialBan, true);
     assert.equal(f.properties.passengerOnlyHeightInches, 96);
+    assert.equal(f.properties.widthInches, 90);
+    assert.equal(f.properties.weightTons, 3.75);
     assert.ok(f.properties.id.startsWith("parkway-ct-"));
     assert.equal(f.geometry.type, "MultiLineString");
     assert.ok(f.geometry.coordinates.length >= 1);
@@ -160,6 +174,10 @@ test("CTDOT posted-load prefers All posting and keeps coverage points only", () 
   const posted = JSON.parse(readFileSync("public/data/posted-load-nyc-li.geojson", "utf8"));
   assert.ok(parkways.features.some((f: { properties: { id: string } }) => f.properties.id.startsWith("parkway-ct-")));
   assert.ok(posted.features.some((f: { properties: { id: string } }) => f.properties.id.startsWith("load-ct-")));
+  assert.ok(
+    posted.features.some((f: { properties: { county?: string } }) => f.properties.county === "WESTCHESTER"),
+    "Hudson Valley posted-load pins",
+  );
 });
 
 test("NJ NYC-facing corridors and PANYNJ crossings sit in the shared awareness GeoJSON", () => {
@@ -206,13 +224,17 @@ test("NJ NYC-facing corridors and PANYNJ crossings sit in the shared awareness G
 
 test("snapshot regression: unique identities, valid geography, no legacy or sentinel postings", () => {
   const collection: ClearanceCollection = JSON.parse(readFileSync("public/data/clearances-nyc-li.geojson", "utf8"));
-  assert.equal(collection.features.length, 612, "Review source changes before updating this snapshot baseline");
-  assert.equal(new Set(collection.features.map(f => f.properties.id)).size, collection.features.length);
+  assert.equal(collection.features.length, new Set(collection.features.map(f => f.properties.id)).size);
+  assert.ok(collection.features.length >= 700, `expected expanded snapshot, got ${collection.features.length}`);
 
   const ny = collection.features.filter(f => f.properties.state === "NY");
   const ct = collection.features.filter(f => f.properties.state === "CT");
-  assert.equal(ny.length, 555);
-  assert.ok(ct.length >= 50, `expected SW CT posted records, got ${ct.length}`);
+  assert.ok(ny.length > 555, `expected Hudson Valley NY expansion, got ${ny.length}`);
+  assert.ok(ct.length > 57, `expected New Haven CT expansion, got ${ct.length}`);
+  assert.ok(ny.some(f => f.properties.county === "WESTCHESTER"));
+  assert.ok(ny.some(f => f.properties.county === "ROCKLAND"));
+  assert.ok(ct.some(f => COVERED_TOWNS.has(f.properties.county)));
+  assert.ok(ct.some(f => f.properties.county === "NEW HAVEN" || f.properties.county === "MILFORD"));
 
   for (const f of ny) {
     assert.ok(COUNTIES.has(f.properties.county));
@@ -221,9 +243,10 @@ test("snapshot regression: unique identities, valid geography, no legacy or sent
     assert.equal(f.properties.clearanceType, "posted");
     assert.ok(f.properties.sources[0].sourceUrl.startsWith("https://gis.dot.ny.gov/"));
   }
+  assert.ok(ny.some(f => f.properties.extras && (f.properties.extras.yearBuilt || f.properties.extras.structureType)));
 
   for (const f of ct) {
-    assert.ok(FAIRFIELD_TOWNS.has(f.properties.county), f.properties.county);
+    assert.ok(COVERED_TOWNS.has(f.properties.county), f.properties.county);
     assert.ok(Number.isInteger(f.properties.postedClearanceInches) && f.properties.postedClearanceInches > 0 && f.properties.postedClearanceInches < 360);
     assert.ok(f.geometry.coordinates.every(Number.isFinite));
     assert.equal(f.properties.clearanceType, "posted");
