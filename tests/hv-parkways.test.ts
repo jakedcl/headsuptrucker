@@ -46,4 +46,17 @@ describe("Hudson Valley parkways in shared awareness", () => {
     assert.equal(pal.geometry.type, "MultiLineString");
     assert.ok(pal.geometry.coordinates.length > 50, "should include NJ + NY segments");
   });
+
+  it("gives Long Mountain a 14′ default because it has no posted height restriction", () => {
+    const longMtn = parkways.features.find(
+      (f: { properties: { id: string } }) => f.properties.id === "parkway-long-mountain-parkway",
+    );
+    assert.ok(longMtn);
+    assert.equal(longMtn.properties.passengerOnlyHeightInches, 168);
+    assert.equal(longMtn.properties.heightSource, "default-unrestricted");
+    const fac = facilities.features.find(
+      (f: { properties: { id: string } }) => f.properties.id === "parkway-long-mountain-parkway",
+    );
+    assert.equal(fac.properties.heightInches, 168);
+  });
 });

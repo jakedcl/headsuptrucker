@@ -1,6 +1,6 @@
 {
-  "generatedAt": "2026-09-15T15:49:54.616Z",
-  "count": 9,
+  "generatedAt": "2026-09-15T16:46:04.452Z",
+  "count": 7,
   "byKind": {
     "parkway": [
       {
@@ -8,6 +8,14 @@
         "name": "Cross Bay Parkway",
         "kind": "parkway",
         "operator": "NYSDOT / NYC",
+        "commercialBan": true,
+        "note": "No corridor height in our sources for this parkway — check signs and overpasses."
+      },
+      {
+        "id": "parkway-farragut-parkway",
+        "name": "Farragut Parkway",
+        "kind": "parkway",
+        "operator": "NYSDOT",
         "commercialBan": true,
         "note": "No corridor height in our sources for this parkway — check signs and overpasses."
       },
@@ -28,22 +36,6 @@
         "note": "No corridor height in our sources for this parkway — check signs and overpasses."
       },
       {
-        "id": "parkway-lake-welch-parkway",
-        "name": "Lake Welch Parkway",
-        "kind": "parkway",
-        "operator": "NYSDOT",
-        "commercialBan": true,
-        "note": "No corridor height in our sources for this parkway — check signs and overpasses."
-      },
-      {
-        "id": "parkway-long-mountain-parkway",
-        "name": "Long Mountain Parkway",
-        "kind": "parkway",
-        "operator": "NYSDOT",
-        "commercialBan": true,
-        "note": "No corridor height in our sources for this parkway — check signs and overpasses."
-      },
-      {
         "id": "parkway-ocean-parkway-n-y-c",
         "name": "Ocean Parkway (N.Y.C.)",
         "kind": "parkway",
@@ -56,14 +48,6 @@
         "name": "Pulaski Skyway",
         "kind": "parkway",
         "operator": "NJDOT",
-        "commercialBan": true,
-        "note": "No corridor height in our sources for this parkway — check signs and overpasses."
-      },
-      {
-        "id": "parkway-seven-lakes-parkway",
-        "name": "Seven Lakes Parkway",
-        "kind": "parkway",
-        "operator": "NYSDOT",
         "commercialBan": true,
         "note": "No corridor height in our sources for this parkway — check signs and overpasses."
       },
@@ -87,6 +71,14 @@
       "note": "No corridor height in our sources for this parkway — check signs and overpasses."
     },
     {
+      "id": "parkway-farragut-parkway",
+      "name": "Farragut Parkway",
+      "kind": "parkway",
+      "operator": "NYSDOT",
+      "commercialBan": true,
+      "note": "No corridor height in our sources for this parkway — check signs and overpasses."
+    },
+    {
       "id": "parkway-nj-garden-state-parkway",
       "name": "Garden State Parkway (north of Exit 105)",
       "kind": "parkway",
@@ -103,22 +95,6 @@
       "note": "No corridor height in our sources for this parkway — check signs and overpasses."
     },
     {
-      "id": "parkway-lake-welch-parkway",
-      "name": "Lake Welch Parkway",
-      "kind": "parkway",
-      "operator": "NYSDOT",
-      "commercialBan": true,
-      "note": "No corridor height in our sources for this parkway — check signs and overpasses."
-    },
-    {
-      "id": "parkway-long-mountain-parkway",
-      "name": "Long Mountain Parkway",
-      "kind": "parkway",
-      "operator": "NYSDOT",
-      "commercialBan": true,
-      "note": "No corridor height in our sources for this parkway — check signs and overpasses."
-    },
-    {
       "id": "parkway-ocean-parkway-n-y-c",
       "name": "Ocean Parkway (N.Y.C.)",
       "kind": "parkway",
@@ -131,14 +107,6 @@
       "name": "Pulaski Skyway",
       "kind": "parkway",
       "operator": "NJDOT",
-      "commercialBan": true,
-      "note": "No corridor height in our sources for this parkway — check signs and overpasses."
-    },
-    {
-      "id": "parkway-seven-lakes-parkway",
-      "name": "Seven Lakes Parkway",
-      "kind": "parkway",
-      "operator": "NYSDOT",
       "commercialBan": true,
       "note": "No corridor height in our sources for this parkway — check signs and overpasses."
     },
