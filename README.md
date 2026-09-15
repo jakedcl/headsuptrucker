@@ -46,7 +46,7 @@ NYC's 149 legacy locations are **not** labeled as posted warnings. They are reta
 
 ## Product behavior
 
-- `/`: vehicle-height entry.
+- `/`: vehicle-height entry. Max vehicle height is 13′6″; taller than that is treated as an oversized load and is not supported yet.
 - `/map?height=108`: map for a 9 ft vehicle.
 - URL parameters `lat`, `lng`, `z`, `bridge`, `from`, and `to` preserve the map view, selected record, and optional path check.
 - From/To on the map traces a driving path and lists posted records near it. This is not turn-by-turn navigation.
