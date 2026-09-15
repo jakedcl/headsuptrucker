@@ -20,6 +20,14 @@ import {
   type VehicleProfile,
 } from "@/lib/vehicle-profile";
 import { annotateFacilities, evaluateFacilityProps } from "@/lib/facilities";
+import {
+  clearancesFromPoints,
+  facilitiesFromAwareness,
+  majorCrossingsFromPoints,
+  parkwaysFromLines,
+  postedLoadFromPoints,
+} from "@/lib/awareness-project";
+import type { AwarenessLineCollection, AwarenessPointCollection } from "@/lib/awareness-schema";
 
 const Map = dynamic(() => import("./clearance-map").then(m => m.ClearanceMap), {
   ssr: false,
@@ -142,16 +150,33 @@ export function MapExplorer() {
   useEffect(() => {
     const controller = new AbortController();
     setFetchError("");
-    fetch("/data/clearances-nyc-li.geojson", { signal: controller.signal }).then(async response => {
-      if (!response.ok) throw new Error("The clearance dataset couldn’t be loaded.");
-      const json = await response.json();
-      if (json.type !== "FeatureCollection" || !Array.isArray(json.features) || json.features.length === 0) {
-        throw new Error("The clearance dataset is unavailable.");
-      }
-      setData(json);
-    }).catch(error => {
-      if (error.name !== "AbortError") setFetchError(error.message);
-    });
+    setAwarenessError("");
+    Promise.all([
+      fetch("/data/awareness-points.geojson", { signal: controller.signal }),
+      fetch("/data/awareness-lines.geojson", { signal: controller.signal }),
+    ])
+      .then(async ([pointsRes, linesRes]) => {
+        if (!pointsRes.ok || !linesRes.ok) {
+          throw new Error("The awareness dataset couldn’t be loaded.");
+        }
+        const points = (await pointsRes.json()) as AwarenessPointCollection;
+        const lines = (await linesRes.json()) as AwarenessLineCollection;
+        if (points.type !== "FeatureCollection" || !Array.isArray(points.features) || points.features.length === 0) {
+          throw new Error("The awareness dataset is unavailable.");
+        }
+        const clearances = clearancesFromPoints(points);
+        if (clearances.features.length === 0) {
+          throw new Error("No clearance records in the awareness dataset.");
+        }
+        setData(clearances);
+        setParkwaysData(parkwaysFromLines(lines));
+        setPostedLoadRaw(postedLoadFromPoints(points));
+        setMajorCrossingsData(majorCrossingsFromPoints(points));
+        setFacilitiesRaw(facilitiesFromAwareness(points, lines));
+      })
+      .catch(error => {
+        if (error.name !== "AbortError") setFetchError(error.message);
+      });
     return () => controller.abort();
   }, [retry]);
 
@@ -223,11 +248,7 @@ export function MapExplorer() {
     }> = [
       { need: awareness.roadFeatures, have: Boolean(roadFeaturesData), url: "/data/road-features-nyc.geojson", label: "Road features", set: setRoadFeaturesData },
       { need: awareness.roadFeatures, have: Boolean(roadLabelsData), url: "/data/road-labels-nyc.geojson", label: "Road labels", set: setRoadLabelsData },
-      { need: awareness.parkways || vehicle.commercial, have: Boolean(parkwaysData), url: "/data/parkways-nyc-li.geojson", label: "Parkways", set: setParkwaysData },
-      { need: awareness.postedLoad || vehicle.weightTons !== null, have: Boolean(postedLoadRaw), url: "/data/posted-load-nyc-li.geojson", label: "Posted load bridges", set: setPostedLoadRaw },
       { need: awareness.crossingLimits || vehicle.widthInches !== null, have: Boolean(crossingLimitsRaw), url: "/data/crossing-limits-nyc.geojson", label: "Crossing limits", set: setCrossingLimitsRaw },
-      { need: awareness.majorCrossings, have: Boolean(majorCrossingsData), url: "/data/major-crossings.geojson", label: "Major crossings", set: setMajorCrossingsData },
-      { need: true, have: Boolean(facilitiesRaw), url: "/data/facilities-nyc-li.geojson", label: "Facilities", set: setFacilitiesRaw },
     ];
     const pending = jobs.filter(j => j.need && !j.have);
     if (pending.length === 0) return;
@@ -250,20 +271,11 @@ export function MapExplorer() {
     return () => controller.abort();
   }, [
     awareness.roadFeatures,
-    awareness.parkways,
-    awareness.postedLoad,
     awareness.crossingLimits,
-    awareness.majorCrossings,
-    vehicle.commercial,
-    vehicle.weightTons,
     vehicle.widthInches,
     roadFeaturesData,
     roadLabelsData,
-    parkwaysData,
-    postedLoadRaw,
     crossingLimitsRaw,
-    majorCrossingsData,
-    facilitiesRaw,
   ]);
 
 
@@ -854,7 +866,27 @@ export function MapExplorer() {
             ) : typeof selectedFacility.properties?.weightTons === "number" ? (
               <div><dt>Posted load</dt><dd>{formatTons(selectedFacility.properties.weightTons)}</dd></div>
             ) : null}
+            {selectedFacility.properties?.state ? (
+              <div><dt>State</dt><dd>{String(selectedFacility.properties.state)}</dd></div>
+            ) : null}
           </dl>
+          {selectedFacility.properties?.extras &&
+          typeof selectedFacility.properties.extras === "object" &&
+          Object.keys(selectedFacility.properties.extras as object).filter(k => k !== "layer").length > 0 ? (
+            <div className="extras-block">
+              <p className="eyebrow">Source extras</p>
+              <dl>
+                {Object.entries(selectedFacility.properties.extras as Record<string, unknown>)
+                  .filter(([key, value]) => key !== "layer" && value != null && value !== "")
+                  .map(([key, value]) => (
+                    <div key={key}>
+                      <dt>{key}</dt>
+                      <dd>{String(value)}</dd>
+                    </div>
+                  ))}
+              </dl>
+            </div>
+          ) : null}
           <button
             className="share-clearance"
             type="button"

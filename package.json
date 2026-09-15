@@ -18,7 +18,8 @@
     "data:awareness": "tsx scripts/build-awareness.ts",
     "data:ct-awareness": "tsx scripts/merge-ct-awareness.ts",
     "data:nj-awareness": "tsx scripts/merge-nj-awareness.ts",
-    "data:pipeline-status": "tsx scripts/pipeline-status.ts"
+    "data:pipeline-status": "tsx scripts/pipeline-status.ts",
+    "data:build-unified": "tsx scripts/build-unified-awareness.ts"
   },
   "dependencies": {
     "@fontsource/barlow-condensed": "^5.3.0",
