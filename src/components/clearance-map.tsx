@@ -29,6 +29,28 @@ function createEndpoint(letter: string, label: string) {
 
 const EMPTY_FC: FeatureCollection = { type: "FeatureCollection", features: [] };
 
+/** One label point per facility — MultiLineString parts otherwise spam the same name. */
+function facilityLabelPoints(fc: FeatureCollection): FeatureCollection {
+  return {
+    type: "FeatureCollection",
+    features: fc.features.flatMap(feature => {
+      const props = feature.properties || {};
+      if (feature.geometry?.type === "Point") {
+        return [{ type: "Feature" as const, properties: props, geometry: feature.geometry }];
+      }
+      const lng = props.labelLng;
+      const lat = props.labelLat;
+      if (typeof lng !== "number" || typeof lat !== "number") return [];
+      return [{
+        type: "Feature" as const,
+        properties: props,
+        geometry: { type: "Point" as const, coordinates: [lng, lat] },
+      }];
+    }),
+  };
+}
+
+
 export type AwarenessLayers = {
   truckRoutes: boolean;
   streetClosures: boolean;
@@ -242,6 +264,7 @@ function addOverlayLayers(map: MapInstance) {
         "text-offset": [0, 1.1],
         "text-anchor": "top",
         "text-optional": true,
+        "text-padding": 40,
       },
       paint: {
         "text-color": "#1e293b",
@@ -287,10 +310,13 @@ function addOverlayLayers(map: MapInstance) {
         "circle-stroke-color": "#ffffff",
       },
     });
+    if (!map.getSource("facilities-labels")) {
+      map.addSource("facilities-labels", { type: "geojson", data: EMPTY_FC });
+    }
     map.addLayer({
       id: "facilities-label",
       type: "symbol",
-      source: "facilities",
+      source: "facilities-labels",
       layout: {
         visibility: "none",
         "text-field": ["get", "name"],
@@ -299,6 +325,7 @@ function addOverlayLayers(map: MapInstance) {
         "text-offset": [0, 1.15],
         "text-anchor": "top",
         "text-optional": true,
+        "text-padding": 28,
         "symbol-sort-key": [
           "match",
           ["get", "status"],
@@ -814,7 +841,7 @@ export function ClearanceMap({
       ["major-crossings", "major-crossings-label", majorCrossingsData, awareness.majorCrossings],
       ["facilities", "facilities-line", facilitiesData, awareness.facilities],
       ["facilities", "facilities-circle", facilitiesData, awareness.facilities],
-      ["facilities", "facilities-label", facilitiesData, awareness.facilities],
+      ["facilities-labels", "facilities-label", facilitiesData ? facilityLabelPoints(facilitiesData) : null, awareness.facilities],
     ];
     for (const [sourceId, layerId, dataFc, on] of pairs) {
       const source = map.getSource(sourceId) as GeoJSONSource | undefined;
