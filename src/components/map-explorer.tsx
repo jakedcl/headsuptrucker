@@ -886,8 +886,24 @@ export function MapExplorer() {
             <div><dt>Your height</dt><dd>{formatHeight(height)}</dd></div>
             {vehicle.widthInches != null ? <div><dt>Your width</dt><dd>{formatWidth(vehicle.widthInches)}</dd></div> : null}
             {vehicle.weightTons != null ? <div><dt>Your weight</dt><dd>{formatTons(vehicle.weightTons)}</dd></div> : null}
-            {typeof selectedFacility.properties?.heightInches === "number" ? (
+            {typeof selectedFacility.properties?.heightLowerInches === "number" &&
+            typeof selectedFacility.properties?.heightUpperInches === "number" &&
+            selectedFacility.properties.heightLowerInches !==
+              selectedFacility.properties.heightUpperInches ? (
+              <div>
+                <dt>Posted height</dt>
+                <dd>
+                  {formatHeight(selectedFacility.properties.heightLowerInches)}–
+                  {formatHeight(selectedFacility.properties.heightUpperInches)}
+                </dd>
+              </div>
+            ) : typeof selectedFacility.properties?.heightInches === "number" ? (
               <div><dt>Posted height</dt><dd>{formatHeight(selectedFacility.properties.heightInches)}</dd></div>
+            ) : typeof selectedFacility.properties?.passengerOnlyHeightInches === "number" ? (
+              <div>
+                <dt>Corridor height</dt>
+                <dd>{formatHeight(selectedFacility.properties.passengerOnlyHeightInches)}</dd>
+              </div>
             ) : null}
             {typeof selectedFacility.properties?.widthInches === "number" ? (
               <div><dt>Posted width</dt><dd>{formatWidth(selectedFacility.properties.widthInches)}</dd></div>

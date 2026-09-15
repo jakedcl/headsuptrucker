@@ -104,7 +104,8 @@ Official pages (hand-maintain a small GeoJSON). Prefer operator numbers over tru
 | RFK (multi-span) | 12′11″–15′2″ by span/dir | 9′6″ | |
 | Bronx-Whitestone | 15′0″ / 15′1″ | 9′6″ | |
 | Throgs Neck | 15′2″ / 14′11″ | 9′6″ | |
-| Cross Bay / Marine Parkway | multi by approach | 9′6″ | |
+| Cross Bay Veterans Memorial | **13′10″–15′2″** by approach (6 published) | 9′6″ | |
+| Marine Parkway | multi by approach | 9′6″ | |
 | All MTA crossings | — | — | NYS bridge formula; max **80k GVW** / axle caps |
 
 Tunnel width blanket: **8′6″**. Bridge width blanket: **9′6″**.
