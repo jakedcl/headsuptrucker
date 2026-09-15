@@ -33,7 +33,7 @@ describe("unified awareness projection", () => {
 
   it("projects parkway lines with commercial ban", () => {
     const parkways = parkwaysFromLines(lines);
-    assert.equal(parkways.features.length, 29);
+    assert.equal(parkways.features.length, 38);
     assert.ok(parkways.features.every(f => f.properties?.commercialBan === true || f.properties?.kind === "parkway"));
   });
 

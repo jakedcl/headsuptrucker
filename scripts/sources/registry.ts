@@ -144,13 +144,16 @@ export const AWARENESS_SOURCES: AwarenessSource[] = [
   },
   {
     id: "nysdot-parkways",
-    agency: "NYSDOT / NYC",
+    agency: "NYSDOT",
     label: "NY parkways (commercial ban corridors)",
     states: ["NY"],
     geometry: "line",
     extracts: ["corridor", "facility"],
-    status: "planned",
-    notes: "Already in public GeoJSON; fold into registry-driven merge next.",
+    status: "active",
+    url: "https://gis.dot.ny.gov/hostingny/rest/services/CommVehicleDataFeed/MapServer/2",
+    adapter: "merge-hv-parkways",
+    notes:
+      "NYC/LI already in public GeoJSON. Hudson Valley adds Saw Mill, Sprain, Taconic, Cross County, Hutch Westchester, Bronx River Westchester, Lake Welch, Seven Lakes, Long Mountain; Palisades NY merges into the shared Palisades corridor. Rules from CommVehicleDataFeed; geometry from Roadway Inventory.",
   },
   {
     id: "nj-posted-clearances",
