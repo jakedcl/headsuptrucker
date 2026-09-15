@@ -48,7 +48,48 @@ const PARKWAY_HEIGHTS: Record<
     source: "nj-admin-code",
     note: "N.J.A.C. 19:9-1.9 legal vehicle-height ceiling 13′6″ north of Exit 105 — roadway regulation, not a verified minimum bridge clearance. Separate commercial-vehicle restrictions also apply north of 105.",
   },
+  "parkway-sprain-brook-state-parkway": {
+    inches: 168,
+    source: "nysdot-inventory-min",
+    note: "NYSDOT inventory underclearance ≈14′0″ (4.27 m) at Kimball Ave / NY-100B overcrossings — physical inventory, not a signed whole-corridor regulatory max.",
+  },
+  "parkway-korean-war-vets-parkway-richmond": {
+    inches: 172,
+    source: "nysdot-inventory-min",
+    note: "NYSDOT inventory underclearance ≈14′4″ (4.37 m) at Huguenot Ave overcrossing — physical inventory, not a signed whole-corridor regulatory max.",
+  },
+  "parkway-seven-lakes-parkway": {
+    inches: 182,
+    source: "nysdot-inventory-min",
+    note: "NYSDOT inventory underclearance ≈15′2″ (4.62 m) under I-87 near Sloatsburg — location-specific overcrossing for Seven Lakes traffic; not a signed whole-road max.",
+  },
+  "parkway-nj-pulaski-skyway": {
+    inches: 163,
+    source: "bridge-inventory-min",
+    note: "Bridge inventory overhead mins ≈13′7″ / 14′0″ (4.15 m / 4.27 m), full width; not confirmed posted signs. NJDOT truck/bus ban remains primary.",
+  },
 };
+
+/**
+ * Corridors where research found no trustworthy height — wipe bad
+ * derived-min-clearance guesses so they stay gray unknown.
+ */
+const CLEAR_PARKWAY_HEIGHTS = new Set([
+  "parkway-lake-welch-parkway", // no verified numeric posting; 6′11″ claim is bogus/generic
+  "parkway-ocean-parkway-n-y-c", // Belt/Ocean reconstruction numbers are historical project specs, not verified current signs
+  "parkway-long-mountain-parkway",
+  "parkway-cross-bay-parkway", // parkway ban only — not the MTA Cross Bay bridge
+  "parkway-farragut-parkway",
+]);
+
+function clearHeightProps(props: Record<string, unknown>) {
+  props.passengerOnlyHeightInches = null;
+  props.heightInches = null;
+  delete props.heightSource;
+  delete props.heightNote;
+  delete props.heightSampleCount;
+  delete props.heightMethod;
+}
 
 const CROSS_BAY_NOTE =
   "MTA publishes six directional height limits (page updated Mar 9, 2026): " +
@@ -172,10 +213,23 @@ async function main() {
   upsertCrossBay(facilities, crossings);
 
   let parkwayHits = 0;
+  let parkwayCleared = 0;
   for (const f of parkways.features) {
     const id = String(f.properties?.id || "");
+    if (!f.properties) continue;
+
+    if (CLEAR_PARKWAY_HEIGHTS.has(id)) {
+      const had =
+        num(f.properties.passengerOnlyHeightInches) != null ||
+        num(f.properties.heightInches) != null ||
+        f.properties.heightSource != null;
+      clearHeightProps(f.properties);
+      if (had) parkwayCleared += 1;
+      continue;
+    }
+
     const row = PARKWAY_HEIGHTS[id];
-    if (!row || !f.properties) continue;
+    if (!row) continue;
     const existing =
       num(f.properties.passengerOnlyHeightInches) ?? num(f.properties.heightInches);
     const src = f.properties.heightSource;
@@ -183,7 +237,8 @@ async function main() {
       existing != null &&
       src !== "derived-min-clearance" &&
       src !== "nysdot-inventory-min" &&
-      src !== "nj-admin-code"
+      src !== "nj-admin-code" &&
+      src !== "bridge-inventory-min"
     ) {
       continue;
     }
@@ -204,9 +259,20 @@ async function main() {
   }
 
   let facilityHits = 0;
+  let facilityCleared = 0;
   for (const f of facilities.features) {
     if (!f.properties) continue;
     const id = String(f.properties.id || "");
+
+    if (CLEAR_PARKWAY_HEIGHTS.has(id) && String(f.properties.kind) === "parkway") {
+      const had =
+        num(f.properties.passengerOnlyHeightInches) != null ||
+        num(f.properties.heightInches) != null ||
+        f.properties.heightSource != null;
+      clearHeightProps(f.properties);
+      if (had) facilityCleared += 1;
+      continue;
+    }
 
     const parkwayRow = PARKWAY_HEIGHTS[id];
     if (parkwayRow && String(f.properties.kind) === "parkway") {
@@ -281,8 +347,8 @@ async function main() {
   await save("facilities-nyc-li.geojson", facilities);
   await save("major-crossings.geojson", crossings);
 
-  console.log(`Parkways updated: ${parkwayHits}`);
-  console.log(`Facilities updated: ${facilityHits}`);
+  console.log(`Parkways updated: ${parkwayHits} (cleared ${parkwayCleared})`);
+  console.log(`Facilities updated: ${facilityHits} (cleared ${facilityCleared})`);
   console.log(`Major crossings updated: ${crossingHits}`);
 }
 
