@@ -3088,5 +3088,518 @@
     "field": "POSTED_VRT_CLRNC_ON",
     "value": 0,
     "reason": "No active posting in this field"
+  },
+  {
+    "id": "00740",
+    "field": "PostedVertClrnc",
+    "value": [
+      null,
+      null
+    ],
+    "reason": "No active posted clearance in this field"
+  },
+  {
+    "id": "01190",
+    "field": "PostedVertClrnc",
+    "value": [
+      null,
+      null
+    ],
+    "reason": "No active posted clearance in this field"
+  },
+  {
+    "id": "00112",
+    "field": "PostedVertClrnc",
+    "value": [
+      null,
+      null
+    ],
+    "reason": "No active posted clearance in this field"
+  },
+  {
+    "id": "00725",
+    "field": "PostedVertClrnc",
+    "value": [
+      null,
+      null
+    ],
+    "reason": "No active posted clearance in this field"
+  },
+  {
+    "id": "00571A",
+    "field": "PostedVertClrnc",
+    "value": [
+      null,
+      null
+    ],
+    "reason": "No active posted clearance in this field"
+  },
+  {
+    "id": "00961",
+    "field": "PostedVertClrnc",
+    "value": [
+      null,
+      null
+    ],
+    "reason": "No active posted clearance in this field"
+  },
+  {
+    "id": "00730",
+    "field": "PostedVertClrnc",
+    "value": [
+      null,
+      null
+    ],
+    "reason": "No active posted clearance in this field"
+  },
+  {
+    "id": "00071",
+    "field": "PostedVertClrnc",
+    "value": [
+      null,
+      null
+    ],
+    "reason": "No active posted clearance in this field"
+  },
+  {
+    "id": "00049",
+    "field": "PostedVertClrnc",
+    "value": [
+      null,
+      null
+    ],
+    "reason": "No active posted clearance in this field"
+  },
+  {
+    "id": "00060",
+    "field": "PostedVertClrnc",
+    "value": [
+      null,
+      null
+    ],
+    "reason": "No active posted clearance in this field"
+  },
+  {
+    "id": "03548",
+    "field": "PostedVertClrnc",
+    "value": [
+      null,
+      null
+    ],
+    "reason": "No active posted clearance in this field"
+  },
+  {
+    "id": "00704",
+    "field": "PostedVertClrnc",
+    "value": [
+      null,
+      null
+    ],
+    "reason": "No active posted clearance in this field"
+  },
+  {
+    "id": "00709",
+    "field": "PostedVertClrnc",
+    "value": [
+      null,
+      null
+    ],
+    "reason": "No active posted clearance in this field"
+  },
+  {
+    "id": "00066",
+    "field": "PostedVertClrnc",
+    "value": [
+      null,
+      null
+    ],
+    "reason": "No active posted clearance in this field"
+  },
+  {
+    "id": "03540A",
+    "field": "PostedVertClrnc",
+    "value": [
+      null,
+      null
+    ],
+    "reason": "No active posted clearance in this field"
+  },
+  {
+    "id": "00081",
+    "field": "PostedVertClrnc",
+    "value": [
+      null,
+      null
+    ],
+    "reason": "No active posted clearance in this field"
+  },
+  {
+    "id": "00083",
+    "field": "PostedVertClrnc",
+    "value": [
+      null,
+      null
+    ],
+    "reason": "No active posted clearance in this field"
+  },
+  {
+    "id": "01191",
+    "field": "PostedVertClrnc",
+    "value": [
+      null,
+      null
+    ],
+    "reason": "No active posted clearance in this field"
+  },
+  {
+    "id": "00019",
+    "field": "PostedVertClrnc",
+    "value": [
+      null,
+      null
+    ],
+    "reason": "No active posted clearance in this field"
+  },
+  {
+    "id": "00067",
+    "field": "PostedVertClrnc",
+    "value": [
+      null,
+      null
+    ],
+    "reason": "No active posted clearance in this field"
+  },
+  {
+    "id": "00118",
+    "field": "PostedVertClrnc",
+    "value": [
+      null,
+      null
+    ],
+    "reason": "No active posted clearance in this field"
+  },
+  {
+    "id": "00750",
+    "field": "PostedVertClrnc",
+    "value": [
+      null,
+      null
+    ],
+    "reason": "No active posted clearance in this field"
+  },
+  {
+    "id": "00079",
+    "field": "PostedVertClrnc",
+    "value": [
+      null,
+      null
+    ],
+    "reason": "No active posted clearance in this field"
+  },
+  {
+    "id": "00530A",
+    "field": "PostedVertClrnc",
+    "value": [
+      null,
+      null
+    ],
+    "reason": "No active posted clearance in this field"
+  },
+  {
+    "id": "00700",
+    "field": "PostedVertClrnc",
+    "value": [
+      null,
+      null
+    ],
+    "reason": "No active posted clearance in this field"
+  },
+  {
+    "id": "00715",
+    "field": "PostedVertClrnc",
+    "value": [
+      null,
+      null
+    ],
+    "reason": "No active posted clearance in this field"
+  },
+  {
+    "id": "03549",
+    "field": "PostedVertClrnc",
+    "value": [
+      null,
+      null
+    ],
+    "reason": "No active posted clearance in this field"
+  },
+  {
+    "id": "03539A",
+    "field": "PostedVertClrnc",
+    "value": [
+      null,
+      null
+    ],
+    "reason": "No active posted clearance in this field"
+  },
+  {
+    "id": "00699",
+    "field": "PostedVertClrnc",
+    "value": [
+      null,
+      null
+    ],
+    "reason": "No active posted clearance in this field"
+  },
+  {
+    "id": "00713",
+    "field": "PostedVertClrnc",
+    "value": [
+      null,
+      null
+    ],
+    "reason": "No active posted clearance in this field"
+  },
+  {
+    "id": "00753",
+    "field": "PostedVertClrnc",
+    "value": [
+      null,
+      null
+    ],
+    "reason": "No active posted clearance in this field"
+  },
+  {
+    "id": "05810",
+    "field": "PostedVertClrnc",
+    "value": [
+      null,
+      null
+    ],
+    "reason": "No active posted clearance in this field"
+  },
+  {
+    "id": "03568B",
+    "field": "PostedVertClrnc",
+    "value": [
+      null,
+      null
+    ],
+    "reason": "No active posted clearance in this field"
+  },
+  {
+    "id": "00717",
+    "field": "PostedVertClrnc",
+    "value": [
+      null,
+      null
+    ],
+    "reason": "No active posted clearance in this field"
+  },
+  {
+    "id": "00697",
+    "field": "PostedVertClrnc",
+    "value": [
+      null,
+      null
+    ],
+    "reason": "No active posted clearance in this field"
+  },
+  {
+    "id": "01342",
+    "field": "PostedVertClrnc",
+    "value": [
+      null,
+      null
+    ],
+    "reason": "No active posted clearance in this field"
+  },
+  {
+    "id": "06211",
+    "field": "PostedVertClrnc",
+    "value": [
+      null,
+      null
+    ],
+    "reason": "No active posted clearance in this field"
+  },
+  {
+    "id": "03540B",
+    "field": "PostedVertClrnc",
+    "value": [
+      null,
+      null
+    ],
+    "reason": "No active posted clearance in this field"
+  },
+  {
+    "id": "03550",
+    "field": "PostedVertClrnc",
+    "value": [
+      null,
+      null
+    ],
+    "reason": "No active posted clearance in this field"
+  },
+  {
+    "id": "03568A",
+    "field": "PostedVertClrnc",
+    "value": [
+      null,
+      null
+    ],
+    "reason": "No active posted clearance in this field"
+  },
+  {
+    "id": "05271",
+    "field": "PostedVertClrnc",
+    "value": [
+      null,
+      null
+    ],
+    "reason": "No active posted clearance in this field"
+  },
+  {
+    "id": "00737",
+    "field": "PostedVertClrnc",
+    "value": [
+      null,
+      null
+    ],
+    "reason": "No active posted clearance in this field"
+  },
+  {
+    "id": "00044",
+    "field": "PostedVertClrnc",
+    "value": [
+      null,
+      null
+    ],
+    "reason": "No active posted clearance in this field"
+  },
+  {
+    "id": "05811",
+    "field": "PostedVertClrnc",
+    "value": [
+      null,
+      null
+    ],
+    "reason": "No active posted clearance in this field"
+  },
+  {
+    "id": "03556",
+    "field": "PostedVertClrnc",
+    "value": [
+      null,
+      null
+    ],
+    "reason": "No active posted clearance in this field"
+  },
+  {
+    "id": "00127",
+    "field": "PostedVertClrnc",
+    "value": [
+      null,
+      null
+    ],
+    "reason": "No active posted clearance in this field"
+  },
+  {
+    "id": "00023",
+    "field": "PostedVertClrnc",
+    "value": [
+      null,
+      null
+    ],
+    "reason": "No active posted clearance in this field"
+  },
+  {
+    "id": "00086",
+    "field": "PostedVertClrnc",
+    "value": [
+      null,
+      null
+    ],
+    "reason": "No active posted clearance in this field"
+  },
+  {
+    "id": "01349",
+    "field": "PostedVertUnderClrnc",
+    "value": [
+      null,
+      null
+    ],
+    "reason": "No active posted clearance in this field"
+  },
+  {
+    "id": "00082",
+    "field": "PostedVertClrnc",
+    "value": [
+      null,
+      null
+    ],
+    "reason": "No active posted clearance in this field"
+  },
+  {
+    "id": "03554",
+    "field": "PostedVertClrnc",
+    "value": [
+      null,
+      null
+    ],
+    "reason": "No active posted clearance in this field"
+  },
+  {
+    "id": "00738",
+    "field": "PostedVertClrnc",
+    "value": [
+      null,
+      null
+    ],
+    "reason": "No active posted clearance in this field"
+  },
+  {
+    "id": "04335",
+    "field": "PostedVertClrnc",
+    "value": [
+      null,
+      null
+    ],
+    "reason": "No active posted clearance in this field"
+  },
+  {
+    "id": "03852",
+    "field": "PostedVertUnderClrnc",
+    "value": [
+      null,
+      null
+    ],
+    "reason": "No active posted clearance in this field"
+  },
+  {
+    "id": "00050",
+    "field": "PostedVertClrnc",
+    "value": [
+      null,
+      null
+    ],
+    "reason": "No active posted clearance in this field"
+  },
+  {
+    "id": "00530B",
+    "field": "PostedVertClrnc",
+    "value": [
+      null,
+      null
+    ],
+    "reason": "No active posted clearance in this field"
+  },
+  {
+    "id": "00109",
+    "field": "PostedVertClrnc",
+    "value": [
+      null,
+      null
+    ],
+    "reason": "No active posted clearance in this field"
   }
 ]

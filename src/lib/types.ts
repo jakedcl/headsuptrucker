@@ -17,7 +17,7 @@ export type ClearanceRecord = {
   crossing: string;
   appliesTo: "under" | "on";
   county: string;
-  state: "NY";
+  state: "NY" | "CT";
   location: string;
   owner: string;
   direction: string | null;

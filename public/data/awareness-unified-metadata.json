@@ -1,0 +1,25 @@
+{
+  "builtAt": "2026-09-15T13:20:13.611Z",
+  "schema": "awareness-v1",
+  "points": 728,
+  "lines": 29,
+  "pointKinds": {
+    "crossing": 18,
+    "road": 1,
+    "clearance": 612,
+    "bridge": 6,
+    "posted_load": 89,
+    "tunnel": 2
+  },
+  "lineKinds": {
+    "parkway": 29
+  },
+  "sources": [
+    "clearances-nyc-li.geojson",
+    "parkways-nyc-li.geojson",
+    "posted-load-nyc-li.geojson",
+    "facilities-nyc-li.geojson",
+    "major-crossings.geojson"
+  ],
+  "note": "Unified from existing public layers. Extras preserved. NYC truck routes / closures / loading zones remain separate."
+}
