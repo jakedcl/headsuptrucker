@@ -16,7 +16,8 @@
     "data:fetch": "tsx scripts/fetch-sources.ts",
     "data:build": "tsx scripts/build-dataset.ts",
     "data:awareness": "tsx scripts/build-awareness.ts",
-    "data:ct-awareness": "tsx scripts/merge-ct-awareness.ts"
+    "data:ct-awareness": "tsx scripts/merge-ct-awareness.ts",
+    "data:nj-awareness": "tsx scripts/merge-nj-awareness.ts"
   },
   "dependencies": {
     "@fontsource/barlow-condensed": "^5.3.0",

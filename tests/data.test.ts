@@ -162,6 +162,48 @@ test("CTDOT posted-load prefers All posting and keeps coverage points only", () 
   assert.ok(posted.features.some((f: { properties: { id: string } }) => f.properties.id.startsWith("load-ct-")));
 });
 
+test("NJ NYC-facing corridors and PANYNJ crossings sit in the shared awareness GeoJSON", () => {
+  const parkways = JSON.parse(readFileSync("public/data/parkways-nyc-li.geojson", "utf8"));
+  const facilities = JSON.parse(readFileSync("public/data/facilities-nyc-li.geojson", "utf8"));
+  const crossings = JSON.parse(readFileSync("public/data/major-crossings.geojson", "utf8"));
+
+  const njPark = parkways.features.filter((f: { properties: { id: string } }) =>
+    f.properties.id.startsWith("parkway-nj-"),
+  );
+  assert.equal(njPark.length, 3);
+  const names = njPark.map((f: { properties: { name: string } }) => f.properties.name).sort();
+  assert.deepEqual(names, [
+    "Garden State Parkway (north of Exit 105)",
+    "Palisades Interstate Parkway",
+    "Pulaski Skyway",
+  ]);
+  for (const f of njPark) {
+    assert.equal(f.properties.kind, "parkway");
+    assert.equal(f.properties.commercialBan, true);
+    assert.equal(f.geometry.type, "MultiLineString");
+    assert.ok(f.geometry.coordinates.length >= 1);
+  }
+
+  const gsp = njPark.find((f: { properties: { id: string } }) => f.properties.id.includes("garden-state"));
+  assert.ok(String(gsp.properties.restriction).includes("GVWR"));
+  assert.ok(String(gsp.properties.restriction).includes("registered weight"));
+
+  const panynj = facilities.features.filter((f: { properties: { id: string } }) =>
+    f.properties.id.startsWith("panynj-"),
+  );
+  assert.ok(panynj.length >= 7, `expected PANYNJ facilities, got ${panynj.length}`);
+  const holland = panynj.find((f: { properties: { id: string } }) => f.properties.id === "panynj-holland");
+  assert.equal(holland.properties.heightInches, 150);
+  assert.equal(holland.properties.widthInches, 96);
+  const gwbLower = panynj.find((f: { properties: { id: string } }) => f.properties.id === "panynj-gwb-lower");
+  assert.equal(gwbLower.properties.trucksBanned, true);
+
+  const crossingIds = new Set(crossings.features.map((f: { properties: { id: string } }) => f.properties.id));
+  for (const id of ["gwb-upper", "gwb-lower", "holland", "lincoln", "bayonne", "goethals", "outerbridge"]) {
+    assert.ok(crossingIds.has(id), `missing crossing ${id}`);
+  }
+});
+
 test("snapshot regression: unique identities, valid geography, no legacy or sentinel postings", () => {
   const collection: ClearanceCollection = JSON.parse(readFileSync("public/data/clearances-nyc-li.geojson", "utf8"));
   assert.equal(collection.features.length, 612, "Review source changes before updating this snapshot baseline");

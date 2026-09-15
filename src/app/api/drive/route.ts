@@ -51,8 +51,8 @@ export async function POST(request: Request) {
     const from = await placeFromInput(fromInput);
     if (typeof fromInput === "string" && typeof toInput === "string") await new Promise(resolve => setTimeout(resolve, 1100));
     const to = await placeFromInput(toInput);
-    if (!from) return jsonError("Couldn’t find that starting place in NYC, Long Island, or SW Connecticut.", 404);
-    if (!to) return jsonError("Couldn’t find that destination in NYC, Long Island, or SW Connecticut.", 404);
+    if (!from) return jsonError("Couldn’t find that starting place in NYC, Long Island, SW Connecticut, or NE New Jersey.", 404);
+    if (!to) return jsonError("Couldn’t find that destination in NYC, Long Island, SW Connecticut, or NE New Jersey.", 404);
     if (from.label.toLowerCase() === to.label.toLowerCase() && Math.abs(from.lng - to.lng) < 1e-5 && Math.abs(from.lat - to.lat) < 1e-5) {
       return jsonError("Pick two different places.", 400);
     }
