@@ -217,7 +217,8 @@ const PANYNJ_CROSSINGS: Crossing[] = [
     facilityId: "panynj-bayonne",
     name: "Bayonne Bridge",
     kind: "bridge",
-    coordinates: [-74.0875, 40.6425],
+    // Midspan (Wikipedia / Wikidata) — prior pin was ~4.5 km too far east over the Kill Van Kull.
+    coordinates: [-74.1422, 40.6419],
     heightIn: 162,
     widthIn: 102,
     trucksBanned: false,
@@ -243,7 +244,7 @@ const PANYNJ_CROSSINGS: Crossing[] = [
     facilityId: "panynj-outerbridge",
     name: "Outerbridge Crossing",
     kind: "bridge",
-    coordinates: [-74.258, 40.5255],
+    coordinates: [-74.247, 40.525],
     heightIn: 162,
     widthIn: 102,
     trucksBanned: false,
