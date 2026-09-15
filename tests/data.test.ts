@@ -188,15 +188,22 @@ test("NJ NYC-facing corridors and PANYNJ crossings sit in the shared awareness G
   assert.ok(String(gsp.properties.restriction).includes("GVWR"));
   assert.ok(String(gsp.properties.restriction).includes("registered weight"));
 
+  const holland = facilities.features.find((f: { properties: { id: string } }) => f.properties.id === "holland");
+  assert.ok(holland, "missing Holland Tunnel facility");
+  assert.equal(holland.properties.heightInches, 150);
+  assert.equal(holland.properties.widthInches, 96);
+  const gwbLower = facilities.features.find((f: { properties: { id: string } }) => f.properties.id === "gwb-lower");
+  assert.ok(gwbLower, "missing GWB lower facility");
+  assert.equal(gwbLower.properties.trucksBanned, true);
+  const gwbIds = facilities.features
+    .map((f: { properties: { id: string } }) => f.properties.id)
+    .filter((id: string) => id === "gwb" || id === "gwb-upper" || id === "gwb-lower");
+  assert.equal(gwbIds.length, 3, "keep general + upper + lower GWB pins");
+
   const panynj = facilities.features.filter((f: { properties: { id: string } }) =>
     f.properties.id.startsWith("panynj-"),
   );
-  assert.ok(panynj.length >= 7, `expected PANYNJ facilities, got ${panynj.length}`);
-  const holland = panynj.find((f: { properties: { id: string } }) => f.properties.id === "panynj-holland");
-  assert.equal(holland.properties.heightInches, 150);
-  assert.equal(holland.properties.widthInches, 96);
-  const gwbLower = panynj.find((f: { properties: { id: string } }) => f.properties.id === "panynj-gwb-lower");
-  assert.equal(gwbLower.properties.trucksBanned, true);
+  assert.ok(panynj.length >= 3, `expected remaining PANYNJ bridges, got ${panynj.length}`);
 
   const crossingIds = new Set(crossings.features.map((f: { properties: { id: string } }) => f.properties.id));
   for (const id of ["gwb-upper", "gwb-lower", "holland", "lincoln", "bayonne", "goethals", "outerbridge"]) {

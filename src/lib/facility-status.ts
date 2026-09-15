@@ -106,6 +106,22 @@ export function evaluateFacility(
         detail: `Posted ${formatIn(heightLimit)} — clears your ${formatIn(vehicle.heightInches)}.`,
       });
     }
+  } else if (
+    facility.kind === "parkway" ||
+    facility.kind === "bridge" ||
+    facility.kind === "tunnel" ||
+    facility.kind === "underpass"
+  ) {
+    // Yellow — not green — when we have no corridor / posted height to check.
+    reasons.push({
+      dimension: "height",
+      status: "caution",
+      label: "Height",
+      detail:
+        facility.kind === "parkway"
+          ? "No corridor height in our sources for this parkway — check signs and overpasses."
+          : "No posted height in our sources for this place — check signs.",
+    });
   }
 
   // Width: only when the user entered a width.
@@ -221,19 +237,19 @@ export function evaluateFacility(
     });
   }
 
-  // Overall: ignore "unknown" (and pure FYI) when deciding go/no-go.
-  const actionable = reasons.filter(r => r.status !== "unknown" && r.label !== "Hazmat");
+  // Overall: missing limits (unknown) count as caution/yellow — never as a quiet green OK.
+  const ranked = reasons
+    .filter(r => r.label !== "Hazmat")
+    .map(r => (r.status === "unknown" ? ({ ...r, status: "caution" as LimitStatus }) : r));
   let status: LimitStatus = "ok";
-  if (actionable.length === 0 && reasons.every(r => r.status === "unknown" || r.label === "Hazmat")) {
-    status = reasons.some(r => r.status === "unknown") ? "unknown" : "ok";
-  } else if (actionable.length === 0) status = "unknown";
-  else status = actionable.reduce<LimitStatus>((acc, r) => worst(acc, r.status), "ok");
+  if (ranked.length === 0) status = "ok";
+  else status = ranked.reduce<LimitStatus>((acc, r) => worst(acc, r.status), "ok");
 
   const summary =
     status === "danger"
       ? "Not OK for your vehicle"
       : status === "caution"
-        ? "Tight / restricted — check details"
+        ? "Tight, restricted, or incomplete data — check details"
         : status === "ok"
           ? "Looks OK for what we know"
           : "Not enough posted limits to judge";
