@@ -40,7 +40,31 @@ test("parkway commercial ban only bites when commercial is on", () => {
     name: "Belt Parkway",
     kind: "parkway",
     commercialBan: true,
+    passengerOnlyHeightInches: 102,
     restrictionNote: "No Commercial Vehicles",
+  };
+  const personal = evaluateFacility(parkway, {
+    heightInches: 84,
+    widthInches: null,
+    weightTons: null,
+    commercial: false,
+  });
+  assert.equal(personal.status, "ok");
+  const truck = evaluateFacility(parkway, {
+    heightInches: 84,
+    widthInches: null,
+    weightTons: null,
+    commercial: true,
+  });
+  assert.equal(truck.status, "danger");
+});
+
+test("parkway without height data is yellow caution, not green", () => {
+  const parkway: FacilityLimits = {
+    id: "saw-mill",
+    name: "Saw Mill River Parkway",
+    kind: "parkway",
+    commercialBan: true,
   };
   const personal = evaluateFacility(parkway, {
     heightInches: 120,
@@ -48,14 +72,23 @@ test("parkway commercial ban only bites when commercial is on", () => {
     weightTons: null,
     commercial: false,
   });
-  assert.equal(personal.status, "ok");
-  const truck = evaluateFacility(parkway, {
+  assert.equal(personal.status, "caution");
+  assert.ok(personal.reasons.some(r => r.dimension === "height" && r.status === "caution"));
+});
+
+test("bridge without height is yellow; entered width without limit is also yellow", () => {
+  const bridge: FacilityLimits = {
+    id: "x",
+    name: "Mystery Bridge",
+    kind: "bridge",
+  };
+  const ev = evaluateFacility(bridge, {
     heightInches: 120,
-    widthInches: null,
+    widthInches: 96,
     weightTons: null,
-    commercial: true,
+    commercial: false,
   });
-  assert.equal(truck.status, "danger");
+  assert.equal(ev.status, "caution");
 });
 
 test("height caution band is 1–12 inches", () => {

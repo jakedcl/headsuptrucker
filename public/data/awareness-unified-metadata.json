@@ -1,15 +1,14 @@
 {
-  "builtAt": "2026-09-15T14:57:26.417Z",
+  "builtAt": "2026-09-15T15:27:52.820Z",
   "schema": "awareness-v1",
-  "points": 728,
+  "points": 724,
   "lines": 38,
   "pointKinds": {
     "crossing": 18,
     "road": 1,
     "clearance": 612,
-    "bridge": 6,
-    "posted_load": 89,
-    "tunnel": 2
+    "bridge": 4,
+    "posted_load": 89
   },
   "lineKinds": {
     "parkway": 38

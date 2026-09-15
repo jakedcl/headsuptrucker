@@ -281,8 +281,9 @@ function addOverlayLayers(map: MapInstance) {
       ["get", "status"],
       "danger", "#c9322a",
       "caution", "#cf720e",
+      "unknown", "#cf720e",
       "ok", "#0f7a4c",
-      "#64748b",
+      "#cf720e",
     ] as never;
     map.addLayer({
       id: "facilities-line",
