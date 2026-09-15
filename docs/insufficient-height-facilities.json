@@ -1,6 +1,6 @@
 {
-  "generatedAt": "2026-09-15T15:49:54.616Z",
-  "count": 9,
+  "generatedAt": "2026-09-15T16:29:07.733Z",
+  "count": 7,
   "byKind": {
     "parkway": [
       {
@@ -12,10 +12,10 @@
         "note": "No corridor height in our sources for this parkway — check signs and overpasses."
       },
       {
-        "id": "parkway-nj-garden-state-parkway",
-        "name": "Garden State Parkway (north of Exit 105)",
+        "id": "parkway-farragut-parkway",
+        "name": "Farragut Parkway",
         "kind": "parkway",
-        "operator": "NJ Turnpike Authority",
+        "operator": "NYSDOT",
         "commercialBan": true,
         "note": "No corridor height in our sources for this parkway — check signs and overpasses."
       },
@@ -24,14 +24,6 @@
         "name": "Korean War Vets Parkway (Richmond)",
         "kind": "parkway",
         "operator": "NYSDOT / NYC",
-        "commercialBan": true,
-        "note": "No corridor height in our sources for this parkway — check signs and overpasses."
-      },
-      {
-        "id": "parkway-lake-welch-parkway",
-        "name": "Lake Welch Parkway",
-        "kind": "parkway",
-        "operator": "NYSDOT",
         "commercialBan": true,
         "note": "No corridor height in our sources for this parkway — check signs and overpasses."
       },
@@ -60,14 +52,6 @@
         "note": "No corridor height in our sources for this parkway — check signs and overpasses."
       },
       {
-        "id": "parkway-seven-lakes-parkway",
-        "name": "Seven Lakes Parkway",
-        "kind": "parkway",
-        "operator": "NYSDOT",
-        "commercialBan": true,
-        "note": "No corridor height in our sources for this parkway — check signs and overpasses."
-      },
-      {
         "id": "parkway-sprain-brook-state-parkway",
         "name": "Sprain Brook State Parkway",
         "kind": "parkway",
@@ -87,10 +71,10 @@
       "note": "No corridor height in our sources for this parkway — check signs and overpasses."
     },
     {
-      "id": "parkway-nj-garden-state-parkway",
-      "name": "Garden State Parkway (north of Exit 105)",
+      "id": "parkway-farragut-parkway",
+      "name": "Farragut Parkway",
       "kind": "parkway",
-      "operator": "NJ Turnpike Authority",
+      "operator": "NYSDOT",
       "commercialBan": true,
       "note": "No corridor height in our sources for this parkway — check signs and overpasses."
     },
@@ -99,14 +83,6 @@
       "name": "Korean War Vets Parkway (Richmond)",
       "kind": "parkway",
       "operator": "NYSDOT / NYC",
-      "commercialBan": true,
-      "note": "No corridor height in our sources for this parkway — check signs and overpasses."
-    },
-    {
-      "id": "parkway-lake-welch-parkway",
-      "name": "Lake Welch Parkway",
-      "kind": "parkway",
-      "operator": "NYSDOT",
       "commercialBan": true,
       "note": "No corridor height in our sources for this parkway — check signs and overpasses."
     },
@@ -131,14 +107,6 @@
       "name": "Pulaski Skyway",
       "kind": "parkway",
       "operator": "NJDOT",
-      "commercialBan": true,
-      "note": "No corridor height in our sources for this parkway — check signs and overpasses."
-    },
-    {
-      "id": "parkway-seven-lakes-parkway",
-      "name": "Seven Lakes Parkway",
-      "kind": "parkway",
-      "operator": "NYSDOT",
       "commercialBan": true,
       "note": "No corridor height in our sources for this parkway — check signs and overpasses."
     },
