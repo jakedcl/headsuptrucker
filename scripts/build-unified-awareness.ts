@@ -102,6 +102,8 @@ function leftovers(raw: Props, skip: string[]): Record<string, string | number |
     if (skip.includes(k)) continue;
     if (v === null || typeof v === "string" || typeof v === "number" || typeof v === "boolean") {
       out[k] = v;
+    } else if (k === "heightApproaches" && Array.isArray(v)) {
+      out[k] = JSON.stringify(v);
     }
   }
   return out;

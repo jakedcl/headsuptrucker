@@ -46,7 +46,7 @@ const AWARENESS_OFF: AwarenessLayers = {
   facilities: true,
 };
 
-const SKIP_EXTRAS = new Set(["layer", "structureId", "clearanceType", "bin"]);
+const SKIP_EXTRAS = new Set(["layer", "structureId", "clearanceType", "bin", "heightApproaches"]);
 const EXTRA_LABELS: Record<string, string> = {
   yearBuilt: "Year built",
   structureType: "Structure type",
@@ -67,6 +67,30 @@ function extraEntries(raw: unknown) {
   return Object.entries(raw as Record<string, unknown>).filter(
     ([key, value]) => !SKIP_EXTRAS.has(key) && value != null && value !== "",
   );
+}
+
+function heightApproaches(props: Record<string, unknown> | null | undefined) {
+  const extras = props?.extras;
+  const raw =
+    props?.heightApproaches ??
+    (extras && typeof extras === "object" ? (extras as { heightApproaches?: unknown }).heightApproaches : null);
+  const rows = typeof raw === "string"
+    ? (() => {
+        try {
+          return JSON.parse(raw) as unknown;
+        } catch {
+          return [];
+        }
+      })()
+    : raw;
+  if (!Array.isArray(rows)) return [];
+  return rows.flatMap(row => {
+    if (!row || typeof row !== "object") return [];
+    const label = (row as { label?: unknown }).label;
+    const inches = (row as { heightInches?: unknown }).heightInches;
+    if (typeof label !== "string" || typeof inches !== "number" || !Number.isFinite(inches)) return [];
+    return [{ label, heightInches: inches }];
+  });
 }
 
 function formatExtraValue(key: string, value: unknown) {
@@ -909,6 +933,19 @@ export function MapExplorer() {
               <div><dt>State</dt><dd>{String(selectedFacility.properties.state)}</dd></div>
             ) : null}
           </dl>
+          {heightApproaches((selectedFacility.properties || {}) as Record<string, unknown>).length > 0 ? (
+            <div className="extras-block">
+              <p className="eyebrow">Posted by span</p>
+              <dl>
+                {heightApproaches((selectedFacility.properties || {}) as Record<string, unknown>).map(row => (
+                  <div key={row.label}>
+                    <dt>{row.label}</dt>
+                    <dd>{formatHeight(row.heightInches)}</dd>
+                  </div>
+                ))}
+              </dl>
+            </div>
+          ) : null}
           {selectedFacility.properties?.extras && extraEntries(selectedFacility.properties.extras).length > 0 ? (
             <div className="extras-block">
               <p className="eyebrow">Source extras</p>

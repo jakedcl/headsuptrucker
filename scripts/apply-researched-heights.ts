@@ -113,6 +113,23 @@ const CROSS_BAY_APPROACHES = [
   { label: "Southbound to Beach Channel Drive traveling east", heightInches: 168 },
 ];
 
+const RFK_NOTE =
+  "MTA publishes legal height by RFK (Triborough) span and direction (page updated Mar 9, 2026): " +
+  "Harlem River Lift from Manhattan 12′11″, to Manhattan 14′0″; " +
+  "Bronx Truss from the Bronx 13′3″, to the Bronx 14′0″; " +
+  "Queens Suspended from Queens 15′2″, to Queens 14′9″. " +
+  "Bridges width blanket 9′6″. Vehicles higher than a posted span limit need a night-crossing permit. " +
+  "https://www.mta.info/agency/bridges-and-tunnels/trucks-commercial-vehicle-information";
+
+const RFK_APPROACHES = [
+  { label: "Harlem River Lift Span from Manhattan", heightInches: 155 },
+  { label: "Harlem River Lift Span to Manhattan", heightInches: 168 },
+  { label: "Bronx Truss Spans from the Bronx", heightInches: 159 },
+  { label: "Bronx Truss Spans to the Bronx", heightInches: 168 },
+  { label: "Queens Suspended Span from Queens", heightInches: 182 },
+  { label: "Queens Suspended Span to Queens", heightInches: 177 },
+];
+
 /** Operator-posted facility heights. */
 const FACILITY_HEIGHTS: Record<
   string,
@@ -141,6 +158,16 @@ const FACILITY_HEIGHTS: Record<
     note: "MTA B&T published approach heights 13′10″–15′2″ (controlling 13′10″). Width 9′6″ bridges blanket.",
     restrictionNote: CROSS_BAY_NOTE,
     heightApproaches: CROSS_BAY_APPROACHES,
+  },
+  rfk: {
+    inches: 155,
+    heightLowerInches: 155,
+    heightUpperInches: 182,
+    widthInches: 114,
+    source: "mta-posted",
+    note: "MTA B&T published RFK (Triborough) span heights 12′11″–15′2″ (controlling 12′11″ from Manhattan on the Harlem River Lift). Width 9′6″ bridges blanket.",
+    restrictionNote: RFK_NOTE,
+    heightApproaches: RFK_APPROACHES,
   },
 };
 
@@ -210,12 +237,72 @@ function upsertCrossBay(facilities: FeatureCollection, crossings: FeatureCollect
   ].sort((a, b) => String(a.properties?.id).localeCompare(String(b.properties?.id)));
 }
 
+function upsertRfk(facilities: FeatureCollection, crossings: FeatureCollection) {
+  const geom: Point = { type: "Point", coordinates: [-73.927, 40.78] };
+  const facilityProps = {
+    id: "rfk",
+    name: "RFK Bridge (Triborough)",
+    kind: "bridge",
+    operator: "MTA",
+    heightInches: 155,
+    heightUpperInches: 182,
+    heightLowerInches: 155,
+    widthInches: 114,
+    weightTons: null,
+    postedLoadTons: null,
+    trucksBanned: false,
+    commercialBan: false,
+    gcpTruckException: false,
+    noTrucksLower: false,
+    noHazmat: false,
+    restrictionNote: RFK_NOTE,
+    geometryRole: "point",
+    heightSource: "mta-posted",
+    heightNote:
+      "MTA B&T published RFK (Triborough) span heights 12′11″–15′2″ (controlling 12′11″ from Manhattan on the Harlem River Lift). Width 9′6″ bridges blanket.",
+    heightApproaches: RFK_APPROACHES,
+  };
+  const crossingProps = {
+    id: "rfk",
+    name: "RFK Bridge (Triborough)",
+    kind: "bridge",
+    operator: "MTA",
+    heightIn: 155,
+    heightInches: 155,
+    heightUpperIn: 182,
+    heightUpperInches: 182,
+    heightLowerIn: 155,
+    heightLowerInches: 155,
+    widthIn: 114,
+    widthInches: 114,
+    restrictionNote: RFK_NOTE,
+    heightSource: "mta-posted",
+    heightNote:
+      "MTA B&T published RFK (Triborough) span heights 12′11″–15′2″ (controlling 12′11″ from Manhattan on the Harlem River Lift). Width 9′6″ bridges blanket.",
+    heightApproaches: RFK_APPROACHES,
+  };
+
+  const facFeat: Feature = { type: "Feature", geometry: geom, properties: facilityProps };
+  const crossFeat: Feature = { type: "Feature", geometry: geom, properties: crossingProps };
+
+  facilities.features = [
+    ...facilities.features.filter(f => f.properties?.id !== "rfk"),
+    facFeat,
+  ].sort((a, b) => String(a.properties?.id).localeCompare(String(b.properties?.id)));
+
+  crossings.features = [
+    ...crossings.features.filter(f => f.properties?.id !== "rfk"),
+    crossFeat,
+  ].sort((a, b) => String(a.properties?.id).localeCompare(String(b.properties?.id)));
+}
+
 async function main() {
   const parkways = await load("parkways-nyc-li.geojson");
   const facilities = await load("facilities-nyc-li.geojson");
   const crossings = await load("major-crossings.geojson");
 
   upsertCrossBay(facilities, crossings);
+  upsertRfk(facilities, crossings);
 
   let parkwayHits = 0;
   let parkwayCleared = 0;
