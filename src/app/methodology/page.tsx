@@ -118,7 +118,7 @@ export default function Methodology() {
           <li>Agency data can be incomplete or outdated.</li>
           <li>Coordinates mark structures — not always the exact warning sign.</li>
           <li>Clearance is separate from weight limits, commercial rules, and whether a road is legal for your vehicle.</li>
-          <li>Turning on truck-route or closure overlays does not validate a path.</li>
+          <li>Vehicles taller than 13′6″ are oversized loads. This version does not support them.</li>
         </ul>
         <p>A missing marker does not establish that a road has no low-clearance hazard. Agency data may be incomplete or outdated, and the NYSDOT layer does not supply lane-by-lane or directional sign details. Coordinates identify structures and may not mark the exact warning sign.</p>
         <p>Clearance is separate from commercial-vehicle restrictions, bridge weights, road legality, and routing. An apparently sufficient posting does not make a road legal for your vehicle. Turning on truck-route or closure overlays does not validate a path.</p>
