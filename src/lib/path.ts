@@ -1,7 +1,7 @@
 import type { Feature, Point } from "geojson";
 import type { ClearanceRecord } from "./types";
 
-export const COVERAGE = { minLng: -74.3, maxLng: -71.8, minLat: 40.45, maxLat: 41.55 };
+export const COVERAGE = { minLng: -74.35, maxLng: -71.8, minLat: 40.45, maxLat: 41.55 };
 export const CORRIDOR_METERS = 120;
 const EARTH_M = 6371000;
 

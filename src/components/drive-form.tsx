@@ -114,7 +114,7 @@ function PlaceField({ label, value, onChange, onPick, placeholder, inputId }: {
     {open && <ul id={listId} className="place-suggestions" role="listbox" aria-label={`${label} suggestions`}>
       {loading && <li className="place-suggestion muted" role="presentation">Searching places…</li>}
       {!loading && error && <li className="place-suggestion muted" role="presentation">{error}</li>}
-      {!loading && !error && !items.length && value.trim().length >= 2 && <li className="place-suggestion muted" role="presentation">No matches in NYC, Long Island, or SW Connecticut.</li>}
+      {!loading && !error && !items.length && value.trim().length >= 2 && <li className="place-suggestion muted" role="presentation">No matches in NYC, Long Island, SW Connecticut, or NE New Jersey.</li>}
       {items.map((place, index) => (
         <li
           key={`${place.label}-${place.lng}-${place.lat}`}
