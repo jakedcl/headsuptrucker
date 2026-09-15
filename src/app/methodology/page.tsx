@@ -97,7 +97,7 @@ export default function Methodology() {
       </section>
       <section>
         <h2>Checking a route (A → B)</h2>
-        <p className="methodology-plain">Pick two places in NYC, Long Island, or southwest Connecticut. We draw a driving path and list posted clearances near that line — a nearby-records check, not turn-by-turn truck routing.</p>
+        <p className="methodology-plain">Pick two places in NYC, Long Island, southwest Connecticut, or NYC-facing New Jersey. We draw a driving path and list posted clearances near that line — a nearby-records check, not turn-by-turn truck routing.</p>
 <p>From the map you can enter two places in the coverage area. We look those up with OpenStreetMap Nominatim, trace a driving path with OSRM, and list posted-clearance records within about 120 meters of that path, in order from A to B. That is a nearby-records check, not turn-by-turn directions, truck routing, or a statement that the road is clear.</p>
         <p>Place lookup and the path line use public OpenStreetMap services. They have usage limits and no availability guarantee. No account is created. When OSRM returns meaningfully different alternatives, the map offers a path compare — we never invent extra routes. Your height, selected clearance, from/to places, and chosen path index stay in the shareable URL so a clearance card or a route check can be sent as a link.</p>
       </section>
