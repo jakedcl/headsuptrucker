@@ -281,7 +281,7 @@ function addOverlayLayers(map: MapInstance) {
       ["get", "status"],
       "danger", "#c9322a",
       "caution", "#cf720e",
-      "unknown", "#cf720e",
+      "unknown", "#64748b",
       "ok", "#0f7a4c",
       "#cf720e",
     ] as never;

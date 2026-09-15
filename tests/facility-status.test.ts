@@ -59,7 +59,7 @@ test("parkway commercial ban only bites when commercial is on", () => {
   assert.equal(truck.status, "danger");
 });
 
-test("parkway without height data is yellow caution, not green", () => {
+test("parkway without height data is gray unknown, not green or yellow", () => {
   const parkway: FacilityLimits = {
     id: "saw-mill",
     name: "Saw Mill River Parkway",
@@ -72,11 +72,11 @@ test("parkway without height data is yellow caution, not green", () => {
     weightTons: null,
     commercial: false,
   });
-  assert.equal(personal.status, "caution");
-  assert.ok(personal.reasons.some(r => r.dimension === "height" && r.status === "caution"));
+  assert.equal(personal.status, "unknown");
+  assert.ok(personal.reasons.some(r => r.dimension === "height" && r.status === "unknown"));
 });
 
-test("bridge without height is yellow; entered width without limit is also yellow", () => {
+test("bridge without height is unknown; missing width limit stays unknown too", () => {
   const bridge: FacilityLimits = {
     id: "x",
     name: "Mystery Bridge",
@@ -88,7 +88,7 @@ test("bridge without height is yellow; entered width without limit is also yello
     weightTons: null,
     commercial: false,
   });
-  assert.equal(ev.status, "caution");
+  assert.equal(ev.status, "unknown");
 });
 
 test("height caution band is 1–12 inches", () => {

@@ -667,7 +667,7 @@ export function MapExplorer() {
             <li><span className="swatch ok" aria-hidden />OK</li>
             <li><span className="swatch caution" aria-hidden />Caution</li>
             <li><span className="swatch danger" aria-hidden />Do not go</li>
-            <li><span className="swatch unknown" aria-hidden />Insufficient data</li>
+            <li><span className="swatch unknown" aria-hidden />Unknown</li>
           </ul>
           <span className="eyebrow legend-subhead">MORE LAYERS</span>
           <label className="all-toggle">
