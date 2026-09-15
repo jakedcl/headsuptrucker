@@ -5,7 +5,7 @@
  * Preference order (safer than pure proximity):
  *  1) Clearances within ~120 m whose road/crossing/location names the parkway
  *  2) Else clearances within ~55 m (need ≥2 hits) — proximity fallback
- *  3) Else leave empty → UI shows yellow / insufficient data
+ *  3) Else leave empty → UI shows gray unknown (research may fill later)
  *
  * Official LI (94″) / CT (96″) values are never overwritten.
  */
@@ -207,7 +207,7 @@ async function main() {
   const missing = parkways.features.filter(
     f => num(f.properties?.passengerOnlyHeightInches) == null && num(f.properties?.heightInches) == null,
   );
-  console.log(`Parkways still without height (→ yellow): ${missing.length}`);
+  console.log(`Parkways still without height (→ gray unknown): ${missing.length}`);
   for (const f of missing) console.log(`  ${f.properties?.id} — ${f.properties?.name}`);
 }
 
