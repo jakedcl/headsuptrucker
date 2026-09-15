@@ -224,9 +224,17 @@ test("NJ NYC-facing corridors and PANYNJ crossings sit in the shared awareness G
   assert.ok(panynj.length >= 3, `expected remaining PANYNJ bridges, got ${panynj.length}`);
 
   const crossingIds = new Set(crossings.features.map((f: { properties: { id: string } }) => f.properties.id));
-  for (const id of ["gwb-upper", "gwb-lower", "holland", "lincoln", "bayonne", "goethals", "outerbridge"]) {
+  for (const id of ["gwb-upper", "gwb-lower", "holland", "lincoln", "bayonne", "goethals", "outerbridge", "rfk"]) {
     assert.ok(crossingIds.has(id), `missing crossing ${id}`);
   }
+
+  const rfk = facilities.features.find((f: { properties: { id: string } }) => f.properties.id === "rfk");
+  assert.ok(rfk, "missing RFK facility");
+  assert.equal(rfk.properties.heightInches, 155);
+  assert.equal(rfk.properties.heightLowerInches, 155);
+  assert.equal(rfk.properties.heightUpperInches, 182);
+  assert.equal(rfk.properties.widthInches, 114);
+  assert.equal(rfk.properties.heightSource, "mta-posted");
 });
 
 test("snapshot regression: unique identities, valid geography, no legacy or sentinel postings", () => {

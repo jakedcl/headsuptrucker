@@ -12,6 +12,7 @@ whole-road “maximum height” regulations. Commercial bans stay primary where 
 |---|---|---:|---|
 | `brooklyn` | Brooklyn Bridge | **132″ (11′0″)** | NYCDOT posted roadway restriction; trucks banned + 3 t posted load |
 | `cross-bay` | Cross Bay Veterans Memorial Bridge | **166–182″ (13′10″–15′2″)** | MTA B&T six directional approach limits (page updated Mar 9, 2026); controlling **13′10″**; width 9′6″ |
+| `rfk` | RFK Bridge (Triborough) | **155–182″ (12′11″–15′2″)** | MTA B&T six span/direction limits (page updated Mar 9, 2026); controlling **12′11″** Harlem River Lift from Manhattan; width 9′6″ |
 | `parkway-saw-mill-river-parkway` | Saw Mill River Parkway | **91″ (7′7″)** | NYSDOT inventory — Yonkers Ave over Saw Mill |
 | `parkway-bronx-river-parkway-westchester` | Bronx River Parkway (Westchester) | **104″ (8′8″)** | NYSDOT inventory |
 | `parkway-hutchinson-river-parkway-westchester` | Hutchinson River Parkway (Westchester) | **114″ (9′6″)** | NYSDOT inventory |
@@ -37,6 +38,19 @@ whole-road “maximum height” regulations. Commercial bans stay primary where 
 | Southbound to Beach Channel Drive traveling east | 14′0″ |
 
 Source: [MTA Bridges & Tunnels truck / commercial vehicle information](https://www.mta.info/agency/bridges-and-tunnels/trucks-commercial-vehicle-information) (updated Mar 9, 2026).
+
+### RFK (Triborough) — exact published spans (MTA)
+
+| Span and direction | Height |
+|---|---:|
+| Harlem River Lift Span from Manhattan | 12′11″ |
+| Harlem River Lift Span to Manhattan | 14′0″ |
+| Bronx Truss Spans from the Bronx | 13′3″ |
+| Bronx Truss Spans to the Bronx | 14′0″ |
+| Queens Suspended Span from Queens | 15′2″ |
+| Queens Suspended Span to Queens | 14′9″ |
+
+Same MTA source as Cross Bay. The old NYC truck-route string (“Frm MN Height 13′5″”) is not used.
 
 ## Still no trustworthy corridor height (left null → gray)
 
