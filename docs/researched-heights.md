@@ -14,6 +14,7 @@ We do **not** invent heights — remaining gaps stay null and paint gray unknown
 | `parkway-cross-county-parkway` | Cross County Parkway | **132″ (11′0″)** | NYSDOT inventory BIN 5500529 — Saw Mill over Cross County / 907K (11.00′) |
 | `parkway-taconic-state-parkway` | Taconic State Parkway | **120″ (10′0″)** | NYSDOT inventory BIN 1045300 — NY 301 over Taconic (10.00′) |
 | `parkway-nj-palisades-interstate-parkway` | Palisades Interstate Parkway | **139″ (11′7″)** | NYSDOT inventory BIN 1040880 — CR 110 over PIP (11.58′); commercial ban remains primary |
+| `parkway-long-mountain-parkway` | Long Mountain Parkway | **168″ (14′0″)** | No posted corridor height — default 14′ because this corridor has no height restriction |
 
 ## Still no trustworthy corridor height (left null → gray)
 
@@ -24,7 +25,6 @@ We do **not** invent heights — remaining gaps stay null and paint gray unknown
 | `parkway-korean-war-vets-parkway-richmond` | Same |
 | `parkway-sprain-brook-state-parkway` | No inventory overcrossings matched to corridor geometry |
 | `parkway-lake-welch-parkway` | No overcrossing mins for corridor traffic |
-| `parkway-long-mountain-parkway` | No overcrossing mins in inventory |
 | `parkway-seven-lakes-parkway` | Only underpass *under* the parkway (not corridor traffic) |
 | `parkway-nj-garden-state-parkway` | North of Exit 105 is a GVWR / class ban; no published corridor height |
 | `parkway-nj-pulaski-skyway` | Trucks/buses banned by NJDOT order; no published passenger corridor height |

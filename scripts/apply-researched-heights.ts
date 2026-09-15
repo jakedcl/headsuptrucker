@@ -1,6 +1,7 @@
 /**
  * Apply researched corridor / facility heights where state GIS omitted them.
- * Sources documented in docs/researched-heights.md — never invent values.
+ * Sources documented in docs/researched-heights.md — never invent posted signs.
+ * `default-unrestricted` is a labeled 14′ stand-in only where there is no restriction.
  */
 import { readFile, writeFile } from "node:fs/promises";
 import path from "node:path";
@@ -42,6 +43,11 @@ const PARKWAY_HEIGHTS: Record<
     inches: 139,
     source: "nysdot-inventory-min",
     note: "CR 110 over PIP (NY) — NYSDOT BIN 1040880 posted 11′7″",
+  },
+  "parkway-long-mountain-parkway": {
+    inches: 168,
+    source: "default-unrestricted",
+    note: "No posted corridor height in NYSDOT inventory — default 14′0″ (no height restriction)",
   },
 };
 
@@ -86,7 +92,8 @@ async function main() {
     if (
       existing != null &&
       src !== "derived-min-clearance" &&
-      src !== "nysdot-inventory-min"
+      src !== "nysdot-inventory-min" &&
+      src !== "default-unrestricted"
     ) {
       continue;
     }
