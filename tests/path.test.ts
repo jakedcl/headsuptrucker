@@ -10,6 +10,9 @@ function feature(id: string, lng: number, lat: number): Feature<Point, Clearance
 
 test("coverage envelope and corridor matching follow a straight path", () => {
   assert.equal(inCoverage(-73.99, 40.75), true);
+  assert.equal(inCoverage(-73.76, 41.03), true); // White Plains
+  assert.equal(inCoverage(-72.93, 41.31), true); // New Haven
+  assert.equal(inCoverage(-74.17, 40.35), true); // GSP near Exit 105
   assert.equal(inCoverage(-75, 40.75), false);
   const line: [number, number][] = [[-73.99, 40.75], [-73.90, 40.75]];
   const onPath = feature("on", -73.97, 40.75);

@@ -1,7 +1,8 @@
 import type { Feature, Point } from "geojson";
 import type { ClearanceRecord } from "./types";
 
-export const COVERAGE = { minLng: -74.35, maxLng: -71.8, minLat: 40.45, maxLat: 41.55 };
+/** NYC, Long Island, Hudson Valley, SW CT, and NYC-facing NJ. */
+export const COVERAGE = { minLng: -74.55, maxLng: -71.8, minLat: 40.3, maxLat: 41.7 };
 export const CORRIDOR_METERS = 120;
 const EARTH_M = 6371000;
 

@@ -16,10 +16,12 @@ describe("Hudson Valley parkways in shared awareness", () => {
       "parkway-cross-county-parkway",
       "parkway-hutchinson-river-parkway-westchester",
       "parkway-bronx-river-parkway-westchester",
+      "parkway-farragut-parkway",
+      "parkway-bear-mountain-state-parkway",
     ]) {
       assert.ok(ids.has(id), `missing ${id}`);
     }
-    assert.ok(parkways.features.length >= 38);
+    assert.ok(parkways.features.length >= 40);
   });
 
   it("keeps commercial bans and lands in unified lines", () => {

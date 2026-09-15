@@ -46,6 +46,36 @@ const AWARENESS_OFF: AwarenessLayers = {
   facilities: true,
 };
 
+const SKIP_EXTRAS = new Set(["layer", "structureId", "clearanceType", "bin"]);
+const EXTRA_LABELS: Record<string, string> = {
+  yearBuilt: "Year built",
+  structureType: "Structure type",
+  otherPosting: "Other posting",
+  relatedPostedLoadTons: "Related posted load",
+  localBridgeNumber: "Local bridge no.",
+  measuredUnderInches: "Measured under (inventory)",
+  measuredOnInches: "Measured on (inventory)",
+  vehicleLengthInches: "Length limit",
+  gvwPounds: "Combination GVW",
+  owner: "Owner",
+  location: "Source location",
+  rPosted: "R-posted",
+};
+
+function extraEntries(raw: unknown) {
+  if (!raw || typeof raw !== "object") return [];
+  return Object.entries(raw as Record<string, unknown>).filter(
+    ([key, value]) => !SKIP_EXTRAS.has(key) && value != null && value !== "",
+  );
+}
+
+function formatExtraValue(key: string, value: unknown) {
+  if (typeof value === "number" && /Inches$/i.test(key)) return formatHeight(value);
+  if (typeof value === "number" && /Tons$/i.test(key)) return formatTons(value);
+  if (key === "gvwPounds" && typeof value === "number") return `${value.toLocaleString("en-US")} lb`;
+  return String(value);
+}
+
 function updateUrl(values: Record<string, string | null>) {
   const url = new URL(window.location.href);
   for (const [key, value] of Object.entries(values)) {
@@ -501,7 +531,7 @@ export function MapExplorer() {
   const selected = data?.features.find(f => f.properties.id === selectedId)?.properties;
   const selectedLabels = selected ? recordLabels(selected) : null;
   const selectedSeverity = selected ? getClearanceSeverity(selected.postedClearanceInches, height) : null;
-  const showPostingNote = selectedSeverity === "danger" || selectedSeverity === "caution";
+  const showPostingNote = selected?.state === "NY" && (selectedSeverity === "danger" || selectedSeverity === "caution");
   const updated = data?.features[0]?.properties.sources[0].datasetUpdatedAt;
 
   return <main className="explorer">
@@ -871,18 +901,14 @@ export function MapExplorer() {
               <div><dt>State</dt><dd>{String(selectedFacility.properties.state)}</dd></div>
             ) : null}
           </dl>
-          {selectedFacility.properties?.extras &&
-          typeof selectedFacility.properties.extras === "object" &&
-          Object.keys(selectedFacility.properties.extras as object).filter(k => k !== "layer").length > 0 ? (
+          {selectedFacility.properties?.extras && extraEntries(selectedFacility.properties.extras).length > 0 ? (
             <div className="extras-block">
               <p className="eyebrow">Source extras</p>
               <dl>
-                {Object.entries(selectedFacility.properties.extras as Record<string, unknown>)
-                  .filter(([key, value]) => key !== "layer" && value != null && value !== "")
-                  .map(([key, value]) => (
+                {extraEntries(selectedFacility.properties.extras).map(([key, value]) => (
                     <div key={key}>
-                      <dt>{key}</dt>
-                      <dd>{String(value)}</dd>
+                      <dt>{EXTRA_LABELS[key] || key}</dt>
+                      <dd>{formatExtraValue(key, value)}</dd>
                     </div>
                   ))}
               </dl>
@@ -918,11 +944,26 @@ export function MapExplorer() {
           )}
           <dl>
             <div><dt>Your vehicle</dt><dd>{formatHeight(height)}</dd></div>
+            <div><dt>Applies to</dt><dd>{selected.appliesTo === "on" ? "Road on the structure" : "Road under the structure"}</dd></div>
             <div><dt>County / town</dt><dd>{selected.county}{selected.state ? `, ${selected.state}` : ""}</dd></div>
-            <div><dt>Direction</dt><dd>Not specified by source</dd></div>
+            {selected.owner ? <div><dt>Owner</dt><dd>{selected.owner}</dd></div> : null}
+            <div><dt>Direction</dt><dd>{selected.direction || "Not specified by source"}</dd></div>
             <div><dt>Structure ID</dt><dd>{selected.structureId}</dd></div>
             {isInventoryLabel(selected.road) && selected.road ? <div><dt>Agency road name</dt><dd>{selected.road}</dd></div> : null}
           </dl>
+          {extraEntries(selected.extras).length > 0 ? (
+            <div className="extras-block">
+              <p className="eyebrow">More from the source</p>
+              <dl>
+                {extraEntries(selected.extras).map(([key, value]) => (
+                  <div key={key}>
+                    <dt>{EXTRA_LABELS[key] || key}</dt>
+                    <dd>{formatExtraValue(key, value)}</dd>
+                  </div>
+                ))}
+              </dl>
+            </div>
+          ) : null}
           {selected.location && selectedLabels.title !== selected.location && (
             <p className="source-location">Source location: {selected.location}</p>
           )}

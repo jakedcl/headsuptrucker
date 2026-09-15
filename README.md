@@ -1,6 +1,6 @@
 # Heads Up
 
-A free, map-first tool for exploring posted vehicle clearances around NYC and Long Island. Enter your vehicle height; red markers are at or below it, and orange markers are 1–12 inches above it. No account, payment, destination, or routing service is required.
+A free, map-first tool for exploring posted vehicle clearances around NYC, Long Island, the Hudson Valley, southwest Connecticut, and NYC-facing New Jersey. Enter your vehicle height; red markers are at or below it, and orange markers are 1–12 inches above it. No account, payment, destination, or routing service is required.
 
 **Status:** local working prototype. The app builds successfully for Vercel, but has not been deployed or field-verified. See [data-audit.md](data-audit.md) for source findings and outstanding launch work.
 
@@ -33,14 +33,16 @@ npm test
 
 `data:fetch` downloads and validates official sources, checks the NYSDOT total, and records hashes and retrieval time. `data:build` verifies those hashes, parses source-specific formats, emits posted GeoJSON, and writes audit reports. Review snapshot test changes before accepting updated counts. There is no automatic scheduled refresh yet.
 
-- `scripts/sources/nysdot-posted-height.ts`: posted-on/under adapter and validated decimal-foot conversion.
+- `scripts/sources/nysdot-posted-height.ts`: posted-on/under adapter and validated decimal-foot conversion (NYC, LI, Hudson Valley).
+- `scripts/sources/nysdot-posted-load.ts`: posted-load tons from the same NYSDOT commercial-vehicle feed.
+- `scripts/sources/ctdot-posted-height.ts`: CTDOT posted feet+inches for Fairfield and New Haven County.
 - `scripts/sources/nyc-low-bridges.ts`: legacy KML adapter preserving directional values.
-- `public/data/clearances-nyc-li.geojson`: 555 roadway posting records across 535 structures in this snapshot.
+- `public/data/awareness-points.geojson` / `awareness-lines.geojson`: unified dots and corridors the map reads.
 - `data/raw/`: reproducible source snapshots and provenance.
 - `data/audit/`: normalized NYC records, overlap candidates, omitted fields, and statistics.
 - `src/lib/clearance.ts`: height validation, formatting, and warning thresholds.
 
-NYC's 149 legacy locations are **not** labeled as posted warnings. They are retained for audit until their age and clearance semantics are resolved. The warning layer currently uses NYSDOT only.
+NYC's 149 legacy locations are **not** labeled as posted warnings. They are retained for audit until their age and clearance semantics are resolved. The warning layer uses NYSDOT and CTDOT posted fields only — never NBI measured heights as signs.
 
 ## Product behavior
 
