@@ -1,6 +1,6 @@
 /**
- * Build unified awareness-points / awareness-lines from today's per-layer
- * public GeoJSON. One shared schema; agency leftovers stay in `extras`.
+ * Build unified awareness-points / awareness-lines from pipeline intermediates
+ * in data/built/. One shared schema; agency leftovers stay in `extras`.
  *
  * Usage: npm run data:build-unified
  */
@@ -17,6 +17,7 @@ import type {
   AwarenessState,
 } from "../src/lib/awareness-schema";
 
+const BUILT = "data/built";
 const PUBLIC = "public/data";
 type Props = Record<string, unknown>;
 
@@ -126,22 +127,23 @@ const NJ_CROSSINGS = new Set([
 ]);
 
 async function main() {
+  await mkdir(BUILT, { recursive: true });
   await mkdir(PUBLIC, { recursive: true });
 
   const clearances = await readJson<FeatureCollection<Point, Props>>(
-    `${PUBLIC}/clearances-nyc-li.geojson`,
+    `${BUILT}/clearances-nyc-li.geojson`,
   );
   const parkways = await readJson<FeatureCollection<MultiLineString | LineString, Props>>(
-    `${PUBLIC}/parkways-nyc-li.geojson`,
+    `${BUILT}/parkways-nyc-li.geojson`,
   );
   const postedLoad = await readJson<FeatureCollection<Point, Props>>(
-    `${PUBLIC}/posted-load-nyc-li.geojson`,
+    `${BUILT}/posted-load-nyc-li.geojson`,
   );
   const facilities = await readJson<
     FeatureCollection<Point | MultiLineString | LineString, Props>
-  >(`${PUBLIC}/facilities-nyc-li.geojson`);
+  >(`${BUILT}/facilities-nyc-li.geojson`);
   const majorCrossings = await readJson<FeatureCollection<Point, Props>>(
-    `${PUBLIC}/major-crossings.geojson`,
+    `${BUILT}/major-crossings.geojson`,
   );
 
   const pointMap = new Map<string, AwarenessPointFeature>();
@@ -514,12 +516,12 @@ async function main() {
       "facilities-nyc-li.geojson",
       "major-crossings.geojson",
     ],
-    note: "Unified from existing public layers. Extras preserved. NYC truck routes / closures / loading zones remain separate.",
+    note: "Unified from data/built intermediates. Extras preserved. NYC truck routes / closures / loading zones remain separate.",
   };
 
   await writeFile(`${PUBLIC}/awareness-points.geojson`, JSON.stringify(pointCollection));
   await writeFile(`${PUBLIC}/awareness-lines.geojson`, JSON.stringify(lineCollection));
-  await writeFile(`${PUBLIC}/awareness-unified-metadata.json`, JSON.stringify(metadata, null, 2));
+  await writeFile(`${BUILT}/awareness-unified-metadata.json`, JSON.stringify(metadata, null, 2));
 
   console.log("Wrote awareness-points.geojson", pointCollection.features.length, metadata.pointKinds);
   console.log("Wrote awareness-lines.geojson", lineCollection.features.length, metadata.lineKinds);
