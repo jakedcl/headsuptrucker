@@ -10,6 +10,11 @@
     "nysdot-statewide.geojson": "8c8e62b7bc50dedf4eb81e9bd051a3547b0baaff4d0f27417b956245454d30c6",
     "nysdot-posted-load.geojson": "c75e020017374d4121f9ca07f6bdda8137a14a06a62cf8f1f9e43c33d3516ff7",
     "ctdot-bridges.geojson": "b032cbf84b803c1bb49cdd4d79d5fd64f11381457f598393fd4c035b5e8ed1e5",
-    "ctdot-metadata.json": "0c33dd7a071cab225e3130256a6673bd3aac5b126c9be4e1c45be6424a73e577"
-  }
+    "ctdot-metadata.json": "0c33dd7a071cab225e3130256a6673bd3aac5b126c9be4e1c45be6424a73e577",
+    "nj-truck-map-bridges.geojson": "ea3fb85c4b646738a478ff57e956f550c2f52eb506b9c7a385c9048f0287acd1",
+    "osm-nj-maxheight.json": "8c29f4eea046849aeefa31f5a92b4f21d150ebf7e6db05f75d422b0378c25fac"
+  },
+  "njClearancesRetrievedAt": "2026-09-16T03:37:35.681Z",
+  "njTruckMapBridgeCount": 14,
+  "osmNjMaxheightCount": 1725
 }
