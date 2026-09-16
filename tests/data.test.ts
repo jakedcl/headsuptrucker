@@ -170,8 +170,8 @@ test("CTDOT posted-load prefers All posting and keeps coverage points only", () 
     assert.equal(f.geometry.type, "Point");
   }
 
-  const parkways = JSON.parse(readFileSync("public/data/parkways-nyc-li.geojson", "utf8"));
-  const posted = JSON.parse(readFileSync("public/data/posted-load-nyc-li.geojson", "utf8"));
+  const parkways = JSON.parse(readFileSync("data/built/parkways-nyc-li.geojson", "utf8"));
+  const posted = JSON.parse(readFileSync("data/built/posted-load-nyc-li.geojson", "utf8"));
   assert.ok(parkways.features.some((f: { properties: { id: string } }) => f.properties.id.startsWith("parkway-ct-")));
   assert.ok(posted.features.some((f: { properties: { id: string } }) => f.properties.id.startsWith("load-ct-")));
   assert.ok(
@@ -181,9 +181,9 @@ test("CTDOT posted-load prefers All posting and keeps coverage points only", () 
 });
 
 test("NJ NYC-facing corridors and PANYNJ crossings sit in the shared awareness GeoJSON", () => {
-  const parkways = JSON.parse(readFileSync("public/data/parkways-nyc-li.geojson", "utf8"));
-  const facilities = JSON.parse(readFileSync("public/data/facilities-nyc-li.geojson", "utf8"));
-  const crossings = JSON.parse(readFileSync("public/data/major-crossings.geojson", "utf8"));
+  const parkways = JSON.parse(readFileSync("data/built/parkways-nyc-li.geojson", "utf8"));
+  const facilities = JSON.parse(readFileSync("data/built/facilities-nyc-li.geojson", "utf8"));
+  const crossings = JSON.parse(readFileSync("data/built/major-crossings.geojson", "utf8"));
 
   const njPark = parkways.features.filter((f: { properties: { id: string } }) =>
     f.properties.id.startsWith("parkway-nj-"),
@@ -238,7 +238,7 @@ test("NJ NYC-facing corridors and PANYNJ crossings sit in the shared awareness G
 });
 
 test("snapshot regression: unique identities, valid geography, no legacy or sentinel postings", () => {
-  const collection: ClearanceCollection = JSON.parse(readFileSync("public/data/clearances-nyc-li.geojson", "utf8"));
+  const collection: ClearanceCollection = JSON.parse(readFileSync("data/built/clearances-nyc-li.geojson", "utf8"));
   assert.equal(collection.features.length, new Set(collection.features.map(f => f.properties.id)).size);
   assert.ok(collection.features.length >= 700, `expected expanded snapshot, got ${collection.features.length}`);
 

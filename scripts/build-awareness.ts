@@ -23,6 +23,7 @@ import {
 
 const ROOT = process.cwd();
 const OUT_DIR = path.join(ROOT, "public", "data");
+const BUILT_DIR = path.join(ROOT, "data", "built");
 
 type RawProps = Record<string, string | undefined>;
 
@@ -167,11 +168,12 @@ async function main() {
   );
 
   await mkdir(OUT_DIR, { recursive: true });
+  await mkdir(BUILT_DIR, { recursive: true });
 
   const routesPath = path.join(OUT_DIR, "truck-routes-nyc.geojson");
   const closuresPath = path.join(OUT_DIR, "street-closures-nyc.geojson");
   const loadingPath = path.join(OUT_DIR, "loading-zones-nyc.geojson");
-  const metaPath = path.join(OUT_DIR, "awareness-metadata.json");
+  const metaPath = path.join(BUILT_DIR, "awareness-metadata.json");
 
   await writeFile(routesPath, `${JSON.stringify(routes)}\n`);
   await writeFile(closuresPath, `${JSON.stringify(closures)}\n`);

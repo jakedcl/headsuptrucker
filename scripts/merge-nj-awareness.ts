@@ -13,7 +13,7 @@ import type { Feature, FeatureCollection, MultiLineString, Point, Position } fro
 import { COVERAGE } from "../src/lib/path";
 
 const ROOT = process.cwd();
-const PUBLIC = path.join(ROOT, "public", "data");
+const BUILT = path.join(ROOT, "data", "built");
 const RAW = path.join(ROOT, "data", "raw");
 
 const NJDOT_NETWORK =
@@ -301,10 +301,10 @@ async function main() {
 
   console.log(`  ${built.length} NJ corridors`);
 
-  const parkwaysPath = path.join(PUBLIC, "parkways-nyc-li.geojson");
-  const facilitiesPath = path.join(PUBLIC, "facilities-nyc-li.geojson");
-  const crossingsPath = path.join(PUBLIC, "major-crossings.geojson");
-  const metaPath = path.join(PUBLIC, "awareness-metadata.json");
+  const parkwaysPath = path.join(BUILT, "parkways-nyc-li.geojson");
+  const facilitiesPath = path.join(BUILT, "facilities-nyc-li.geojson");
+  const crossingsPath = path.join(BUILT, "major-crossings.geojson");
+  const metaPath = path.join(BUILT, "awareness-metadata.json");
 
   const parkways = JSON.parse(await readFile(parkwaysPath, "utf8")) as FeatureCollection;
   const facilities = JSON.parse(await readFile(facilitiesPath, "utf8")) as FeatureCollection;

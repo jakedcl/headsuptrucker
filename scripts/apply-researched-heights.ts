@@ -7,7 +7,7 @@ import { readFile, writeFile } from "node:fs/promises";
 import path from "node:path";
 import type { Feature, FeatureCollection, Point } from "geojson";
 
-const PUBLIC = path.join(process.cwd(), "public", "data");
+const BUILT = path.join(process.cwd(), "data", "built");
 
 /** Corridor mins from NYSDOT inventory / NJ admin code. */
 const PARKWAY_HEIGHTS: Record<
@@ -176,11 +176,11 @@ function num(v: unknown): number | null {
 }
 
 async function load(name: string) {
-  return JSON.parse(await readFile(path.join(PUBLIC, name), "utf8")) as FeatureCollection;
+  return JSON.parse(await readFile(path.join(BUILT, name), "utf8")) as FeatureCollection;
 }
 
 async function save(name: string, fc: FeatureCollection) {
-  await writeFile(path.join(PUBLIC, name), `${JSON.stringify(fc)}\n`);
+  await writeFile(path.join(BUILT, name), `${JSON.stringify(fc)}\n`);
 }
 
 function upsertCrossBay(facilities: FeatureCollection, crossings: FeatureCollection) {
