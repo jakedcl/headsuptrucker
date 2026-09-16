@@ -13,7 +13,7 @@ import { readFile, writeFile } from "node:fs/promises";
 import path from "node:path";
 import type { FeatureCollection, LineString, MultiLineString, Position } from "geojson";
 
-const PUBLIC = path.join(process.cwd(), "public", "data");
+const BUILT = path.join(process.cwd(), "data", "built");
 
 /** Never invent derived corridor heights for these — research left them blank. */
 const SKIP_DERIVED_IDS = new Set([
@@ -104,7 +104,7 @@ function textMatch(blob: string, tokens: string[], fullName: string): boolean {
 }
 
 async function loadFc(file: string) {
-  return JSON.parse(await readFile(path.join(PUBLIC, file), "utf8")) as FeatureCollection;
+  return JSON.parse(await readFile(path.join(BUILT, file), "utf8")) as FeatureCollection;
 }
 
 async function main() {
@@ -213,8 +213,8 @@ async function main() {
     f.properties.heightMethod = d.method;
   }
 
-  await writeFile(path.join(PUBLIC, "parkways-nyc-li.geojson"), `${JSON.stringify(parkways)}\n`);
-  await writeFile(path.join(PUBLIC, "facilities-nyc-li.geojson"), `${JSON.stringify(facilities)}\n`);
+  await writeFile(path.join(BUILT, "parkways-nyc-li.geojson"), `${JSON.stringify(parkways)}\n`);
+  await writeFile(path.join(BUILT, "facilities-nyc-li.geojson"), `${JSON.stringify(facilities)}\n`);
 
   console.log(`Clearance points: ${clearancePts.length}`);
   console.log(`Parkways filled from nearby clearances: ${filled}`);

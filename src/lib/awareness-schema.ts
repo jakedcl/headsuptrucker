@@ -9,15 +9,14 @@
  * attributes go in `extras` so we never invent values, but also never throw
  * away useful provenance.
  *
- * Build flow (target):
- *   fetch (weekly) → data/raw/{sourceId}/
- *   normalize      → data/normalized/{sourceId}.geojson  (this schema)
+ * Build flow:
+ *   fetch          → data/raw/
+ *   normalize      → data/built/{layer}.geojson  (pipeline intermediates)
  *   merge/dedupe   → public/data/awareness-lines.geojson
  *                    public/data/awareness-points.geojson
  *
- * Until adapters are fully migrated, the map still reads today's per-layer
- * files (clearances-*, parkways-*, facilities-*, …). New sources should
- * normalize into this schema first.
+ * The map reads only the unified awareness files (plus optional NYC layers
+ * like truck routes). Intermediates stay in data/built/ and are not served.
  */
 
 import type { Feature, FeatureCollection, LineString, MultiLineString, Point } from "geojson";

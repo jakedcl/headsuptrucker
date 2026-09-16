@@ -9,7 +9,7 @@ export type CtdotBridgeRaw = {
   geometry: { type: string; coordinates: Position[][] | Position[][][] | Position } | null;
 };
 
-/** Same property shape as public/data/posted-load-nyc-li.geojson. */
+/** Same property shape as data/built/posted-load-nyc-li.geojson. */
 export type PostedLoadProps = {
   id: string;
   bin: string;
