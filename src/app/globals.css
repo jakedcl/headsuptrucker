@@ -39,7 +39,7 @@
 .map-legend-panel .facility-legend{margin-top:8px;padding-top:0;border-top:0}
 .legend-radios{margin:8px 0 0;padding:0;border:0;display:flex;flex-direction:column;gap:0}
 .legend-radios .all-toggle{margin-top:6px}
-.maplibregl-ctrl-group .map-share-ctrl{display:block;width:29px;height:29px;padding:0;background:#fff;color:var(--ink)}
+.maplibregl-ctrl-group .map-share-ctrl{display:flex;align-items:center;justify-content:center;padding:0;background:#fff;color:var(--ink)}
 .maplibregl-ctrl-group .map-share-ctrl:hover{background:#f2f5f7}
-.maplibregl-ctrl-group .map-share-ctrl svg{display:block;margin:auto}
+.maplibregl-ctrl-group .map-share-ctrl svg{display:block;flex:0 0 auto}
 .methodology-plain{font-size:18px;line-height:1.55;color:var(--ink);margin:0 0 12px}.methodology-list{margin:0 0 16px;padding-left:1.15em;display:flex;flex-direction:column;gap:8px}.methodology-list li{font-size:16px;line-height:1.55;color:#45545d}.methodology-list strong{color:var(--ink)}
