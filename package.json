@@ -18,6 +18,7 @@
     "data:awareness": "tsx scripts/build-awareness.ts",
     "data:ct-awareness": "tsx scripts/merge-ct-awareness.ts",
     "data:nj-awareness": "tsx scripts/merge-nj-awareness.ts",
+    "data:fetch-nj": "tsx scripts/fetch-nj-clearances.ts",
     "data:hv-parkways": "tsx scripts/merge-hv-parkways.ts",
     "data:pipeline-status": "tsx scripts/pipeline-status.ts",
     "data:build-unified": "tsx scripts/build-unified-awareness.ts",
