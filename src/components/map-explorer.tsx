@@ -677,53 +677,6 @@ export function MapExplorer() {
             updateUrl({ from: null, to: null, bridge: null, route: null });
           }}
         />
-        <div className="map-legend-panel" role="group" aria-label="Legend">
-          <span className="eyebrow">LEGEND</span>
-          <ul className="facility-legend">
-            <li><span className="swatch ok" aria-hidden />OK</li>
-            <li><span className="swatch caution" aria-hidden />Caution</li>
-            <li><span className="swatch danger" aria-hidden />Do not go</li>
-            <li><span className="swatch unknown" aria-hidden />Unknown</li>
-          </ul>
-          <span className="eyebrow legend-subhead">MORE LAYERS</span>
-          <label className="all-toggle">
-            <input
-              type="checkbox"
-              checked={awareness.truckRoutes}
-              onChange={e => setAwareness(a => ({ ...a, truckRoutes: e.target.checked }))}
-            />
-            Truck routes
-          </label>
-          <label className="all-toggle">
-            <input
-              type="checkbox"
-              checked={awareness.streetClosures}
-              onChange={e => setAwareness(a => ({ ...a, streetClosures: e.target.checked }))}
-            />
-            Construction closures
-          </label>
-          <label className="all-toggle">
-            <input
-              type="checkbox"
-              checked={awareness.loadingZones}
-              onChange={e => setAwareness(a => ({ ...a, loadingZones: e.target.checked }))}
-            />
-            Loading zones
-          </label>
-          <fieldset className="legend-radios">
-            <legend className="sr-only">Clearance filter</legend>
-            <label className="all-toggle">
-              <input type="radio" name="clearance-filter" checked={!showAll} onChange={() => setShowAll(false)} />
-              Show concerns
-            </label>
-            <label className="all-toggle">
-              <input type="radio" name="clearance-filter" checked={showAll} onChange={() => setShowAll(true)} />
-              Show all
-            </label>
-          </fieldset>
-          {awarenessLoading && <p className="awareness-note" role="status">Loading map layers…</p>}
-          {awarenessError && <p className="awareness-error" role="status">{awarenessError}</p>}
-        </div>
         {routeOptions.length > 1 && activeDrive && (
           <div className="route-compare" role="group" aria-label="Compare driving paths">
             <div className="panel-heading">
@@ -837,6 +790,53 @@ export function MapExplorer() {
     </aside>
     <section className="map-area" aria-label="Clearance map">
       {shareMessage && <div className="share-status" role="status">{shareMessage}</div>}
+      <div className="map-legend-panel" role="group" aria-label="Legend">
+        <span className="eyebrow">LEGEND</span>
+        <ul className="facility-legend">
+          <li><span className="swatch ok" aria-hidden />OK</li>
+          <li><span className="swatch caution" aria-hidden />Caution</li>
+          <li><span className="swatch danger" aria-hidden />Do not go</li>
+          <li><span className="swatch unknown" aria-hidden />Unknown</li>
+        </ul>
+        <span className="eyebrow legend-subhead">MORE LAYERS</span>
+        <label className="all-toggle">
+          <input
+            type="checkbox"
+            checked={awareness.truckRoutes}
+            onChange={e => setAwareness(a => ({ ...a, truckRoutes: e.target.checked }))}
+          />
+          Truck routes
+        </label>
+        <label className="all-toggle">
+          <input
+            type="checkbox"
+            checked={awareness.streetClosures}
+            onChange={e => setAwareness(a => ({ ...a, streetClosures: e.target.checked }))}
+          />
+          Construction closures
+        </label>
+        <label className="all-toggle">
+          <input
+            type="checkbox"
+            checked={awareness.loadingZones}
+            onChange={e => setAwareness(a => ({ ...a, loadingZones: e.target.checked }))}
+          />
+          Loading zones
+        </label>
+        <fieldset className="legend-radios">
+          <legend className="sr-only">Clearance filter</legend>
+          <label className="all-toggle">
+            <input type="radio" name="clearance-filter" checked={!showAll} onChange={() => setShowAll(false)} />
+            Show concerns
+          </label>
+          <label className="all-toggle">
+            <input type="radio" name="clearance-filter" checked={showAll} onChange={() => setShowAll(true)} />
+            Show all
+          </label>
+        </fieldset>
+        {awarenessLoading && <p className="awareness-note" role="status">Loading map layers…</p>}
+        {awarenessError && <p className="awareness-error" role="status">{awarenessError}</p>}
+      </div>
       {mapCollection && (
         <Map
           key={mapEpoch}
