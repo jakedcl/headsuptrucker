@@ -38,6 +38,7 @@ npm test
 - `scripts/sources/ctdot-posted-height.ts`: CTDOT posted feet+inches for Fairfield and New Haven County.
 - `scripts/sources/nyc-low-bridges.ts`: legacy KML adapter preserving directional values.
 - `public/data/awareness-points.geojson` / `awareness-lines.geojson`: unified dots and corridors the map reads.
+- `data/built/`: pipeline intermediates (clearances, parkways, facilities, loads) used to build the unified layer — not served by the app.
 - `data/raw/`: reproducible source snapshots and provenance.
 - `data/audit/`: normalized NYC records, overlap candidates, omitted fields, and statistics.
 - `src/lib/clearance.ts`: height validation, formatting, and warning thresholds.

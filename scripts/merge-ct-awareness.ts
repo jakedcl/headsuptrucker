@@ -20,7 +20,7 @@ import {
 } from "./sources/ctdot-posted-load";
 
 const ROOT = process.cwd();
-const PUBLIC = path.join(ROOT, "public", "data");
+const BUILT = path.join(ROOT, "data", "built");
 const RAW = path.join(ROOT, "data", "raw");
 
 async function fetchGeoJson(url: string, where: string) {
@@ -76,10 +76,10 @@ async function main() {
   });
   console.log(`  ${bridgeRaw.features.length} posted-load bridges → ${ctLoads.length} in coverage`);
 
-  const parkwaysPath = path.join(PUBLIC, "parkways-nyc-li.geojson");
-  const loadsPath = path.join(PUBLIC, "posted-load-nyc-li.geojson");
-  const facilitiesPath = path.join(PUBLIC, "facilities-nyc-li.geojson");
-  const metaPath = path.join(PUBLIC, "awareness-metadata.json");
+  const parkwaysPath = path.join(BUILT, "parkways-nyc-li.geojson");
+  const loadsPath = path.join(BUILT, "posted-load-nyc-li.geojson");
+  const facilitiesPath = path.join(BUILT, "facilities-nyc-li.geojson");
+  const metaPath = path.join(BUILT, "awareness-metadata.json");
 
   const parkways = JSON.parse(await readFile(parkwaysPath, "utf8")) as FeatureCollection;
   const loads = JSON.parse(await readFile(loadsPath, "utf8")) as FeatureCollection;

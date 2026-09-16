@@ -11,7 +11,7 @@ import path from "node:path";
 import type { Feature, FeatureCollection, MultiLineString, Position } from "geojson";
 import { COVERAGE } from "../src/lib/path";
 
-const PUBLIC_DIR = path.join(process.cwd(), "public", "data");
+const BUILT_DIR = path.join(process.cwd(), "data", "built");
 const RAW_DIR = path.join(process.cwd(), "data", "raw");
 
 const RULES_URL =
@@ -299,9 +299,9 @@ async function main() {
     console.log(`+ ${target.name} (${lines.length} parts, ${roadway.features.length} raw)`);
   }
 
-  const parkwaysPath = path.join(PUBLIC_DIR, "parkways-nyc-li.geojson");
-  const facilitiesPath = path.join(PUBLIC_DIR, "facilities-nyc-li.geojson");
-  const metaPath = path.join(PUBLIC_DIR, "awareness-metadata.json");
+  const parkwaysPath = path.join(BUILT_DIR, "parkways-nyc-li.geojson");
+  const facilitiesPath = path.join(BUILT_DIR, "facilities-nyc-li.geojson");
+  const metaPath = path.join(BUILT_DIR, "awareness-metadata.json");
 
   const parkways = JSON.parse(await readFile(parkwaysPath, "utf8")) as FeatureCollection;
   const facilities = JSON.parse(await readFile(facilitiesPath, "utf8")) as FeatureCollection;

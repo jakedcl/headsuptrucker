@@ -2,8 +2,8 @@ import { describe, it } from "node:test";
 import assert from "node:assert/strict";
 import { readFileSync } from "node:fs";
 
-const parkways = JSON.parse(readFileSync("public/data/parkways-nyc-li.geojson", "utf8"));
-const facilities = JSON.parse(readFileSync("public/data/facilities-nyc-li.geojson", "utf8"));
+const parkways = JSON.parse(readFileSync("data/built/parkways-nyc-li.geojson", "utf8"));
+const facilities = JSON.parse(readFileSync("data/built/facilities-nyc-li.geojson", "utf8"));
 const lines = JSON.parse(readFileSync("public/data/awareness-lines.geojson", "utf8"));
 
 describe("Hudson Valley parkways in shared awareness", () => {

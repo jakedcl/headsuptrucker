@@ -15,7 +15,7 @@ export type CtdotParkwayRaw = {
   geometry: { type: string; coordinates: Position[] | Position[][] } | null;
 };
 
-/** Same property shape as public/data/parkways-nyc-li.geojson. */
+/** Same property shape as data/built/parkways-nyc-li.geojson. */
 export type ParkwayProps = {
   id: string;
   name: string;
@@ -131,7 +131,7 @@ export function normalizeCtdotParkways(features: CtdotParkwayRaw[]): Feature<Mul
   return output.sort((a, b) => a.properties.name.localeCompare(b.properties.name));
 }
 
-/** Facility-shaped props matching public/data/facilities-nyc-li.geojson parkways. */
+/** Facility-shaped props matching data/built/facilities-nyc-li.geojson parkways. */
 export function parkwayToFacility(feature: Feature<MultiLineString | LineString, ParkwayProps>) {
   const p = feature.properties;
   return {

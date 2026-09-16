@@ -19,7 +19,6 @@
     "data:ct-awareness": "tsx scripts/merge-ct-awareness.ts",
     "data:nj-awareness": "tsx scripts/merge-nj-awareness.ts",
     "data:hv-parkways": "tsx scripts/merge-hv-parkways.ts",
-    "data:pipeline-status": "tsx scripts/pipeline-status.ts",
     "data:build-unified": "tsx scripts/build-unified-awareness.ts",
     "data:enrich-parkway-heights": "tsx scripts/enrich-parkway-heights.ts",
     "data:apply-researched-heights": "tsx scripts/apply-researched-heights.ts"
@@ -37,7 +36,6 @@
     "@types/node": "^24",
     "@types/react": "^19",
     "@types/react-dom": "^19",
-    "agent-browser": "^0.37.1",
     "fast-xml-parser": "^5.3",
     "prettier": "^3.9.6",
     "tsx": "^4.20",

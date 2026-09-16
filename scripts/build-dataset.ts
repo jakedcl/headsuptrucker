@@ -109,6 +109,7 @@ const stats = {
 };
 
 await mkdir("data/audit", { recursive: true });
+await mkdir("data/built", { recursive: true });
 await mkdir("public/data", { recursive: true });
 const save = (path: string, data: unknown) => writeFile(path, JSON.stringify(data, null, 2) + "\n");
 
@@ -120,7 +121,7 @@ const nyLoads = normalizeNysdotPostedLoad(loadRaw.features as NysdotLoadRaw[]);
 if (nyLoads.length < 50) throw new Error("Unexpectedly few NY posted-load records; manual review required");
 let ctLoads: typeof nyLoads = [];
 try {
-  const existingLoads = JSON.parse(await read("public/data/posted-load-nyc-li.geojson"));
+  const existingLoads = JSON.parse(await read("data/built/posted-load-nyc-li.geojson"));
   ctLoads = (existingLoads.features || []).filter(
     (f: { properties?: { id?: string } }) => String(f.properties?.id || "").startsWith("load-ct-"),
   );
@@ -135,6 +136,6 @@ await save("data/audit/overlap-candidates.json", candidates);
 await save("data/audit/omitted-fields.json", [...normalized.rejected, ...ctdot.rejected]);
 await save("data/audit/statistics.json", stats);
 await save("public/data/metadata.json", stats);
-await save("public/data/clearances-nyc-li.geojson", { type: "FeatureCollection", features });
-await save("public/data/posted-load-nyc-li.geojson", { type: "FeatureCollection", features: postedLoadFeatures });
+await save("data/built/clearances-nyc-li.geojson", { type: "FeatureCollection", features });
+await save("data/built/posted-load-nyc-li.geojson", { type: "FeatureCollection", features: postedLoadFeatures });
 console.log(JSON.stringify(stats, null, 2));
