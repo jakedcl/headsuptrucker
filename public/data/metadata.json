@@ -2,8 +2,8 @@
   "retrievedAt": "2026-09-15T15:46:10.267Z",
   "sourceUpdatedAt": "2026-09-15T09:05:18.000Z",
   "nysdotStatewideStructures": 1125,
-  "postedRecords": 821,
-  "uniqueStructures": 801,
+  "postedRecords": 1932,
+  "uniqueStructures": 1912,
   "counties": [
     {
       "county": "BRONX",
@@ -227,6 +227,12 @@
       "postedOn": 0
     }
   ],
+  "njTruckMapRecords": 11,
+  "njTruckMapRejected": 3,
+  "osmNjMaxheightRecords": 1100,
+  "osmNjMaxheightParsed": 1103,
+  "osmNjDroppedNearAgency": 3,
+  "osmNjRejected": 622,
   "nysdotPostedLoadRecords": 136,
   "nycLegacyRecords": 149,
   "nycDirectionalRecords": 36,
@@ -235,12 +241,12 @@
   "agreeingCandidatePairs": 53,
   "mergedAcrossSources": 122,
   "belowFeet": {
-    "8": 17,
-    "9": 44,
-    "10": 127,
-    "11": 275,
-    "12": 429,
-    "13": 700
+    "8": 39,
+    "9": 81,
+    "10": 182,
+    "11": 352,
+    "12": 584,
+    "13": 1005
   },
   "nullSourceGeometries": 1125,
   "omittedFields": 788

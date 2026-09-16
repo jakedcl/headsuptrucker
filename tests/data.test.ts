@@ -244,12 +244,16 @@ test("snapshot regression: unique identities, valid geography, no legacy or sent
 
   const ny = collection.features.filter(f => f.properties.state === "NY");
   const ct = collection.features.filter(f => f.properties.state === "CT");
+  const nj = collection.features.filter(f => f.properties.state === "NJ");
   assert.ok(ny.length > 555, `expected Hudson Valley NY expansion, got ${ny.length}`);
   assert.ok(ct.length > 57, `expected New Haven CT expansion, got ${ct.length}`);
+  assert.ok(nj.length > 50, `expected NJ truck-map + OSM clearances, got ${nj.length}`);
   assert.ok(ny.some(f => f.properties.county === "WESTCHESTER"));
   assert.ok(ny.some(f => f.properties.county === "ROCKLAND"));
   assert.ok(ct.some(f => COVERED_TOWNS.has(f.properties.county)));
   assert.ok(ct.some(f => f.properties.county === "NEW HAVEN" || f.properties.county === "MILFORD"));
+  assert.ok(nj.some(f => f.properties.clearanceType === "posted" && f.properties.id.startsWith("njdot-truckmap-")));
+  assert.ok(nj.some(f => f.properties.clearanceType === "community" && f.properties.id.startsWith("osm-")));
 
   for (const f of ny) {
     assert.ok(COUNTIES.has(f.properties.county));
@@ -267,5 +271,11 @@ test("snapshot regression: unique identities, valid geography, no legacy or sent
     assert.equal(f.properties.clearanceType, "posted");
     assert.ok(f.properties.id.startsWith("ctdot-"));
     assert.ok(f.properties.sources[0].sourceUrl.includes("CTDOT_Bridges"));
+  }
+
+  for (const f of nj) {
+    assert.ok(Number.isInteger(f.properties.postedClearanceInches) && f.properties.postedClearanceInches > 0 && f.properties.postedClearanceInches < 360);
+    assert.ok(f.geometry.coordinates.every(Number.isFinite));
+    assert.ok(f.properties.clearanceType === "posted" || f.properties.clearanceType === "community");
   }
 });
