@@ -353,10 +353,10 @@ function addOverlayLayers(map: MapInstance) {
       filter: ["any", ["==", ["geometry-type"], "LineString"], ["==", ["geometry-type"], "MultiLineString"]],
       layout: { "line-cap": "round", "line-join": "round" },
       paint: {
-        "line-color": "#e11d48",
-        "line-width": ["interpolate", ["linear"], ["zoom"], 9, 10, 14, 18],
-        "line-opacity": 0.35,
-        "line-blur": 6,
+        "line-color": "#ffffff",
+        "line-width": ["interpolate", ["linear"], ["zoom"], 9, 12, 14, 22],
+        "line-opacity": 0.55,
+        "line-blur": 7,
       },
     });
     map.addLayer({
@@ -366,9 +366,9 @@ function addOverlayLayers(map: MapInstance) {
       filter: ["any", ["==", ["geometry-type"], "LineString"], ["==", ["geometry-type"], "MultiLineString"]],
       layout: { "line-cap": "round", "line-join": "round" },
       paint: {
-        "line-color": "#fff",
-        "line-width": ["interpolate", ["linear"], ["zoom"], 9, 3, 14, 7],
-        "line-opacity": 0.95,
+        "line-color": "#007aff",
+        "line-width": ["interpolate", ["linear"], ["zoom"], 9, 3.5, 14, 7.5],
+        "line-opacity": 0.98,
       },
     });
     map.addLayer({
@@ -377,10 +377,10 @@ function addOverlayLayers(map: MapInstance) {
       source: "focus-highlight",
       filter: ["==", ["geometry-type"], "Point"],
       paint: {
-        "circle-radius": ["interpolate", ["linear"], ["zoom"], 8, 14, 13, 22],
-        "circle-color": "#e11d48",
-        "circle-opacity": 0.35,
-        "circle-blur": 0.6,
+        "circle-radius": ["interpolate", ["linear"], ["zoom"], 8, 16, 13, 26],
+        "circle-color": "#ffffff",
+        "circle-opacity": 0.55,
+        "circle-blur": 0.65,
         "circle-stroke-width": 0,
       },
     });
@@ -391,10 +391,10 @@ function addOverlayLayers(map: MapInstance) {
       filter: ["==", ["geometry-type"], "Point"],
       paint: {
         "circle-radius": ["interpolate", ["linear"], ["zoom"], 8, 7, 13, 12],
-        "circle-color": "#fff",
-        "circle-opacity": 0.95,
+        "circle-color": "#007aff",
+        "circle-opacity": 0.98,
         "circle-stroke-width": 3,
-        "circle-stroke-color": "#e11d48",
+        "circle-stroke-color": "#ffffff",
       },
     });
   }
@@ -463,10 +463,9 @@ function addOverlayLayers(map: MapInstance) {
       source: "drive-alts",
       layout: { "line-cap": "round", "line-join": "round" },
       paint: {
-        "line-color": "#8aa0b3",
-        "line-width": 4,
-        "line-opacity": 0.7,
-        "line-dasharray": [1.2, 1.8],
+        "line-color": "#8ec5ff",
+        "line-width": 4.5,
+        "line-opacity": 0.55,
       },
     }, "drive-casing");
   }
@@ -538,6 +537,7 @@ export function ClearanceMap({
   initialViewport,
   onSelect,
   onFacilitySelect,
+  onClearFocus,
   onViewport,
   onShare,
 }: {
@@ -562,12 +562,13 @@ export function ClearanceMap({
   initialViewport: Viewport;
   onSelect: (id: string) => void;
   onFacilitySelect?: (id: string) => void;
+  onClearFocus?: () => void;
   onViewport: (viewport: Viewport, bounds: [number, number, number, number]) => void;
   onShare?: () => void;
 }) {
   const container = useRef<HTMLDivElement>(null);
   const mapRef = useRef<MapInstance | null>(null);
-  const current = useRef({ data, height, showAll, onSelect, onFacilitySelect, onViewport, onShare });
+  const current = useRef({ data, height, showAll, onSelect, onFacilitySelect, onClearFocus, onViewport, onShare });
   const initial = useRef(initialViewport);
   const ends = useRef<maplibregl.Marker[]>([]);
   const focusedId = useRef<string | null>(null);
@@ -578,8 +579,8 @@ export function ClearanceMap({
   const [error, setError] = useState("");
 
   useEffect(() => {
-    current.current = { data, height, showAll, onSelect, onFacilitySelect, onViewport, onShare };
-  }, [data, height, showAll, onSelect, onFacilitySelect, onViewport, onShare]);
+    current.current = { data, height, showAll, onSelect, onFacilitySelect, onClearFocus, onViewport, onShare };
+  }, [data, height, showAll, onSelect, onFacilitySelect, onClearFocus, onViewport, onShare]);
 
   useEffect(() => {
     if (!container.current) return;
@@ -691,12 +692,24 @@ export function ClearanceMap({
     map.on("load", () => {
       addOverlayLayers(map);
     map.on("click", "facilities-line", event => {
+      event.originalEvent.stopPropagation();
       const id = event.features?.[0]?.properties?.id;
       if (id) current.current.onFacilitySelect?.(String(id));
     });
     map.on("click", "facilities-circle", event => {
+      event.originalEvent.stopPropagation();
       const id = event.features?.[0]?.properties?.id;
       if (id) current.current.onFacilitySelect?.(String(id));
+    });
+    // Empty map click clears focus / closes the info card.
+    map.on("click", event => {
+      const layers = ["facilities-line", "facilities-circle"].filter(id => map.getLayer(id));
+      const hits = layers.length
+        ? map.queryRenderedFeatures(event.point, { layers })
+        : [];
+      if (hits.length) return;
+      if (!selectedIdRef.current && !selectedFacilityIdRef.current) return;
+      current.current.onClearFocus?.();
     });
     for (const layerId of ["facilities-line", "facilities-circle"]) {
       map.on("mouseenter", layerId, event => {
