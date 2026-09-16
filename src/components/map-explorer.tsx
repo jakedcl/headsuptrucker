@@ -871,11 +871,6 @@ export function MapExplorer() {
         />
       )}
       {!data && <div className="map-message">{fetchError ? "Map data unavailable. Retry from the clearance list." : "Preparing your map…"}</div>}
-      <div className="map-footnote">
-        {activeDrive
-          ? "Posted records near this path. Check signs. Missing markers do not guarantee clearance."
-          : "Check posted signs. Missing markers do not guarantee clearance."}
-      </div>
       {selectedFacility && selectedFacilityEval && (
         <section className="detail-panel facility-detail" aria-label="Selected facility details">
           <button
