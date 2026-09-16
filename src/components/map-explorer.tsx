@@ -459,6 +459,10 @@ export function MapExplorer() {
     setSelectedFacilityId(id);
     updateUrl({ facility: id, bridge: null });
   }, []);
+  const onClearFocus = useCallback(() => {
+    setSelectedFacilityId(null);
+    updateUrl({ bridge: null, facility: null });
+  }, []);
   const commitWidthDraft = useCallback(() => {
     const trimmed = widthDraft.trim();
     if (!trimmed) {
@@ -861,6 +865,7 @@ export function MapExplorer() {
           initialViewport={initialViewport}
           onSelect={onSelect}
           onFacilitySelect={onFacilitySelect}
+          onClearFocus={onClearFocus}
           onViewport={onViewport}
           onShare={() => copyLink(window.location.href, setShareMessage)}
         />
