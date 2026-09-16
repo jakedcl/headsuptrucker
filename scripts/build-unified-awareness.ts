@@ -170,15 +170,40 @@ async function main() {
     const p = f.properties || {};
     const id = str(p.id);
     if (!id || f.geometry?.type !== "Point") continue;
-    const state: AwarenessState = str(p.state) === "CT" ? "CT" : "NY";
-    const fallback: AwarenessProvenance = {
-      sourceId: state === "CT" ? "ctdot-posted-height" : "nysdot-posted-height",
-      agency: state === "CT" ? "CTDOT" : "NYSDOT",
-      dataset: state === "CT" ? "CTDOT Bridges" : "Posted Height Bridges",
-      recordId: str(p.structureId, id),
-      sourceUrl: "",
-      retrievedAt: new Date().toISOString(),
-    };
+    const stateRaw = str(p.state);
+    const state: AwarenessState =
+      stateRaw === "CT" || stateRaw === "NJ" || stateRaw === "PA" ? stateRaw : "NY";
+    const clearanceType = str(p.clearanceType, "posted");
+    const fallback: AwarenessProvenance =
+      state === "CT"
+        ? {
+            sourceId: "ctdot-posted-height",
+            agency: "CTDOT",
+            dataset: "CTDOT Bridges",
+            recordId: str(p.structureId, id),
+            sourceUrl: "",
+            retrievedAt: new Date().toISOString(),
+          }
+        : state === "NJ"
+          ? {
+              sourceId: clearanceType === "community" ? "osm-nj-maxheight" : "nj-truck-map",
+              agency: clearanceType === "community" ? "OpenStreetMap" : "NJDOT",
+              dataset:
+                clearanceType === "community"
+                  ? "OSM maxheight (NJ)"
+                  : "2024 NJ Truck Map low-clearance table",
+              recordId: str(p.structureId, id),
+              sourceUrl: "",
+              retrievedAt: new Date().toISOString(),
+            }
+          : {
+              sourceId: "nysdot-posted-height",
+              agency: "NYSDOT",
+              dataset: "Posted Height Bridges",
+              recordId: str(p.structureId, id),
+              sourceUrl: "",
+              retrievedAt: new Date().toISOString(),
+            };
     putPoint({
       type: "Feature",
       geometry: f.geometry,

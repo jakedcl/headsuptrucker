@@ -1,12 +1,12 @@
 {
-  "builtAt": "2026-09-15T19:55:17.831Z",
+  "builtAt": "2026-09-16T03:37:45.877Z",
   "schema": "awareness-v1",
-  "points": 1009,
+  "points": 2120,
   "lines": 40,
   "pointKinds": {
     "crossing": 19,
     "road": 1,
-    "clearance": 821,
+    "clearance": 1932,
     "bridge": 4,
     "posted_load": 162,
     "tunnel": 2

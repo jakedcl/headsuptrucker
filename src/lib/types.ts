@@ -17,11 +17,12 @@ export type ClearanceRecord = {
   crossing: string;
   appliesTo: "under" | "on";
   county: string;
-  state: "NY" | "CT";
+  state: "NY" | "CT" | "NJ";
   location: string;
   owner: string;
   direction: string | null;
-  clearanceType: "posted";
+  /** Agency/brochure posted vs community-mapped (OSM). */
+  clearanceType: "posted" | "community";
   sources: SourceReference[];
   notes: string[];
   /** Agency leftovers that must not replace posted height. */

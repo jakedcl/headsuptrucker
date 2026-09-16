@@ -65,6 +65,8 @@ describe("source registry", () => {
     assert.equal(new Set(ids).size, ids.length);
     assert.ok(sourceById("nysdot-posted-height"));
     assert.ok(sourceById("ctdot-posted-height"));
+    assert.equal(sourceById("nj-truck-map")?.status, "active");
+    assert.equal(sourceById("osm-nj-maxheight")?.status, "active");
     assert.equal(sourceById("nj-posted-clearances")?.status, "planned");
   });
 });

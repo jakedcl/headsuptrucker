@@ -39,11 +39,11 @@ export function toClearanceRecord(props: AwarenessProperties): ClearanceRecord {
     crossing: props.crossing || "",
     appliesTo: props.appliesTo === "on" ? "on" : "under",
     county: props.county || props.town || "",
-    state: props.state === "CT" ? "CT" : "NY",
+    state: props.state === "CT" || props.state === "NJ" ? props.state : "NY",
     location: props.location || "",
     owner: props.operator || str(props.extras?.owner),
     direction: props.direction ?? null,
-    clearanceType: "posted",
+    clearanceType: props.extras?.clearanceType === "community" ? "community" : "posted",
     notes: props.notes || [],
     extras: props.extras,
     sources: (props.sources || []).map(s => ({

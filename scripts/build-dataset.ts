@@ -4,10 +4,24 @@ import { COUNTIES, normalizeNysdot, type RawFeature } from "./sources/nysdot-pos
 import { normalizeNyc } from "./sources/nyc-low-bridges";
 import { normalizeCtdot, type CtdotRawFeature } from "./sources/ctdot-posted-height";
 import { normalizeNysdotPostedLoad, type NysdotLoadRaw } from "./sources/nysdot-posted-load";
+import {
+  NJ_TRUCK_MAP_2024,
+  normalizeNjTruckMap,
+  type BridgeCoord,
+} from "./sources/nj-truck-map";
+import { normalizeOsmNjMaxheight, type OsmElement } from "./sources/osm-nj-maxheight";
 
 const read = (path: string) => readFile(path, "utf8");
 const manifest = JSON.parse(await read("data/raw/manifest.json"));
 for (const [name, expected] of Object.entries(manifest.hashes)) {
+  // NJ snapshots are optional until data:fetch-nj has been run.
+  if (name === "nj-truck-map-bridges.geojson" || name === "osm-nj-maxheight.json") {
+    try {
+      await read(`data/raw/${name}`);
+    } catch {
+      continue;
+    }
+  }
   const actual = createHash("sha256").update(await read(`data/raw/${name}`)).digest("hex");
   if (actual !== expected) throw new Error(`Raw snapshot hash mismatch: ${name}`);
 }
@@ -25,25 +39,89 @@ const nyc = normalizeNyc(await read("data/raw/nyc-low-bridges.kml"));
 const normalized = normalizeNysdot(raw.features, manifest.retrievedAt);
 const ctdot = normalizeCtdot(ctdotRaw.features as CtdotRawFeature[], manifest.retrievedAt);
 
-const unique = new Map<string, (typeof normalized.features)[number]>();
-for (const f of [...normalized.features, ...ctdot.features]) {
-  const previous = unique.get(f.properties.id);
-  if (previous && JSON.stringify(previous) !== JSON.stringify(f)) {
-    throw new Error(`Conflicting duplicate ${f.properties.id}`);
-  }
-  unique.set(f.properties.id, f);
-}
-const features = [...unique.values()].sort((a, b) => a.properties.id.localeCompare(b.properties.id));
-if (features.length < 100) throw new Error("Unexpectedly few launch-area records; manual review required");
-if (ctdot.features.length < 1) throw new Error("No CTDOT posted clearances after normalize; manual review required");
-
-const distance = (a: number[], b: number[]) => {
+/** Prefer agency/brochure points over nearby community OSM tags. */
+const metersBetween = (a: number[], b: number[]) => {
   const rad = Math.PI / 180;
   const dLat = (b[1] - a[1]) * rad;
   const dLng = (b[0] - a[0]) * rad;
   const h = Math.sin(dLat / 2) ** 2 + Math.cos(a[1] * rad) * Math.cos(b[1] * rad) * Math.sin(dLng / 2) ** 2;
   return 6371000 * 2 * Math.atan2(Math.sqrt(h), Math.sqrt(1 - h));
 };
+
+let njTruck = { features: [] as ReturnType<typeof normalizeNjTruckMap>["features"], rejected: [] as { id: string; reason: string }[] };
+let osmNj = { features: [] as ReturnType<typeof normalizeOsmNjMaxheight>["features"], rejected: [] as { id: string; value: string; reason: string }[] };
+try {
+  const bridgesRaw = JSON.parse(await read("data/raw/nj-truck-map-bridges.geojson"));
+  const coords = new Map<string, BridgeCoord>();
+  for (const f of bridgesRaw.features || []) {
+    const p = f.properties || {};
+    const brkey = String(p.BRKEY || "");
+    const published = String(p._truckMapStructure || "");
+    const g = f.geometry;
+    if (!brkey || g?.type !== "Point" || !Array.isArray(g.coordinates)) continue;
+    const [lng, lat] = g.coordinates;
+    if (!Number.isFinite(lng) || !Number.isFinite(lat)) continue;
+    const entry: BridgeCoord = {
+      brkey,
+      lng,
+      lat,
+      facility: typeof p.FACILITY === "string" ? p.FACILITY : undefined,
+      featint: typeof p.FEATINT === "string" ? p.FEATINT : undefined,
+    };
+    coords.set(brkey, entry);
+    coords.set(brkey.replace(/^0+/, ""), entry);
+    if (published) {
+      coords.set(published, entry);
+      coords.set(published.replace(/^0+/, ""), entry);
+    }
+  }
+  njTruck = normalizeNjTruckMap(
+    NJ_TRUCK_MAP_2024,
+    coords,
+    manifest.njClearancesRetrievedAt || manifest.retrievedAt,
+  );
+} catch {
+  njTruck = { features: [], rejected: [{ id: "*", reason: "nj-truck-map-bridges.geojson missing — run npm run data:fetch-nj" }] };
+}
+
+try {
+  const osmRaw = JSON.parse(await read("data/raw/osm-nj-maxheight.json"));
+  osmNj = normalizeOsmNjMaxheight(
+    (osmRaw.elements || []) as OsmElement[],
+    manifest.njClearancesRetrievedAt || manifest.retrievedAt,
+  );
+} catch {
+  osmNj = { features: [], rejected: [{ id: "*", value: "", reason: "osm-nj-maxheight.json missing — run npm run data:fetch-nj" }] };
+}
+
+const unique = new Map<string, (typeof normalized.features)[number]>();
+for (const f of [...normalized.features, ...ctdot.features, ...njTruck.features]) {
+  const previous = unique.get(f.properties.id);
+  if (previous && JSON.stringify(previous) !== JSON.stringify(f)) {
+    throw new Error(`Conflicting duplicate ${f.properties.id}`);
+  }
+  unique.set(f.properties.id, f);
+}
+
+const agencyPoints = [...unique.values()].map(f => f.geometry.coordinates);
+let osmKept = 0;
+let osmDroppedNearAgency = 0;
+for (const f of osmNj.features) {
+  const nearAgency = agencyPoints.some(pt => metersBetween(pt, f.geometry.coordinates) <= 40);
+  if (nearAgency) {
+    osmDroppedNearAgency += 1;
+    continue;
+  }
+  if (unique.has(f.properties.id)) continue;
+  unique.set(f.properties.id, f);
+  osmKept += 1;
+}
+
+const features = [...unique.values()].sort((a, b) => a.properties.id.localeCompare(b.properties.id));
+if (features.length < 100) throw new Error("Unexpectedly few launch-area records; manual review required");
+if (ctdot.features.length < 1) throw new Error("No CTDOT posted clearances after normalize; manual review required");
+
+const distance = metersBetween;
 const nyFeatures = features.filter(f => f.properties.state === "NY");
 const candidates = nyc.flatMap(n =>
   nyFeatures
@@ -94,6 +172,12 @@ const stats = {
   ctdotSourceBridges: ctdotRaw.features.length,
   ctdotPostedRecords: ctdot.features.length,
   ctdotTowns,
+  njTruckMapRecords: njTruck.features.length,
+  njTruckMapRejected: njTruck.rejected.length,
+  osmNjMaxheightRecords: osmKept,
+  osmNjMaxheightParsed: osmNj.features.length,
+  osmNjDroppedNearAgency: osmDroppedNearAgency,
+  osmNjRejected: osmNj.rejected.length,
   nysdotPostedLoadRecords: 0,
   nycLegacyRecords: nyc.length,
   nycDirectionalRecords: nyc.filter(n => Object.keys(n.directional).length).length,

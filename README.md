@@ -31,18 +31,20 @@ npm run data:build
 npm test
 ```
 
-`data:fetch` downloads and validates official sources, checks the NYSDOT total, and records hashes and retrieval time. `data:build` verifies those hashes, parses source-specific formats, emits posted GeoJSON, and writes audit reports. Review snapshot test changes before accepting updated counts. There is no automatic scheduled refresh yet.
+`data:fetch` downloads and validates official sources, checks the NYSDOT total, and records hashes and retrieval time. `npm run data:fetch-nj` adds the NJ truck-map bridge matches and OSM maxheight snapshot. `data:build` verifies those hashes, parses source-specific formats, emits posted GeoJSON, and writes audit reports. Review snapshot test changes before accepting updated counts. There is no automatic scheduled refresh yet.
 
 - `scripts/sources/nysdot-posted-height.ts`: posted-on/under adapter and validated decimal-foot conversion (NYC, LI, Hudson Valley).
 - `scripts/sources/nysdot-posted-load.ts`: posted-load tons from the same NYSDOT commercial-vehicle feed.
 - `scripts/sources/ctdot-posted-height.ts`: CTDOT posted feet+inches for Fairfield and New Haven County.
+- `scripts/sources/nj-truck-map.ts`: NJDOT 2024 truck-map low-clearance table + Bridges geocode.
+- `scripts/sources/osm-nj-maxheight.ts`: OpenStreetMap maxheight tags for NJ (community-labeled).
 - `scripts/sources/nyc-low-bridges.ts`: legacy KML adapter preserving directional values.
 - `public/data/awareness-points.geojson` / `awareness-lines.geojson`: unified dots and corridors the map reads.
 - `data/raw/`: reproducible source snapshots and provenance.
 - `data/audit/`: normalized NYC records, overlap candidates, omitted fields, and statistics.
 - `src/lib/clearance.ts`: height validation, formatting, and warning thresholds.
 
-NYC's 149 legacy locations are **not** labeled as posted warnings. They are retained for audit until their age and clearance semantics are resolved. The warning layer uses NYSDOT and CTDOT posted fields only — never NBI measured heights as signs.
+NYC's 149 legacy locations are **not** labeled as posted warnings. They are retained for audit until their age and clearance semantics are resolved. The warning layer uses agency posted fields (NYSDOT, CTDOT, NJ truck-map) plus clearly labeled OSM community heights for NJ — never NBI measured heights as signs.
 
 ## Product behavior
 
