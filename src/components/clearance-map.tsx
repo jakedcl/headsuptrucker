@@ -13,6 +13,12 @@ export type Viewport = { lng: number; lat: number; z: number };
 const EMPTY_DRIVE: FeatureCollection<LineString> = { type: "FeatureCollection", features: [] };
 const MAP_STYLE = process.env.NEXT_PUBLIC_MAP_STYLE || "https://basemaps.cartocdn.com/gl/voyager-gl-style/style.json";
 
+export function mapPathDisclaimer(hasPath: boolean) {
+  return hasPath
+    ? "Posted records near this path. Check signs. Missing markers do not guarantee clearance."
+    : "Check posted signs. Missing markers do not guarantee clearance.";
+}
+
 function toDriveGeoJSON(coordinates: number[][]): FeatureCollection<LineString> {
   return {
     type: "FeatureCollection",
@@ -577,6 +583,7 @@ export function ClearanceMap({
   const selectedFacilityIdRef = useRef(selectedFacilityId ?? null);
   const [ready, setReady] = useState(false);
   const [error, setError] = useState("");
+  const attribRef = useRef<maplibregl.AttributionControl | null>(null);
 
   useEffect(() => {
     current.current = { data, height, showAll, onSelect, onFacilitySelect, onClearFocus, onViewport, onShare };
@@ -601,7 +608,12 @@ export function ClearanceMap({
       return;
     }
     mapRef.current = map;
-    map.addControl(new maplibregl.AttributionControl({ compact: true }), "bottom-right");
+    const attrib = new maplibregl.AttributionControl({
+      compact: true,
+      customAttribution: mapPathDisclaimer(false),
+    });
+    attribRef.current = attrib;
+    map.addControl(attrib, "bottom-right");
     map.addControl(new maplibregl.NavigationControl({ showCompass: false }), "top-right");
     const locate = new maplibregl.GeolocateControl({
       positionOptions: { enableHighAccuracy: true },
@@ -761,8 +773,16 @@ export function ClearanceMap({
       for (const marker of ends.current) marker.remove();
       map.remove();
       mapRef.current = null;
+      attribRef.current = null;
     };
   }, []);
+
+  useEffect(() => {
+    const attrib = attribRef.current;
+    if (!ready || !attrib) return;
+    attrib.options.customAttribution = mapPathDisclaimer(Boolean(drive));
+    attrib._updateAttributions();
+  }, [drive, ready]);
 
   useEffect(() => {
     const source = mapRef.current?.getSource("clearances") as GeoJSONSource | undefined;
