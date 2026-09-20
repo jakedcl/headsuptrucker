@@ -41,9 +41,9 @@
 .guide-caption h2{font-size:26px;margin:10px 0 8px}
 .guide-caption p{max-width:none;font-size:13px;line-height:1.45}
 .start-footer{flex-direction:column;gap:6px;font-size:10px;padding:16px 0 20px}
-.explorer{display:grid;grid-template-rows:minmax(0,1fr) auto;overflow:hidden}
-.map-area{order:0;height:auto;min-height:0;border-bottom:0}
-.explorer-sidebar{order:1;display:flex;flex-direction:column;height:auto;max-height:min(42dvh,360px);overflow:hidden;border-right:0;border-top:1px solid var(--line);padding-bottom:env(safe-area-inset-bottom)}
+.explorer{display:grid;grid-template-columns:minmax(0,1fr);grid-template-rows:minmax(0,1fr) auto;grid-template-areas:"map" "sheet";overflow:hidden}
+.map-area{grid-area:map;order:0;height:auto;min-width:0;min-height:0;border-bottom:0}
+.explorer-sidebar{grid-area:sheet;order:1;display:flex;flex-direction:column;width:100%;min-width:0;height:auto;max-height:min(42dvh,360px);overflow:hidden;border-right:0;border-top:1px solid var(--line);padding-bottom:env(safe-area-inset-bottom)}
 .explorer-sidebar.sheet-expanded{max-height:min(78dvh,640px)}
 .vehicle-panel{padding:10px 14px 8px}
 .vehicle-profile{flex-direction:row;align-items:center;gap:10px;margin:2px 0 6px}
@@ -76,9 +76,10 @@
 .detail-panel .posting-note{font-size:10px;line-height:1.35;padding:7px 8px;margin:8px 0 0}
 .detail-panel dl,.detail-panel .source-location,.detail-panel .share-clearance,.detail-panel .detail-note,.detail-panel .extras-block{display:none}
 .detail-panel .source-link{display:inline-block;margin-top:8px;font-size:11px}
-.clearance-row{padding:11px 14px;gap:10px}
-.row-road>strong{font-size:13px}
-.row-road>span{font-size:11px}
+.clearance-row{padding:11px 14px;gap:10px;min-width:0}
+.row-road{min-width:0}
+.row-road>strong{font-size:13px;overflow-wrap:break-word}
+.row-road>span{font-size:11px;overflow-wrap:break-word}
 .row-arrow{font-size:16px}
 .height-badge{min-width:56px;padding:5px 4px;font-size:14px}
 .methodology{padding:24px 16px 48px}
