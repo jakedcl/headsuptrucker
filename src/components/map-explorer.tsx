@@ -159,6 +159,8 @@ export function MapExplorer() {
   const [fetchError, setFetchError] = useState("");
   const [retry, setRetry] = useState(0);
   const [editing, setEditing] = useState(false);
+  const [sheetExpanded, setSheetExpanded] = useState(false);
+  const [legendOpen, setLegendOpen] = useState(false);
   const [showAll, setShowAll] = useState(false);
   const [awareness, setAwareness] = useState<AwarenessLayers>(AWARENESS_OFF);
   const [truckRoutesData, setTruckRoutesData] = useState<import("geojson").FeatureCollection | null>(null);
@@ -453,10 +455,12 @@ export function MapExplorer() {
 
   const onSelect = useCallback((id: string) => {
     setSelectedFacilityId(null);
+    setSheetExpanded(false);
     updateUrl({ bridge: id, facility: null });
   }, []);
   const onFacilitySelect = useCallback((id: string) => {
     setSelectedFacilityId(id);
+    setSheetExpanded(false);
     updateUrl({ facility: id, bridge: null });
   }, []);
   const onClearFocus = useCallback(() => {
@@ -568,7 +572,7 @@ export function MapExplorer() {
   const updated = data?.features[0]?.properties.sources[0].datasetUpdatedAt;
 
   return <main className="explorer">
-    <aside className="explorer-sidebar" aria-label="Vehicle controls and clearance list">
+    <aside className={`explorer-sidebar ${sheetExpanded ? "sheet-expanded" : ""}`} aria-label="Vehicle controls and clearance list">
       <div className="vehicle-panel">
         <div className="panel-heading">
           <span className="eyebrow">YOUR VEHICLE HEIGHT</span>
@@ -740,6 +744,15 @@ export function MapExplorer() {
         )}
       </div>
       <div className="list-heading">
+        <button
+          type="button"
+          className="sheet-toggle"
+          aria-expanded={sheetExpanded}
+          aria-label={sheetExpanded ? "Show more map" : "Expand clearance list"}
+          onClick={() => setSheetExpanded(value => !value)}
+        >
+          <span className="sheet-grip" aria-hidden="true" />
+        </button>
         <h1>{activeDrive ? "On this path" : "In this map view"}</h1>
         <span>{visible.length} records</span>
       </div>
@@ -794,8 +807,11 @@ export function MapExplorer() {
     </aside>
     <section className="map-area" aria-label="Clearance map">
       {shareMessage && <div className="share-status" role="status">{shareMessage}</div>}
-      <div className="map-legend-panel" role="group" aria-label="Legend">
-        <span className="eyebrow">LEGEND</span>
+      <div className={`map-legend-panel ${legendOpen ? "is-open" : ""}`} role="group" aria-label="Legend">
+        <button type="button" className="legend-toggle" aria-expanded={legendOpen} onClick={() => setLegendOpen(value => !value)}>
+          <span className="eyebrow">Legend</span>
+        </button>
+        <div className="legend-body">
         <ul className="facility-legend">
           <li><span className="swatch ok" aria-hidden />OK</li>
           <li><span className="swatch caution" aria-hidden />Caution</li>
@@ -840,6 +856,7 @@ export function MapExplorer() {
         </fieldset>
         {awarenessLoading && <p className="awareness-note" role="status">Loading map layers…</p>}
         {awarenessError && <p className="awareness-error" role="status">{awarenessError}</p>}
+        </div>
       </div>
       {mapCollection && (
         <Map
