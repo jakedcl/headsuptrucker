@@ -135,7 +135,7 @@ export function DriveForm({ initialFrom = "", initialTo = "", loading, error, ac
   initialFrom?: string; initialTo?: string; loading: boolean; error: string; active: boolean;
   onSubmit: (from: Place | string, to: Place | string) => void; onClear: () => void;
 }) {
-  const [open, setOpen] = useState(true);
+  const [open, setOpen] = useState(false);
   const [fromText, setFromText] = useState(initialFrom);
   const [toText, setToText] = useState(initialTo);
   const [fromPlace, setFromPlace] = useState<Place | null>(null);
