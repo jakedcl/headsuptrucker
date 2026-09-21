@@ -2,7 +2,7 @@
 import dynamic from "next/dynamic";
 import Link from "next/link";
 import { useSearchParams } from "next/navigation";
-import { useCallback, useEffect, useMemo, useRef, useState } from "react";
+import { useCallback, useEffect, useMemo, useRef, useState, type CSSProperties, type PointerEvent } from "react";
 import type { ClearanceCollection } from "@/lib/types";
 import { describeMargin, formatHeight, getClearanceSeverity, isInventoryLabel, isOversizedHeightParam, OVERSIZED_LOAD_MESSAGE, parseHeightParam, recordLabels } from "@/lib/clearance";
 import { featuresAlongRoute, formatDriveMiles, formatDriveMinutes, type DrivePath, type DriveRoute, type Place } from "@/lib/path";
@@ -159,6 +159,21 @@ export function MapExplorer() {
   const [fetchError, setFetchError] = useState("");
   const [retry, setRetry] = useState(0);
   const [editing, setEditing] = useState(false);
+  const [sheetExpanded, setSheetExpanded] = useState(false);
+  const [sheetDragH, setSheetDragH] = useState<number | null>(null);
+  const [legendOpen, setLegendOpen] = useState(false);
+  const explorerRef = useRef<HTMLElement>(null);
+  const listRef = useRef<HTMLDivElement>(null);
+  const sheetDrag = useRef<{
+    pointerId: number;
+    startY: number;
+    startH: number;
+    lastY: number;
+    lastT: number;
+    vel: number;
+    moved: boolean;
+  } | null>(null);
+  const skipSheetClick = useRef(false);
   const [showAll, setShowAll] = useState(false);
   const [awareness, setAwareness] = useState<AwarenessLayers>(AWARENESS_OFF);
   const [truckRoutesData, setTruckRoutesData] = useState<import("geojson").FeatureCollection | null>(null);
@@ -453,12 +468,113 @@ export function MapExplorer() {
 
   const onSelect = useCallback((id: string) => {
     setSelectedFacilityId(null);
+    setSheetExpanded(false);
     updateUrl({ bridge: id, facility: null });
   }, []);
   const onFacilitySelect = useCallback((id: string) => {
     setSelectedFacilityId(id);
+    setSheetExpanded(false);
     updateUrl({ facility: id, bridge: null });
   }, []);
+
+  const sheetRange = useCallback(() => {
+    const max = explorerRef.current?.clientHeight ?? 0;
+    const peek = Math.round(Math.min(Math.max(max * 0.4, 220), 340));
+    const full = Math.round(Math.max(max - 12, peek));
+    return { peek, full };
+  }, []);
+
+  const onSheetPointerDown = useCallback((event: PointerEvent<HTMLButtonElement>) => {
+    if (!window.matchMedia("(max-width: 700px)").matches) return;
+    const sidebar = event.currentTarget.closest(".explorer-sidebar");
+    const startH = sidebar?.getBoundingClientRect().height ?? sheetRange().peek;
+    sheetDrag.current = {
+      pointerId: event.pointerId,
+      startY: event.clientY,
+      startH,
+      lastY: event.clientY,
+      lastT: performance.now(),
+      vel: 0,
+      moved: false,
+    };
+    event.currentTarget.setPointerCapture(event.pointerId);
+    setSheetDragH(startH);
+  }, [sheetRange]);
+
+  const onSheetPointerMove = useCallback((event: PointerEvent<HTMLButtonElement>) => {
+    const drag = sheetDrag.current;
+    if (!drag || drag.pointerId !== event.pointerId) return;
+    const { peek, full } = sheetRange();
+    const dy = drag.startY - event.clientY;
+    if (Math.abs(dy) > 8) drag.moved = true;
+    const now = performance.now();
+    drag.vel = (event.clientY - drag.lastY) / Math.max(1, now - drag.lastT);
+    drag.lastY = event.clientY;
+    drag.lastT = now;
+    setSheetDragH(Math.min(full, Math.max(peek * 0.72, drag.startH + dy)));
+  }, [sheetRange]);
+
+  const onSheetPointerUp = useCallback((event: PointerEvent<HTMLButtonElement>) => {
+    const drag = sheetDrag.current;
+    if (!drag || drag.pointerId !== event.pointerId) return;
+    const moved = drag.moved;
+    skipSheetClick.current = moved;
+    sheetDrag.current = null;
+    setSheetDragH(null);
+    if (!moved) return;
+    const { peek, full } = sheetRange();
+    const vel = drag.vel;
+    const current = drag.startH + (drag.startY - drag.lastY);
+    let expanded = current > (peek + full) / 2;
+    if (vel < -0.35) expanded = true;
+    else if (vel > 0.35) expanded = false;
+    setSheetExpanded(expanded);
+  }, [sheetRange]);
+
+  useEffect(() => {
+    const node = listRef.current;
+    if (!node) return;
+    const listEl: HTMLDivElement = node;
+    function onScroll() {
+      if (!sheetExpanded && listEl.scrollTop > 10) setSheetExpanded(true);
+    }
+    listEl.addEventListener("scroll", onScroll, { passive: true });
+    return () => listEl.removeEventListener("scroll", onScroll);
+  }, [sheetExpanded, height]);
+
+  useEffect(() => {
+    const node = listRef.current;
+    if (!node) return;
+    const listEl: HTMLDivElement = node;
+    let startY = 0;
+    let tracking = false;
+    function onStart(event: TouchEvent) {
+      if (!sheetExpanded || listEl.scrollTop > 0) return;
+      startY = event.touches[0]?.clientY ?? 0;
+      tracking = true;
+    }
+    function onMove(event: TouchEvent) {
+      if (!tracking) return;
+      const y = event.touches[0]?.clientY ?? startY;
+      if (y - startY > 36 && listEl.scrollTop <= 0) {
+        tracking = false;
+        setSheetExpanded(false);
+      }
+    }
+    function onEnd() {
+      tracking = false;
+    }
+    listEl.addEventListener("touchstart", onStart, { passive: true });
+    listEl.addEventListener("touchmove", onMove, { passive: true });
+    listEl.addEventListener("touchend", onEnd);
+    listEl.addEventListener("touchcancel", onEnd);
+    return () => {
+      listEl.removeEventListener("touchstart", onStart);
+      listEl.removeEventListener("touchmove", onMove);
+      listEl.removeEventListener("touchend", onEnd);
+      listEl.removeEventListener("touchcancel", onEnd);
+    };
+  }, [sheetExpanded, height]);
   const onClearFocus = useCallback(() => {
     setSelectedFacilityId(null);
     updateUrl({ bridge: null, facility: null });
@@ -567,8 +683,31 @@ export function MapExplorer() {
   const showPostingNote = selected?.state === "NY" && (selectedSeverity === "danger" || selectedSeverity === "caution");
   const updated = data?.features[0]?.properties.sources[0].datasetUpdatedAt;
 
-  return <main className="explorer">
-    <aside className="explorer-sidebar" aria-label="Vehicle controls and clearance list">
+  return <main
+    ref={explorerRef}
+    className={`explorer ${sheetExpanded ? "sheet-expanded" : ""}`}
+    style={sheetDragH != null ? { ["--sheet-h"]: `${sheetDragH}px` } as CSSProperties : undefined}
+  >
+    <aside className={`explorer-sidebar ${sheetExpanded ? "sheet-expanded" : ""} ${sheetDragH != null ? "is-dragging" : ""}`} aria-label="Vehicle controls and clearance list">
+      <button
+        type="button"
+        className="sheet-handle"
+        aria-expanded={sheetExpanded}
+        aria-label={sheetExpanded ? "Collapse details" : "Expand details"}
+        onPointerDown={onSheetPointerDown}
+        onPointerMove={onSheetPointerMove}
+        onPointerUp={onSheetPointerUp}
+        onPointerCancel={onSheetPointerUp}
+        onClick={() => {
+          if (skipSheetClick.current) {
+            skipSheetClick.current = false;
+            return;
+          }
+          setSheetExpanded(value => !value);
+        }}
+      >
+        <span className="sheet-grip" aria-hidden="true" />
+      </button>
       <div className="vehicle-panel">
         <div className="panel-heading">
           <span className="eyebrow">YOUR VEHICLE HEIGHT</span>
@@ -743,7 +882,7 @@ export function MapExplorer() {
         <h1>{activeDrive ? "On this path" : "In this map view"}</h1>
         <span>{visible.length} records</span>
       </div>
-      <div className="clearance-list">
+      <div className="clearance-list" ref={listRef}>
         {fetchError ? (
           <div className="list-message" role="alert">
             <p>{fetchError}</p>
@@ -794,8 +933,11 @@ export function MapExplorer() {
     </aside>
     <section className="map-area" aria-label="Clearance map">
       {shareMessage && <div className="share-status" role="status">{shareMessage}</div>}
-      <div className="map-legend-panel" role="group" aria-label="Legend">
-        <span className="eyebrow">LEGEND</span>
+      <div className={`map-legend-panel ${legendOpen ? "is-open" : ""}`} role="group" aria-label="Legend">
+        <button type="button" className="legend-toggle" aria-expanded={legendOpen} onClick={() => setLegendOpen(value => !value)}>
+          <span className="eyebrow">Legend</span>
+        </button>
+        <div className="legend-body">
         <ul className="facility-legend">
           <li><span className="swatch ok" aria-hidden />OK</li>
           <li><span className="swatch caution" aria-hidden />Caution</li>
@@ -840,6 +982,7 @@ export function MapExplorer() {
         </fieldset>
         {awarenessLoading && <p className="awareness-note" role="status">Loading map layers…</p>}
         {awarenessError && <p className="awareness-error" role="status">{awarenessError}</p>}
+        </div>
       </div>
       {mapCollection && (
         <Map
