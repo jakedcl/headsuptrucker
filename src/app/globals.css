@@ -141,3 +141,9 @@
 .maplibregl-ctrl-group .map-share-ctrl:hover{background:#f2f5f7}
 .maplibregl-ctrl-group .map-share-ctrl svg{display:block;flex:0 0 auto}
 .methodology-plain{font-size:18px;line-height:1.55;color:var(--ink);margin:0 0 12px}.methodology-list{margin:0 0 16px;padding-left:1.15em;display:flex;flex-direction:column;gap:8px}.methodology-list li{font-size:16px;line-height:1.55;color:#45545d}.methodology-list strong{color:var(--ink)}
+
+@media(max-width:700px){
+.map-legend-panel{top:10px;bottom:auto;left:10px;width:auto;max-width:min(240px,calc(100% - 64px));max-height:none;height:auto;padding:8px 10px}
+.map-legend-panel:not(.is-open){width:auto}
+.map-legend-panel.is-open{max-height:min(50%,calc(100% - 24px))}
+}
