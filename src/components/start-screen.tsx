@@ -7,8 +7,8 @@ export function StartScreen() {
   return <main className="start-screen">
     <section className="start-main">
       <p className="eyebrow">NOT A TRUCKER GPS</p>
-      <h1>How tall<br />are you<span>?</span></h1>
-      <p className="start-description">For the van, the box truck, the car with a mattress on the roof. Anyone hauling through NYC who doesn’t want to get stuck under an overpass. Posted clearances, on a map you can actually use.</p>
+      <h1>Posted truck<br /><span>clearances.</span></h1>
+      <p className="start-description">A map of low bridges around NYC, Long Island, southwest Connecticut, and northeast New Jersey. For the van, the box truck, the car with a mattress on the roof. Enter your vehicle height — red means you don’t fit.</p>
       <HeightForm onSubmit={height => router.push(`/map?height=${height}`)} />
       <p className="height-tip">Measure your full vehicle height, including anything on the roof. This map covers vehicles up to 13′6″ — taller than that is an oversized load we don’t support yet.</p>
     </section>
