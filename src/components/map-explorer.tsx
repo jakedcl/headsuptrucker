@@ -653,7 +653,7 @@ export function MapExplorer() {
   if (height === null) {
     return <main className="height-required">
       <p className="eyebrow">FIRST, YOUR VEHICLE</p>
-      <h1>How tall are you?</h1>
+      <h1>Enter your vehicle height.</h1>
       {params.has("height") && (
         <p role="alert">
           {isOversizedHeightParam(params.get("height"))
