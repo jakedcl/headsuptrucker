@@ -479,7 +479,8 @@ export function MapExplorer() {
 
   const sheetRange = useCallback(() => {
     const max = explorerRef.current?.clientHeight ?? 0;
-    const peek = Math.round(Math.min(Math.max(max * 0.4, 220), 340));
+    // Map-first peek: handle + height sign only (~190px)
+    const peek = Math.round(Math.min(Math.max(max * 0.24, 176), 208));
     const full = Math.round(Math.max(max - 12, peek));
     return { peek, full };
   }, []);
@@ -506,12 +507,12 @@ export function MapExplorer() {
     if (!drag || drag.pointerId !== event.pointerId) return;
     const { peek, full } = sheetRange();
     const dy = drag.startY - event.clientY;
-    if (Math.abs(dy) > 8) drag.moved = true;
+    if (Math.abs(dy) > 4) drag.moved = true;
     const now = performance.now();
     drag.vel = (event.clientY - drag.lastY) / Math.max(1, now - drag.lastT);
     drag.lastY = event.clientY;
     drag.lastT = now;
-    setSheetDragH(Math.min(full, Math.max(peek * 0.72, drag.startH + dy)));
+    setSheetDragH(Math.min(full, Math.max(peek * 0.85, drag.startH + dy)));
   }, [sheetRange]);
 
   const onSheetPointerUp = useCallback((event: PointerEvent<HTMLButtonElement>) => {
@@ -526,8 +527,8 @@ export function MapExplorer() {
     const vel = drag.vel;
     const current = drag.startH + (drag.startY - drag.lastY);
     let expanded = current > (peek + full) / 2;
-    if (vel < -0.35) expanded = true;
-    else if (vel > 0.35) expanded = false;
+    if (vel < -0.22) expanded = true;
+    else if (vel > 0.22) expanded = false;
     setSheetExpanded(expanded);
   }, [sheetRange]);
 
@@ -707,12 +708,18 @@ export function MapExplorer() {
         }}
       >
         <span className="sheet-grip" aria-hidden="true" />
-        <span className="sheet-chevron" aria-hidden="true" />
+        <span className="sheet-hint">{sheetExpanded ? "Tap to shrink map" : "Pull up for clearances"}</span>
       </button>
       <div className="vehicle-panel">
         <div className="panel-heading">
           <span className="eyebrow">Your vehicle</span>
-          <button className="text-button" onClick={() => setEditing(!editing)}>{editing ? "Cancel" : "Edit"}</button>
+          <button
+            className="text-button"
+            onClick={() => {
+              setEditing(!editing);
+              if (!editing) setSheetExpanded(true);
+            }}
+          >{editing ? "Cancel" : "Edit"}</button>
         </div>
         {editing
           ? <div className="vehicle-profile">
@@ -754,7 +761,10 @@ export function MapExplorer() {
                 className="vehicle-sign"
                 title="Edit vehicle height"
                 aria-label="Edit vehicle height"
-                onClick={() => setEditing(true)}
+                onClick={() => {
+                  setEditing(true);
+                  setSheetExpanded(true);
+                }}
               >
                 <span>Vehicle height</span>
                 <strong>{formatHeight(height)}</strong>
