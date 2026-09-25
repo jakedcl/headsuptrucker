@@ -152,7 +152,8 @@ h1,h2,p{margin-top:0}
 .height-tip{font-size:13px;color:var(--muted);max-width:400px;line-height:1.5;margin-top:14px;margin-bottom:0}
 
 .start-guide{
-  background:var(--sign);
+  background:var(--asphalt);
+  color:#f5f5f5;
   padding:28px 30px 32px;
   align-self:start;
   min-height:560px;
@@ -160,23 +161,24 @@ h1,h2,p{margin-top:0}
   border:var(--border-sign);
   border-radius:var(--radius-sign);
   margin-top:2px;
-  box-shadow:10px 10px 0 var(--ink);
+  box-shadow:10px 10px 0 var(--sign);
 }
 .guide-top{display:flex;justify-content:space-between;align-items:center;gap:16px}
-.guide-top .eyebrow{font-size:11px;margin:0}
-.guide-index{font-size:12px;font-weight:800;font-variant-numeric:tabular-nums}
+.guide-top .eyebrow{font-size:11px;margin:0;color:var(--sign)}
+.guide-index{font-size:12px;font-weight:800;font-variant-numeric:tabular-nums;color:#c8c8c8}
 
 .example-posting{
   border:5px solid var(--ink);
   border-radius:12px;
   background:var(--sign);
+  color:var(--ink);
   max-width:300px;
   display:grid;
   grid-template-columns:1fr auto;
   align-items:center;
   padding:16px 18px 18px;
   margin:42px auto 36px;
-  box-shadow:inset 0 0 0 3px var(--sign),0 0 0 2px var(--ink);
+  box-shadow:0 0 0 3px var(--sign),8px 8px 0 #00000088;
   animation:sign-settle .7s ease both;
 }
 .example-posting>span:first-child{
@@ -199,8 +201,9 @@ h1,h2,p{margin-top:0}
   font-size:11px;
   letter-spacing:1px;
   font-weight:900;
-  border:3px solid var(--ink);
-  background:#fff;
+  border:3px solid var(--sign);
+  background:transparent;
+  color:var(--sign);
   padding:5px 8px;
   text-transform:uppercase;
   display:inline-block;
@@ -213,8 +216,9 @@ h1,h2,p{margin-top:0}
   margin:18px 0 12px;
   text-transform:uppercase;
   font-weight:900;
+  color:#fff;
 }
-.guide-caption p{font-size:15px;line-height:1.5;max-width:340px;font-weight:500}
+.guide-caption p{font-size:15px;line-height:1.5;max-width:340px;font-weight:500;color:#d4d4d4}
 
 @keyframes sign-settle{
   from{transform:translateY(10px);opacity:0}
@@ -510,7 +514,7 @@ h1,h2,p{margin-top:0}
   .primary{padding:14px 16px;margin-top:12px;box-shadow:4px 4px 0 var(--sign)}
   .primary>span{font-size:18px}
   .height-tip{font-size:12px;margin-top:12px}
-  .start-guide{width:100%;min-height:0;padding:16px;margin-bottom:16px;box-shadow:6px 6px 0 var(--ink)}
+  .start-guide{width:100%;min-height:0;padding:16px;margin-bottom:16px;box-shadow:6px 6px 0 var(--sign)}
   .guide-top .eyebrow{font-size:10px}
   .guide-index{display:none}
   .example-posting{margin:16px auto 12px;max-width:200px;padding:10px 12px;border-width:4px;box-shadow:none;transform:none}
