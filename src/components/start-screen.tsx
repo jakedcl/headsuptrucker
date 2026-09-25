@@ -1,15 +1,26 @@
 "use client";
+import { useState } from "react";
 import { useRouter } from "next/navigation";
 import { HeightForm } from "./height-form";
 
 export function StartScreen() {
   const router = useRouter();
+  const [commercial, setCommercial] = useState(false);
   return <main className="start-screen">
     <section className="start-main">
       <p className="eyebrow">NYC · LI · SW CT · NE NJ</p>
       <h1>Low bridge<br /><span>clearances</span></h1>
       <p className="start-description">Posted truck heights on a map — not a GPS. For the van, the box truck, the car with a mattress on the roof. Enter your vehicle height. Red means you don’t fit under the sign.</p>
-      <HeightForm onSubmit={height => router.push(`/map?height=${height}`)} />
+      <HeightForm
+        showCommercial
+        commercial={commercial}
+        onCommercialChange={setCommercial}
+        onSubmit={height => {
+          const params = new URLSearchParams({ height: String(height) });
+          if (commercial) params.set("commercial", "1");
+          router.push(`/map?${params}`);
+        }}
+      />
       <p className="height-tip">Measure full vehicle height, including anything on the roof. Covers vehicles up to 13′6″ — taller than that is an oversized load we don’t support yet.</p>
     </section>
     <section className="start-guide" aria-label="How clearance warnings work">

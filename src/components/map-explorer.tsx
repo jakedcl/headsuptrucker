@@ -710,7 +710,7 @@ export function MapExplorer() {
       </button>
       <div className="vehicle-panel">
         <div className="panel-heading">
-          <span className="eyebrow">YOUR VEHICLE HEIGHT</span>
+          <span className="eyebrow">Your vehicle</span>
           <button className="text-button" onClick={() => setEditing(!editing)}>{editing ? "Cancel" : "Edit"}</button>
         </div>
         {editing
@@ -750,11 +750,15 @@ export function MapExplorer() {
           : <div className="vehicle-profile">
               <button
                 type="button"
-                className="vehicle-number"
+                className="vehicle-sign"
                 title="Edit vehicle height"
                 aria-label="Edit vehicle height"
                 onClick={() => setEditing(true)}
-              >{formatHeight(height)}<span>↕</span></button>
+              >
+                <span>Vehicle height</span>
+                <strong>{formatHeight(height)}</strong>
+                <span className="posting-arrow" aria-hidden="true">↕</span>
+              </button>
               <div className="vehicle-dims">
                 <label>
                   <span>Width (in) · optional</span>
