@@ -18,7 +18,7 @@ export default function Methodology() {
         <h2>In plain English</h2>
         <p className="methodology-plain">
           Enter your full vehicle height. Red means a posted clearance is at or below that height.
-          Orange means it’s within the next 12 inches. Higher postings stay hidden unless you turn them on.
+          Yellow means it’s within the next 12 inches. Higher postings stay hidden unless you turn them on.
         </p>
         <p className="methodology-plain">
           Always trust the signs on the road. A missing marker does <strong>not</strong> mean the road is clear.

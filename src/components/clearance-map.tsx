@@ -286,11 +286,11 @@ function addOverlayLayers(map: MapInstance) {
     const statusColor = [
       "match",
       ["get", "status"],
-      "danger", "#c9322a",
-      "caution", "#cf720e",
+      "danger", "#c8102e",
+      "caution", "#f7d117",
       "unknown", "#64748b",
       "ok", "#0f7a4c",
-      "#cf720e",
+      "#f7d117",
     ] as never;
     map.addLayer({
       id: "facilities-line",
@@ -372,7 +372,7 @@ function addOverlayLayers(map: MapInstance) {
       filter: ["any", ["==", ["geometry-type"], "LineString"], ["==", ["geometry-type"], "MultiLineString"]],
       layout: { "line-cap": "round", "line-join": "round" },
       paint: {
-        "line-color": "#007aff",
+        "line-color": "#0a0a0a",
         "line-width": ["interpolate", ["linear"], ["zoom"], 9, 3.5, 14, 7.5],
         "line-opacity": 0.98,
       },
@@ -384,7 +384,7 @@ function addOverlayLayers(map: MapInstance) {
       filter: ["==", ["geometry-type"], "Point"],
       paint: {
         "circle-radius": ["interpolate", ["linear"], ["zoom"], 8, 16, 13, 26],
-        "circle-color": "#ffffff",
+        "circle-color": "#f7d117",
         "circle-opacity": 0.55,
         "circle-blur": 0.65,
         "circle-stroke-width": 0,
@@ -397,10 +397,10 @@ function addOverlayLayers(map: MapInstance) {
       filter: ["==", ["geometry-type"], "Point"],
       paint: {
         "circle-radius": ["interpolate", ["linear"], ["zoom"], 8, 7, 13, 12],
-        "circle-color": "#007aff",
+        "circle-color": "#0a0a0a",
         "circle-opacity": 0.98,
         "circle-stroke-width": 3,
-        "circle-stroke-color": "#ffffff",
+        "circle-stroke-color": "#f7d117",
       },
     });
   }
@@ -440,7 +440,7 @@ function addOverlayLayers(map: MapInstance) {
       source: "drive",
       layout: { "line-cap": "round", "line-join": "round" },
       paint: {
-        "line-color": "#d63b2f",
+        "line-color": "#c8102e",
         "line-width": 16,
         "line-opacity": 0.28,
         "line-blur": 10,
@@ -458,7 +458,7 @@ function addOverlayLayers(map: MapInstance) {
       type: "line",
       source: "drive",
       layout: { "line-cap": "round", "line-join": "round" },
-      paint: { "line-color": "#d63b2f", "line-width": 5.5, "line-opacity": 0.98 },
+      paint: { "line-color": "#c8102e", "line-width": 5.5, "line-opacity": 0.98 },
     });
   }
   if (!map.getSource("drive-alts")) {
