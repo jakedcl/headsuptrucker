@@ -66,7 +66,7 @@ h1,h2,p{margin-top:0}
   letter-spacing:-.3px;
   text-transform:uppercase;
 }
-.brand-mark-unit{color:var(--ink);margin:0 -.04em}
+.brand-mark-unit{color:#000;margin:0 -.02em;font-weight:900}
 .brand-mark{
   background:var(--ink);
   color:var(--sign);
@@ -532,13 +532,13 @@ h1,h2,p{margin-top:0}
   .explorer{grid-template-columns:300px minmax(0,1fr)}
   .vehicle-panel{padding:18px 16px}
   .detail-panel{right:12px;width:290px}
-  .site-header{padding:0 12px}
+  .site-header{padding:0 8px}
   .region-label{display:none}
 }
 
 @media(max-width:700px){
   :root{--header-h:52px}
-  .site-header{padding:0 max(12px,env(safe-area-inset-right)) 0 max(12px,env(safe-area-inset-left))}
+  .site-header{padding:0 max(8px,env(safe-area-inset-right)) 0 max(8px,env(safe-area-inset-left))}
   .brand{font-size:20px;gap:6px}
   .brand-mark{font-size:14px;line-height:18px;width:20px;border-width:2px}
   .site-header nav{gap:12px;font-size:12px;font-weight:800}
