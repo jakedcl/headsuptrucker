@@ -18,7 +18,7 @@ export default function Methodology() {
         <h2>In plain English</h2>
         <p className="methodology-plain">
           Enter your full vehicle height. Red means a posted clearance is at or below that height.
-          Orange means it’s within the next 12 inches. Higher postings stay hidden unless you turn them on.
+          Yellow means it’s within the next 12 inches. Higher postings stay hidden unless you turn them on.
         </p>
         <p className="methodology-plain">
           Always trust the signs on the road. A missing marker does <strong>not</strong> mean the road is clear.
@@ -30,7 +30,7 @@ export default function Methodology() {
         <p className="methodology-plain">We compare each posted number with the height you typed.</p>
         <ul className="methodology-list">
           <li><strong>Red</strong> — posting is equal to or lower than your vehicle.</li>
-          <li><strong>Orange</strong> — posting is 1–12 inches above your height.</li>
+          <li><strong>Yellow</strong> — posting is 1–12 inches above your height.</li>
           <li><strong>Gray</strong> — higher postings, only when you choose to show them.</li>
         </ul>
         <p>Use your full measured vehicle height, including roof equipment. Check the map before driving and follow the signs at the road. No category guarantees that a vehicle will fit.</p>
