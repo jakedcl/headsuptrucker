@@ -707,6 +707,7 @@ export function MapExplorer() {
         }}
       >
         <span className="sheet-grip" aria-hidden="true" />
+        <span className="sheet-chevron" aria-hidden="true" />
       </button>
       <div className="vehicle-panel">
         <div className="panel-heading">
