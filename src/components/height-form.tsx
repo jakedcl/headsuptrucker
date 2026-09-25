@@ -28,6 +28,6 @@ export function HeightForm({ initialHeight = 108, onSubmit, compact = false }: {
       <label><span>Inches</span><input aria-label="Vehicle height in inches" inputMode="numeric" type="number" min="0" max="11" step="1" required value={inches} onChange={e => applyDraft(feet, e.target.value)} /></label>
     </div>
     {error && <p id="height-error" role="alert" className="form-error">{error}</p>}
-    <button className="primary" type="submit">{compact ? "Update height" : "Show clearances"}<span aria-hidden="true">↗</span></button>
+    <button className="primary" type="submit">{compact ? "Update height" : "Check clearances"}<span aria-hidden="true">↗</span></button>
   </form>;
 }
