@@ -30,7 +30,7 @@ export default function Methodology() {
         <p className="methodology-plain">We compare each posted number with the height you typed.</p>
         <ul className="methodology-list">
           <li><strong>Red</strong> — posting is equal to or lower than your vehicle.</li>
-          <li><strong>Orange</strong> — posting is 1–12 inches above your height.</li>
+          <li><strong>Yellow</strong> — posting is 1–12 inches above your height.</li>
           <li><strong>Gray</strong> — higher postings, only when you choose to show them.</li>
         </ul>
         <p>Use your full measured vehicle height, including roof equipment. Check the map before driving and follow the signs at the road. No category guarantees that a vehicle will fit.</p>
