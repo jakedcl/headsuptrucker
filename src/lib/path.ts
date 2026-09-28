@@ -22,6 +22,12 @@ export type DriveResult = {
 
 export type DrivePath = { from: Place; to: Place; coordinates: number[][]; distanceMeters: number; routes?: DriveRoute[] };
 
+/** Default A→B example: Long Island parkway corridor with many posted lows under 9′. */
+export const EXAMPLE_DRIVE = {
+  from: "JFK Airport",
+  to: "Bethpage State Park",
+} as const;
+
 export function inCoverage(lng: number, lat: number) {
   return lng >= COVERAGE.minLng && lng <= COVERAGE.maxLng && lat >= COVERAGE.minLat && lat <= COVERAGE.maxLat;
 }
