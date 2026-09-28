@@ -168,7 +168,6 @@ export function MapExplorer() {
   const [legendOpen, setLegendOpen] = useState(false);
   const explorerRef = useRef<HTMLElement>(null);
   const sidebarRef = useRef<HTMLElement>(null);
-  const listRef = useRef<HTMLDivElement>(null);
   const sheetDrag = useRef<{
     pointerId: number;
     startY: number;
@@ -570,47 +569,60 @@ export function MapExplorer() {
   }, [sheetRange]);
 
   useEffect(() => {
-    const node = listRef.current;
-    if (!node) return;
-    const listEl: HTMLDivElement = node;
-    function onScroll() {
-      if (!sheetExpanded && listEl.scrollTop > 10) setSheetExpanded(true);
-    }
-    listEl.addEventListener("scroll", onScroll, { passive: true });
-    return () => listEl.removeEventListener("scroll", onScroll);
-  }, [sheetExpanded, height]);
-
-  useEffect(() => {
-    const node = listRef.current;
-    if (!node) return;
-    const listEl: HTMLDivElement = node;
+    const sidebar = sidebarRef.current;
+    if (!sidebar || !sheetExpanded) return;
+    sidebar.scrollTop = 0;
     let startY = 0;
     let tracking = false;
+    let collapseArmed = false;
+
+    function onScroll() {
+      // Scrolling the list disarms — only a pull from the absolute top can close.
+      if (sidebar.scrollTop > 2) collapseArmed = false;
+    }
     function onStart(event: TouchEvent) {
-      if (!sheetExpanded || listEl.scrollTop > 0) return;
+      if (sidebar.scrollTop > 0) {
+        tracking = false;
+        return;
+      }
       startY = event.touches[0]?.clientY ?? 0;
       tracking = true;
     }
     function onMove(event: TouchEvent) {
       if (!tracking) return;
-      const y = event.touches[0]?.clientY ?? startY;
-      if (y - startY > 36 && listEl.scrollTop <= 0) {
+      if (sidebar.scrollTop > 0) {
         tracking = false;
-        setSheetExpanded(false);
+        collapseArmed = false;
+        return;
+      }
+      const y = event.touches[0]?.clientY ?? startY;
+      const pull = y - startY;
+      // First pull from top just arms collapse; second pull actually closes.
+      if (pull > 52) {
+        tracking = false;
+        if (collapseArmed) {
+          collapseArmed = false;
+          setSheetExpanded(false);
+        } else {
+          collapseArmed = true;
+        }
       }
     }
     function onEnd() {
       tracking = false;
     }
-    listEl.addEventListener("touchstart", onStart, { passive: true });
-    listEl.addEventListener("touchmove", onMove, { passive: true });
-    listEl.addEventListener("touchend", onEnd);
-    listEl.addEventListener("touchcancel", onEnd);
+
+    sidebar.addEventListener("scroll", onScroll, { passive: true });
+    sidebar.addEventListener("touchstart", onStart, { passive: true });
+    sidebar.addEventListener("touchmove", onMove, { passive: true });
+    sidebar.addEventListener("touchend", onEnd);
+    sidebar.addEventListener("touchcancel", onEnd);
     return () => {
-      listEl.removeEventListener("touchstart", onStart);
-      listEl.removeEventListener("touchmove", onMove);
-      listEl.removeEventListener("touchend", onEnd);
-      listEl.removeEventListener("touchcancel", onEnd);
+      sidebar.removeEventListener("scroll", onScroll);
+      sidebar.removeEventListener("touchstart", onStart);
+      sidebar.removeEventListener("touchmove", onMove);
+      sidebar.removeEventListener("touchend", onEnd);
+      sidebar.removeEventListener("touchcancel", onEnd);
     };
   }, [sheetExpanded, height]);
   const onClearFocus = useCallback(() => {
@@ -1017,7 +1029,7 @@ export function MapExplorer() {
         <h1>{activeDrive ? "On this path" : "In this map view"}</h1>
         <span>{visible.length} records</span>
       </div>
-      <div className="clearance-list" ref={listRef}>
+      <div className="clearance-list">
         {fetchError ? (
           <div className="list-message" role="alert">
             <p>{fetchError}</p>

@@ -653,11 +653,25 @@ h1,h2,p{margin-top:0}
     overscroll-behavior:contain;
     transition:none;
   }
+  .explorer.sheet-expanded .explorer-sidebar:not(.is-dragging),
+  .explorer-sidebar.sheet-expanded:not(.is-dragging){
+    height:auto;
+    max-height:calc(100% - 12px);
+    overflow:auto;
+    overscroll-behavior:contain;
+    -webkit-overflow-scrolling:touch;
+    background:var(--asphalt);
+  }
   .explorer.sheet-expanded .explorer-sidebar,
   .explorer-sidebar.sheet-expanded{
-    background:#fff;
+    background:var(--asphalt);
   }
-  .explorer-sidebar.is-dragging{transition:none}
+  .explorer-sidebar.sheet-expanded .sheet-handle{
+    position:sticky;
+    top:0;
+    z-index:3;
+  }
+  .explorer-sidebar.is-dragging{transition:none;overflow:hidden}
   /* Collapsed = map-first: handle + height + Check a route. List stays tucked away. */
   .explorer-sidebar:not(.sheet-expanded) .all-toggle,
   .explorer-sidebar:not(.sheet-expanded) .route-compare,
@@ -736,8 +750,37 @@ h1,h2,p{margin-top:0}
   .all-toggle input{width:14px;height:14px}
   .drive-form{margin-top:10px;padding-top:10px}
   .drive-form form{margin-top:8px}
-  .list-heading{padding:8px 14px;background:#fff}
-  .clearance-list{overflow:auto;flex:1 1 auto;min-height:0;background:#fff;-webkit-overflow-scrolling:touch}
+  .list-heading{
+    padding:12px 14px 8px;
+    background:transparent;
+    border-top:2px solid #3a3a3a;
+    color:#f5f5f5;
+  }
+  .list-heading h1{color:var(--sign);font-size:11px;letter-spacing:1.2px}
+  .list-heading>span{color:#c8c8c8}
+  .clearance-list{
+    overflow:visible;
+    flex:0 0 auto;
+    min-height:0;
+    background:transparent;
+  }
+  .clearance-list .list-message{color:#c8c8c8}
+  .clearance-list .clearance-row{
+    background:#2a2a2a;
+    color:#f5f5f5;
+    border-bottom:2px solid #3a3a3a;
+  }
+  .clearance-list .clearance-row:hover,
+  .clearance-list .clearance-row.selected{background:var(--sign);color:var(--ink)}
+  .clearance-list .row-road>span{color:#c8c8c8}
+  .clearance-list .clearance-row:hover .row-road>span,
+  .clearance-list .clearance-row.selected .row-road>span{color:var(--muted)}
+  .clearance-list .load-more{
+    background:var(--asphalt);
+    color:var(--sign);
+    border-color:var(--sign);
+    margin:12px 14px 16px;
+  }
   .sidebar-foot{display:none}
   .map-topline{top:10px;left:10px;right:52px;gap:6px}
   .share-button{padding:8px 10px;font-size:11px;box-shadow:2px 2px 0 var(--ink)}
