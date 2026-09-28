@@ -566,7 +566,8 @@ h1,h2,p{margin-top:0}
   .guide-caption h2{font-size:24px;margin:10px 0 8px}
   .guide-caption p{max-width:none;font-size:13px;line-height:1.45}
   .start-footer{flex-direction:column;gap:6px;font-size:10px;padding:14px 0 20px}
-  .explorer{display:grid;grid-template-columns:minmax(0,1fr);grid-template-rows:minmax(0,1fr);grid-template-areas:"map";position:relative;overflow:hidden;--sheet-h:196px}
+  .explorer{display:grid;grid-template-columns:minmax(0,1fr);grid-template-rows:minmax(0,1fr);grid-template-areas:"map";position:relative;overflow:hidden;--sheet-h:236px}
+  .explorer.sheet-route{--sheet-h:min(62dvh,460px)}
   .explorer.sheet-expanded{--sheet-h:calc(100% - 12px)}
   .map-area{grid-area:map;order:0;height:auto;min-width:0;min-height:0;border-bottom:0}
   .explorer-sidebar{
@@ -580,15 +581,24 @@ h1,h2,p{margin-top:0}
     transition:height .24s cubic-bezier(.22,1,.36,1);
   }
   .explorer-sidebar.is-dragging{transition:none}
-  /* Collapsed = map-first: only handle + height sign */
+  /* Collapsed = map-first: handle + height + Check a route. List stays tucked away. */
   .explorer-sidebar:not(.sheet-expanded) .all-toggle,
-  .explorer-sidebar:not(.sheet-expanded) .drive-form,
   .explorer-sidebar:not(.sheet-expanded) .route-compare,
   .explorer-sidebar:not(.sheet-expanded) .route-share-row,
   .explorer-sidebar:not(.sheet-expanded) .list-heading,
   .explorer-sidebar:not(.sheet-expanded) .clearance-list,
   .explorer-sidebar:not(.sheet-expanded) .vehicle-dims{
     display:none!important;
+  }
+  .explorer-sidebar:not(.sheet-expanded) .drive-form{
+    display:block;
+    margin-top:8px;
+    padding-top:10px;
+  }
+  .explorer-sidebar:not(.sheet-expanded).is-dragging,
+  .explorer.sheet-route .explorer-sidebar:not(.sheet-expanded){
+    overflow:auto;
+    overscroll-behavior:contain;
   }
   .sheet-handle{
     display:flex;
