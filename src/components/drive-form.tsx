@@ -1,6 +1,7 @@
 "use client";
 import { useEffect, useId, useRef, useState } from "react";
 import type { Place } from "@/lib/path";
+import { EXAMPLE_DRIVE } from "@/lib/path";
 
 type Suggestion = Place;
 
@@ -137,8 +138,8 @@ export function DriveForm({ initialFrom = "", initialTo = "", loading, error, ac
   onOpenChange?: (open: boolean) => void;
 }) {
   const [open, setOpen] = useState(false);
-  const [fromText, setFromText] = useState(initialFrom);
-  const [toText, setToText] = useState(initialTo);
+  const [fromText, setFromText] = useState(initialFrom || EXAMPLE_DRIVE.from);
+  const [toText, setToText] = useState(initialTo || EXAMPLE_DRIVE.to);
   const [fromPlace, setFromPlace] = useState<Place | null>(null);
   const [toPlace, setToPlace] = useState<Place | null>(null);
 
@@ -168,12 +169,16 @@ export function DriveForm({ initialFrom = "", initialTo = "", loading, error, ac
       <form id="drive-form-fields" onSubmit={event => {
         event.preventDefault();
         (document.activeElement as HTMLElement | null)?.blur?.();
-        const from = fromPlace && fromPlace.label === fromText.trim() ? fromPlace : fromText.trim();
-        const to = toPlace && toPlace.label === toText.trim() ? toPlace : toText.trim();
+        const fromValue = fromText.trim() || EXAMPLE_DRIVE.from;
+        const toValue = toText.trim() || EXAMPLE_DRIVE.to;
+        if (!fromText.trim()) setFromText(EXAMPLE_DRIVE.from);
+        if (!toText.trim()) setToText(EXAMPLE_DRIVE.to);
+        const from = fromPlace && fromPlace.label === fromText.trim() ? fromPlace : fromValue;
+        const to = toPlace && toPlace.label === toText.trim() ? toPlace : toValue;
         onSubmit(from, to);
       }}>
-        <PlaceField label="From" inputId="drive-from" placeholder="JFK Airport" value={fromText} onChange={value => { setFromText(value); setFromPlace(null); }} onPick={place => { setFromText(place.label); setFromPlace(place); }} />
-        <PlaceField label="To" inputId="drive-to" placeholder="Jones Beach" value={toText} onChange={value => { setToText(value); setToPlace(null); }} onPick={place => { setToText(place.label); setToPlace(place); }} />
+        <PlaceField label="From" inputId="drive-from" placeholder={EXAMPLE_DRIVE.from} value={fromText} onChange={value => { setFromText(value); setFromPlace(null); }} onPick={place => { setFromText(place.label); setFromPlace(place); }} />
+        <PlaceField label="To" inputId="drive-to" placeholder={EXAMPLE_DRIVE.to} value={toText} onChange={value => { setToText(value); setToPlace(null); }} onPick={place => { setToText(place.label); setToPlace(place); }} />
         {error && <p role="alert" className="form-error">{error}</p>}
         {loading && <p className="drive-status" role="status">Looking up those places and posted clearances nearby…</p>}
         <button className="primary" type="submit" disabled={loading}>{loading ? "Going…" : "Go"}</button>
