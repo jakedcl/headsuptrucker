@@ -132,21 +132,29 @@ function PlaceField({ label, value, onChange, onPick, placeholder, inputId }: {
   </div>;
 }
 
-export function DriveForm({ initialFrom = "", initialTo = "", loading, error, active, onSubmit, onClear, onOpenChange }: {
+export function DriveForm({ initialFrom = "", initialTo = "", loading, error, active, onSubmit, onClear, onOpenChange, editRequest = 0 }: {
   initialFrom?: string; initialTo?: string; loading: boolean; error: string; active: boolean;
   onSubmit: (from: Place | string, to: Place | string) => void; onClear: () => void;
   onOpenChange?: (open: boolean) => void;
+  /** Bump to force-open the A→B fields (e.g. “Change route”). */
+  editRequest?: number;
 }) {
   const [open, setOpen] = useState(false);
   const [fromText, setFromText] = useState(initialFrom || EXAMPLE_DRIVE.from);
   const [toText, setToText] = useState(initialTo || EXAMPLE_DRIVE.to);
   const [fromPlace, setFromPlace] = useState<Place | null>(null);
   const [toPlace, setToPlace] = useState<Place | null>(null);
+  const wasLoading = useRef(loading);
 
   useEffect(() => {
-    // Path landed (or cleared) — keep the A→B fields collapsed so the result card owns the peek.
-    if (!loading && active) setOpen(false);
+    // Collapse A→B only when a lookup finishes — not when “Change route” reopens the fields.
+    if (wasLoading.current && !loading && active) setOpen(false);
+    wasLoading.current = loading;
   }, [active, loading]);
+
+  useEffect(() => {
+    if (editRequest > 0) setOpen(true);
+  }, [editRequest]);
 
   useEffect(() => {
     onOpenChange?.(open);
@@ -164,7 +172,7 @@ export function DriveForm({ initialFrom = "", initialTo = "", loading, error, ac
         <span className="eyebrow">CHECK A ROUTE</span>
         <span className="drive-chevron" aria-hidden="true">{open ? "▴" : "▾"}</span>
       </button>
-      {active && <button className="text-button" type="button" onClick={onClear}>Clear</button>}
+      {active && open && <button className="text-button" type="button" onClick={onClear}>Clear path</button>}
     </div>
     {open && (
       <form id="drive-form-fields" onSubmit={event => {

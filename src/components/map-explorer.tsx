@@ -163,6 +163,8 @@ export function MapExplorer() {
   const [sheetDragH, setSheetDragH] = useState<number | null>(null);
   const [peekH, setPeekH] = useState(220);
   const [routeFormOpen, setRouteFormOpen] = useState(false);
+  const [editRouteRequest, setEditRouteRequest] = useState(0);
+  const [mobileSheet, setMobileSheet] = useState(false);
   const [legendOpen, setLegendOpen] = useState(false);
   const explorerRef = useRef<HTMLElement>(null);
   const sidebarRef = useRef<HTMLElement>(null);
@@ -500,6 +502,25 @@ export function MapExplorer() {
     ro.observe(sidebar);
     return () => ro.disconnect();
   }, [sheetExpanded, sheetDragH, routeFormOpen, editing, height, drive, driveLoading, driveError]);
+
+  useEffect(() => {
+    const mq = window.matchMedia("(max-width: 700px)");
+    const sync = () => setMobileSheet(mq.matches);
+    sync();
+    mq.addEventListener("change", sync);
+    return () => mq.removeEventListener("change", sync);
+  }, []);
+
+  const mapFitPadding = useMemo(() => {
+    if (mobileSheet) {
+      if (sheetExpanded) return 56;
+      // Center the path in the visible map strip above the bottom sheet, not the full viewport.
+      const bottom = Math.max(72, Math.round(peekH + 20));
+      return { top: 48, left: 36, right: 52, bottom };
+    }
+    // Desktop: keep the path clear of legend (bottom-left) and zoom/share stack (top-right).
+    return { top: 88, right: 88, bottom: 160, left: 88 };
+  }, [mobileSheet, sheetExpanded, peekH]);
 
   const onSheetPointerDown = useCallback((event: PointerEvent<HTMLButtonElement>) => {
     if (!window.matchMedia("(max-width: 700px)").matches) return;
@@ -879,6 +900,7 @@ export function MapExplorer() {
           loading={driveLoading}
           error={driveError}
           active={Boolean(drive)}
+          editRequest={editRouteRequest}
           onOpenChange={setRouteFormOpen}
           onSubmit={(from, to) => {
             setListLimit(30);
@@ -910,6 +932,13 @@ export function MapExplorer() {
               <>
                 <strong>Couldn’t check that path</strong>
                 <span>{driveError}</span>
+                <div className="route-verdict-actions">
+                  <button
+                    className="route-verdict-action"
+                    type="button"
+                    onClick={() => setEditRouteRequest(n => n + 1)}
+                  >Change route</button>
+                </div>
               </>
             ) : routeVerdict ? (
               <>
@@ -918,16 +947,23 @@ export function MapExplorer() {
                   {activeDrive ? `${formatDriveMiles(activeDrive.distanceMeters)} · ` : ""}
                   {routeVerdict.detail}
                 </span>
-                <button
-                  className="text-button route-verdict-share"
-                  type="button"
-                  onClick={() => copyLink(buildShareUrl({
-                    height: String(height),
-                    from: fromParam,
-                    to: toParam,
-                    route: selectedRouteIndex === 0 ? null : String(selectedRouteIndex),
-                  }), setShareMessage)}
-                >Share this path</button>
+                <div className="route-verdict-actions">
+                  <button
+                    className="route-verdict-action"
+                    type="button"
+                    onClick={() => setEditRouteRequest(n => n + 1)}
+                  >Change route</button>
+                  <button
+                    className="text-button route-verdict-share"
+                    type="button"
+                    onClick={() => copyLink(buildShareUrl({
+                      height: String(height),
+                      from: fromParam,
+                      to: toParam,
+                      route: selectedRouteIndex === 0 ? null : String(selectedRouteIndex),
+                    }), setShareMessage)}
+                  >Share</button>
+                </div>
               </>
             ) : null}
           </div>
@@ -1104,6 +1140,7 @@ export function MapExplorer() {
           selectedFacilityId={selectedFacilityId}
           drive={activeDrive}
           altRoutes={altRoutes}
+          fitPadding={mapFitPadding}
           initialViewport={initialViewport}
           onSelect={onSelect}
           onFacilitySelect={onFacilitySelect}

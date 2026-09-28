@@ -552,6 +552,7 @@ export function ClearanceMap({
   selectedId,
   drive,
   altRoutes = [],
+  fitPadding = 56,
   awareness,
   truckRoutesData,
   streetClosuresData,
@@ -578,6 +579,8 @@ export function ClearanceMap({
   selectedFacilityId?: string | null;
   drive: DrivePath | null;
   altRoutes?: number[][][];
+  /** Extra inset so fitBounds centers in the visible map, not under the mobile sheet. */
+  fitPadding?: number | { top: number; bottom: number; left: number; right: number };
   awareness: AwarenessLayers;
   truckRoutesData: FeatureCollection | null;
   streetClosuresData: FeatureCollection | null;
@@ -981,8 +984,8 @@ export function ClearanceMap({
       (box, line) => line.reduce((inner, pair) => inner.extend(pair as [number, number]), box),
       new maplibregl.LngLatBounds(seed, seed),
     );
-    map.fitBounds(bounds, { padding: 56, duration: 700, maxZoom: 14 });
-  }, [drive, altRoutes, ready]);
+    map.fitBounds(bounds, { padding: fitPadding, duration: 700, maxZoom: 14 });
+  }, [drive, altRoutes, ready, fitPadding]);
 
   // Keep focus refs + marker pulse class in sync with the open info card.
   useEffect(() => {
