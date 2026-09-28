@@ -708,7 +708,7 @@ export function MapExplorer() {
         }}
       >
         <span className="sheet-grip" aria-hidden="true" />
-        <span className="sheet-hint">{sheetExpanded ? "Tap to shrink map" : "Pull up for clearances"}</span>
+        <span className="sheet-hint">{sheetExpanded ? "Pull down for map" : "Pull up for clearances"}</span>
       </button>
       <div className="vehicle-panel">
         <div className="panel-heading">
