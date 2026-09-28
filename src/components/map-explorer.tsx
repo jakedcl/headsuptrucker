@@ -512,10 +512,14 @@ export function MapExplorer() {
   }, []);
 
   const mapFitPadding = useMemo(() => {
-    if (!mobileSheet || sheetExpanded) return 56;
-    // Center the path in the visible map strip above the bottom sheet, not the full viewport.
-    const bottom = Math.max(72, Math.round(peekH + 20));
-    return { top: 48, left: 36, right: 52, bottom };
+    if (mobileSheet) {
+      if (sheetExpanded) return 56;
+      // Center the path in the visible map strip above the bottom sheet, not the full viewport.
+      const bottom = Math.max(72, Math.round(peekH + 20));
+      return { top: 48, left: 36, right: 52, bottom };
+    }
+    // Desktop: keep the path clear of legend (bottom-left) and zoom/share stack (top-right).
+    return { top: 88, right: 88, bottom: 160, left: 88 };
   }, [mobileSheet, sheetExpanded, peekH]);
 
   const onSheetPointerDown = useCallback((event: PointerEvent<HTMLButtonElement>) => {
