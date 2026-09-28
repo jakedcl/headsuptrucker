@@ -432,6 +432,30 @@ function addOverlayLayers(map: MapInstance) {
       },
     });
   }
+  if (!map.getSource("drive-dim")) {
+    map.addSource("drive-dim", {
+      type: "geojson",
+      data: {
+        type: "FeatureCollection",
+        features: [{
+          type: "Feature",
+          properties: {},
+          geometry: {
+            type: "Polygon",
+            coordinates: [[
+              [-180, -85], [180, -85], [180, 85], [-180, 85], [-180, -85],
+            ]],
+          },
+        }],
+      },
+    });
+    map.addLayer({
+      id: "drive-dim-fill",
+      type: "fill",
+      source: "drive-dim",
+      paint: { "fill-color": "#0a0a0a", "fill-opacity": 0 },
+    });
+  }
   if (!map.getSource("drive")) {
     map.addSource("drive", { type: "geojson", data: EMPTY_DRIVE });
     map.addLayer({
@@ -440,10 +464,10 @@ function addOverlayLayers(map: MapInstance) {
       source: "drive",
       layout: { "line-cap": "round", "line-join": "round" },
       paint: {
-        "line-color": "#c8102e",
-        "line-width": 16,
-        "line-opacity": 0.28,
-        "line-blur": 10,
+        "line-color": "#ff2d4a",
+        "line-width": 22,
+        "line-opacity": 0.35,
+        "line-blur": 12,
       },
     });
     map.addLayer({
@@ -451,14 +475,14 @@ function addOverlayLayers(map: MapInstance) {
       type: "line",
       source: "drive",
       layout: { "line-cap": "round", "line-join": "round" },
-      paint: { "line-color": "#ffffff", "line-width": 11, "line-opacity": 0.95 },
+      paint: { "line-color": "#ffffff", "line-width": 13, "line-opacity": 0.98 },
     });
     map.addLayer({
       id: "drive-line",
       type: "line",
       source: "drive",
       layout: { "line-cap": "round", "line-join": "round" },
-      paint: { "line-color": "#c8102e", "line-width": 5.5, "line-opacity": 0.98 },
+      paint: { "line-color": "#c8102e", "line-width": 6.5, "line-opacity": 1 },
     });
   }
   if (!map.getSource("drive-alts")) {
@@ -818,6 +842,12 @@ export function ClearanceMap({
 
   useEffect(() => {
     const map = mapRef.current;
+    if (!ready || !map?.getLayer("drive-dim-fill")) return;
+    map.setPaintProperty("drive-dim-fill", "fill-opacity", drive ? 0.42 : 0);
+  }, [drive, ready]);
+
+  useEffect(() => {
+    const map = mapRef.current;
     if (!ready || !map?.getLayer("drive-glow")) return;
     if (!drive) {
       map.setPaintProperty("drive-glow", "line-opacity", 0);
@@ -828,7 +858,7 @@ export function ClearanceMap({
     const tick = (now: number) => {
       if (!mapRef.current?.getLayer("drive-glow")) return;
       const wave = 0.5 + 0.5 * Math.sin(((now - start) / 1400) * Math.PI * 2);
-      mapRef.current.setPaintProperty("drive-glow", "line-opacity", 0.18 + wave * 0.28);
+      mapRef.current.setPaintProperty("drive-glow", "line-opacity", 0.28 + wave * 0.32);
       frame = requestAnimationFrame(tick);
     };
     frame = requestAnimationFrame(tick);

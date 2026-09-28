@@ -161,9 +161,11 @@ export function MapExplorer() {
   const [editing, setEditing] = useState(false);
   const [sheetExpanded, setSheetExpanded] = useState(false);
   const [sheetDragH, setSheetDragH] = useState<number | null>(null);
+  const [peekH, setPeekH] = useState(220);
   const [routeFormOpen, setRouteFormOpen] = useState(false);
   const [legendOpen, setLegendOpen] = useState(false);
   const explorerRef = useRef<HTMLElement>(null);
+  const sidebarRef = useRef<HTMLElement>(null);
   const listRef = useRef<HTMLDivElement>(null);
   const sheetDrag = useRef<{
     pointerId: number;
@@ -480,13 +482,24 @@ export function MapExplorer() {
 
   const sheetRange = useCallback(() => {
     const max = explorerRef.current?.clientHeight ?? 0;
-    // Map-first peek: handle + height + Check a route. Grow when the A→B form is open.
-    const peek = routeFormOpen
-      ? Math.round(Math.min(Math.max(max * 0.55, 380), 460))
-      : Math.round(Math.min(Math.max(max * 0.28, 220), 248));
+    // Peek hugs content (handle + vehicle + Check a route). Measured via ResizeObserver.
+    const peek = Math.round(Math.min(Math.max(peekH, 160), Math.max(max * 0.72, 160)));
     const full = Math.round(Math.max(max - 12, peek));
     return { peek, full };
-  }, [routeFormOpen]);
+  }, [peekH]);
+
+  useEffect(() => {
+    const sidebar = sidebarRef.current;
+    if (!sidebar || sheetExpanded || sheetDragH != null) return;
+    const measure = () => {
+      const next = Math.round(sidebar.getBoundingClientRect().height);
+      if (next > 0) setPeekH(prev => (Math.abs(prev - next) > 1 ? next : prev));
+    };
+    measure();
+    const ro = new ResizeObserver(measure);
+    ro.observe(sidebar);
+    return () => ro.disconnect();
+  }, [sheetExpanded, sheetDragH, routeFormOpen, editing, height, drive, driveLoading, driveError]);
 
   const onSheetPointerDown = useCallback((event: PointerEvent<HTMLButtonElement>) => {
     if (!window.matchMedia("(max-width: 700px)").matches) return;
@@ -639,6 +652,39 @@ export function MapExplorer() {
     () => (activeDrive && data ? featuresAlongRoute(data.features, activeDrive.coordinates) : null),
     [activeDrive, data],
   );
+  const activeRouteScore = useMemo(
+    () => (alongPath ? scoreRoute(alongPath, height ?? 0) : null),
+    [alongPath, height],
+  );
+  const routeVerdict = useMemo(() => {
+    if (!activeRouteScore) return null;
+    if (activeRouteScore.danger > 0) {
+      return {
+        severity: "danger" as const,
+        title: "Do not go",
+        detail: `${activeRouteScore.danger} posted at or below your height${activeRouteScore.lowest != null ? ` · lowest ${formatHeight(activeRouteScore.lowest)}` : ""}`,
+      };
+    }
+    if (activeRouteScore.caution > 0) {
+      return {
+        severity: "caution" as const,
+        title: "Tight clearances",
+        detail: `${activeRouteScore.caution} within 12″ of your height${activeRouteScore.lowest != null ? ` · lowest ${formatHeight(activeRouteScore.lowest)}` : ""}`,
+      };
+    }
+    if (activeRouteScore.count === 0) {
+      return {
+        severity: "clear" as const,
+        title: "No posts nearby",
+        detail: "No posted clearances found along this path — still check signs.",
+      };
+    }
+    return {
+      severity: "clear" as const,
+      title: "Looks clear",
+      detail: `${activeRouteScore.count} posted nearby, all above your height${activeRouteScore.lowest != null ? ` · lowest ${formatHeight(activeRouteScore.lowest)}` : ""}`,
+    };
+  }, [activeRouteScore]);
   const routeScores = useMemo(() => {
     if (!data || routeOptions.length < 2) return [];
     return routeOptions.map(route => scoreRoute(featuresAlongRoute(data.features, route.coordinates), height ?? 0));
@@ -690,9 +736,19 @@ export function MapExplorer() {
   return <main
     ref={explorerRef}
     className={`explorer ${sheetExpanded ? "sheet-expanded" : ""} ${routeFormOpen && !sheetExpanded ? "sheet-route" : ""}`}
-    style={sheetDragH != null ? { ["--sheet-h"]: `${sheetDragH}px` } as CSSProperties : undefined}
+    style={{
+      ["--sheet-h"]: sheetDragH != null
+        ? `${sheetDragH}px`
+        : sheetExpanded
+          ? undefined
+          : `${peekH}px`,
+    } as CSSProperties}
   >
-    <aside className={`explorer-sidebar ${sheetExpanded ? "sheet-expanded" : ""} ${sheetDragH != null ? "is-dragging" : ""}`} aria-label="Vehicle controls and clearance list">
+    <aside
+      ref={sidebarRef}
+      className={`explorer-sidebar ${sheetExpanded ? "sheet-expanded" : ""} ${sheetDragH != null ? "is-dragging" : ""}`}
+      aria-label="Vehicle controls and clearance list"
+    >
       <button
         type="button"
         className="sheet-handle"
@@ -839,6 +895,43 @@ export function MapExplorer() {
             updateUrl({ from: null, to: null, bridge: null, route: null });
           }}
         />
+        {(driveLoading || driveError || (activeDrive && routeVerdict)) && (
+          <div
+            className={`route-verdict ${driveError ? "danger" : driveLoading ? "loading" : routeVerdict?.severity || ""}`}
+            role="status"
+            aria-live="polite"
+          >
+            {driveLoading ? (
+              <>
+                <strong>Checking path…</strong>
+                <span>Looking up places and posted clearances nearby.</span>
+              </>
+            ) : driveError ? (
+              <>
+                <strong>Couldn’t check that path</strong>
+                <span>{driveError}</span>
+              </>
+            ) : routeVerdict ? (
+              <>
+                <strong>{routeVerdict.title}</strong>
+                <span>
+                  {activeDrive ? `${formatDriveMiles(activeDrive.distanceMeters)} · ` : ""}
+                  {routeVerdict.detail}
+                </span>
+                <button
+                  className="text-button route-verdict-share"
+                  type="button"
+                  onClick={() => copyLink(buildShareUrl({
+                    height: String(height),
+                    from: fromParam,
+                    to: toParam,
+                    route: selectedRouteIndex === 0 ? null : String(selectedRouteIndex),
+                  }), setShareMessage)}
+                >Share this path</button>
+              </>
+            ) : null}
+          </div>
+        )}
         {routeOptions.length > 1 && activeDrive && (
           <div className="route-compare" role="group" aria-label="Compare driving paths">
             <div className="panel-heading">
@@ -881,19 +974,6 @@ export function MapExplorer() {
                 </button>;
               })}
             </div>
-          </div>
-        )}
-        {routeOptions.length === 1 && activeDrive && (
-          <div className="route-share-row">
-            <button
-              className="text-button"
-              type="button"
-              onClick={() => copyLink(buildShareUrl({
-                height: String(height),
-                from: fromParam,
-                to: toParam,
-              }), setShareMessage)}
-            >Share this path</button>
           </div>
         )}
       </div>
