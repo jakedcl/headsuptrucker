@@ -352,11 +352,24 @@ h1,h2,p{margin-top:0}
 .vehicle-dims label>span{font-size:11px;letter-spacing:1.2px;font-weight:800;text-transform:uppercase;color:var(--sign)}
 .vehicle-dims input{width:100%;border:2px solid var(--ink);border-radius:6px;height:38px;padding:0 10px;background:#fff;color:var(--ink);font-weight:700}
 .drive-form{margin-top:16px;padding-top:14px;border-top:2px solid #3a3a3a}
-.drive-form .panel-heading{margin-bottom:0}
+.drive-form .panel-heading{margin-bottom:0;gap:10px;min-height:44px}
 .drive-form form{margin-top:12px}
-.drive-toggle{display:flex;align-items:center;gap:8px;background:none;padding:0;text-align:left;color:#fff}
+.drive-toggle{
+  display:flex;
+  align-items:center;
+  justify-content:space-between;
+  gap:8px;
+  flex:1;
+  width:100%;
+  min-width:0;
+  min-height:44px;
+  background:none;
+  padding:6px 0;
+  text-align:left;
+  color:#fff;
+}
 .drive-toggle .eyebrow{margin:0;color:var(--sign)}
-.drive-chevron{color:#c8c8c8;font-size:12px;line-height:1}
+.drive-chevron{color:#c8c8c8;font-size:12px;line-height:1;flex:0 0 auto}
 .drive-form label{display:flex;flex-direction:column;gap:6px;margin-bottom:10px}
 .drive-form label>span{font-size:11px;letter-spacing:1.3px;font-weight:800;text-transform:uppercase;color:#c8c8c8}
 .drive-form input{width:100%;border:2px solid var(--ink);border-radius:6px;height:42px;padding:0 12px;background:#fff;color:var(--ink)}
