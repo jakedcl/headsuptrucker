@@ -512,11 +512,11 @@ export function MapExplorer() {
   }, []);
 
   const mapFitPadding = useMemo(() => {
-    if (!mobileSheet) return 56;
+    if (!mobileSheet || sheetExpanded) return 56;
     // Center the path in the visible map strip above the bottom sheet, not the full viewport.
-    const bottom = Math.max(72, Math.round((sheetExpanded ? sheetRange().full : peekH) + 20));
+    const bottom = Math.max(72, Math.round(peekH + 20));
     return { top: 48, left: 36, right: 52, bottom };
-  }, [mobileSheet, sheetExpanded, peekH, sheetRange]);
+  }, [mobileSheet, sheetExpanded, peekH]);
 
   const onSheetPointerDown = useCallback((event: PointerEvent<HTMLButtonElement>) => {
     if (!window.matchMedia("(max-width: 700px)").matches) return;
