@@ -12,6 +12,8 @@
   --clear:#2f2f2f;
   --asphalt:#1c1c1c;
   --header-h:72px;
+  --safe-top:env(safe-area-inset-top,0px);
+  --header-total:calc(var(--header-h) + var(--safe-top));
   --font-ui:Helvetica Neue,Helvetica,Arial,sans-serif;
   --font-sign:Helvetica Neue,Helvetica,Arial Black,Arial,sans-serif;
   --radius-sign:10px;
@@ -40,8 +42,8 @@ button:disabled{cursor:default}
 h1,h2,p{margin-top:0}
 
 .site-header{
-  height:var(--header-h);
-  padding:0 8px;
+  height:var(--header-total);
+  padding:var(--safe-top) 8px 0;
   display:flex;
   align-items:center;
   justify-content:space-between;
@@ -248,8 +250,8 @@ h1,h2,p{margin-top:0}
 }
 
 .explorer{
-  height:calc(100dvh - var(--header-h));
-  max-height:calc(100dvh - var(--header-h));
+  height:calc(100dvh - var(--header-total));
+  max-height:calc(100dvh - var(--header-total));
   min-height:0;
   overflow:hidden;
   display:grid;
@@ -588,7 +590,7 @@ h1,h2,p{margin-top:0}
 
 @media(max-width:700px){
   :root{--header-h:52px}
-  .site-header{padding:0 max(8px,env(safe-area-inset-right)) 0 max(8px,env(safe-area-inset-left))}
+  .site-header{padding:var(--safe-top) max(8px,env(safe-area-inset-right)) 0 max(8px,env(safe-area-inset-left))}
   .brand{font-size:20px;gap:6px}
   .brand-mark{font-size:14px;line-height:18px;width:20px;border-width:2px}
   .site-header nav{gap:12px;font-size:12px;font-weight:800}
