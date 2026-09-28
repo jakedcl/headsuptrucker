@@ -569,19 +569,20 @@ export function MapExplorer() {
   }, [sheetRange]);
 
   useEffect(() => {
-    const sidebar = sidebarRef.current;
-    if (!sidebar || !sheetExpanded) return;
-    sidebar.scrollTop = 0;
+    const sheetEl = sidebarRef.current;
+    if (!sheetEl || !sheetExpanded) return;
+    const scroller: HTMLElement = sheetEl;
+    scroller.scrollTop = 0;
     let startY = 0;
     let tracking = false;
     let collapseArmed = false;
 
     function onScroll() {
       // Scrolling the list disarms — only a pull from the absolute top can close.
-      if (sidebar.scrollTop > 2) collapseArmed = false;
+      if (scroller.scrollTop > 2) collapseArmed = false;
     }
     function onStart(event: TouchEvent) {
-      if (sidebar.scrollTop > 0) {
+      if (scroller.scrollTop > 0) {
         tracking = false;
         return;
       }
@@ -590,7 +591,7 @@ export function MapExplorer() {
     }
     function onMove(event: TouchEvent) {
       if (!tracking) return;
-      if (sidebar.scrollTop > 0) {
+      if (scroller.scrollTop > 0) {
         tracking = false;
         collapseArmed = false;
         return;
@@ -612,17 +613,17 @@ export function MapExplorer() {
       tracking = false;
     }
 
-    sidebar.addEventListener("scroll", onScroll, { passive: true });
-    sidebar.addEventListener("touchstart", onStart, { passive: true });
-    sidebar.addEventListener("touchmove", onMove, { passive: true });
-    sidebar.addEventListener("touchend", onEnd);
-    sidebar.addEventListener("touchcancel", onEnd);
+    scroller.addEventListener("scroll", onScroll, { passive: true });
+    scroller.addEventListener("touchstart", onStart, { passive: true });
+    scroller.addEventListener("touchmove", onMove, { passive: true });
+    scroller.addEventListener("touchend", onEnd);
+    scroller.addEventListener("touchcancel", onEnd);
     return () => {
-      sidebar.removeEventListener("scroll", onScroll);
-      sidebar.removeEventListener("touchstart", onStart);
-      sidebar.removeEventListener("touchmove", onMove);
-      sidebar.removeEventListener("touchend", onEnd);
-      sidebar.removeEventListener("touchcancel", onEnd);
+      scroller.removeEventListener("scroll", onScroll);
+      scroller.removeEventListener("touchstart", onStart);
+      scroller.removeEventListener("touchmove", onMove);
+      scroller.removeEventListener("touchend", onEnd);
+      scroller.removeEventListener("touchcancel", onEnd);
     };
   }, [sheetExpanded, height]);
   const onClearFocus = useCallback(() => {
