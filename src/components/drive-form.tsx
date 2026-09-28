@@ -144,7 +144,8 @@ export function DriveForm({ initialFrom = "", initialTo = "", loading, error, ac
   const [toPlace, setToPlace] = useState<Place | null>(null);
 
   useEffect(() => {
-    if (active || loading) setOpen(true);
+    // Path landed (or cleared) — keep the A→B fields collapsed so the result card owns the peek.
+    if (!loading && active) setOpen(false);
   }, [active, loading]);
 
   useEffect(() => {
@@ -175,12 +176,12 @@ export function DriveForm({ initialFrom = "", initialTo = "", loading, error, ac
         if (!toText.trim()) setToText(EXAMPLE_DRIVE.to);
         const from = fromPlace && fromPlace.label === fromText.trim() ? fromPlace : fromValue;
         const to = toPlace && toPlace.label === toText.trim() ? toPlace : toValue;
+        setOpen(false);
         onSubmit(from, to);
       }}>
         <PlaceField label="From" inputId="drive-from" placeholder={EXAMPLE_DRIVE.from} value={fromText} onChange={value => { setFromText(value); setFromPlace(null); }} onPick={place => { setFromText(place.label); setFromPlace(place); }} />
         <PlaceField label="To" inputId="drive-to" placeholder={EXAMPLE_DRIVE.to} value={toText} onChange={value => { setToText(value); setToPlace(null); }} onPick={place => { setToText(place.label); setToPlace(place); }} />
         {error && <p role="alert" className="form-error">{error}</p>}
-        {loading && <p className="drive-status" role="status">Looking up those places and posted clearances nearby…</p>}
         <button className="primary" type="submit" disabled={loading}>{loading ? "Going…" : "Go"}</button>
       </form>
     )}
