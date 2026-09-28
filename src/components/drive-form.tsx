@@ -131,9 +131,10 @@ function PlaceField({ label, value, onChange, onPick, placeholder, inputId }: {
   </div>;
 }
 
-export function DriveForm({ initialFrom = "", initialTo = "", loading, error, active, onSubmit, onClear }: {
+export function DriveForm({ initialFrom = "", initialTo = "", loading, error, active, onSubmit, onClear, onOpenChange }: {
   initialFrom?: string; initialTo?: string; loading: boolean; error: string; active: boolean;
   onSubmit: (from: Place | string, to: Place | string) => void; onClear: () => void;
+  onOpenChange?: (open: boolean) => void;
 }) {
   const [open, setOpen] = useState(false);
   const [fromText, setFromText] = useState(initialFrom);
@@ -145,7 +146,11 @@ export function DriveForm({ initialFrom = "", initialTo = "", loading, error, ac
     if (active || loading) setOpen(true);
   }, [active, loading]);
 
-  return <div className="drive-form">
+  useEffect(() => {
+    onOpenChange?.(open);
+  }, [open, onOpenChange]);
+
+  return <div className={`drive-form ${open ? "is-open" : ""}`}>
     <div className="panel-heading">
       <button
         type="button"

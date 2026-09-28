@@ -161,6 +161,7 @@ export function MapExplorer() {
   const [editing, setEditing] = useState(false);
   const [sheetExpanded, setSheetExpanded] = useState(false);
   const [sheetDragH, setSheetDragH] = useState<number | null>(null);
+  const [routeFormOpen, setRouteFormOpen] = useState(false);
   const [legendOpen, setLegendOpen] = useState(false);
   const explorerRef = useRef<HTMLElement>(null);
   const listRef = useRef<HTMLDivElement>(null);
@@ -479,11 +480,13 @@ export function MapExplorer() {
 
   const sheetRange = useCallback(() => {
     const max = explorerRef.current?.clientHeight ?? 0;
-    // Map-first peek: handle + height sign only (~190px)
-    const peek = Math.round(Math.min(Math.max(max * 0.24, 176), 208));
+    // Map-first peek: handle + height + Check a route. Grow when the A→B form is open.
+    const peek = routeFormOpen
+      ? Math.round(Math.min(Math.max(max * 0.55, 380), 460))
+      : Math.round(Math.min(Math.max(max * 0.28, 220), 248));
     const full = Math.round(Math.max(max - 12, peek));
     return { peek, full };
-  }, []);
+  }, [routeFormOpen]);
 
   const onSheetPointerDown = useCallback((event: PointerEvent<HTMLButtonElement>) => {
     if (!window.matchMedia("(max-width: 700px)").matches) return;
@@ -686,7 +689,7 @@ export function MapExplorer() {
 
   return <main
     ref={explorerRef}
-    className={`explorer ${sheetExpanded ? "sheet-expanded" : ""}`}
+    className={`explorer ${sheetExpanded ? "sheet-expanded" : ""} ${routeFormOpen && !sheetExpanded ? "sheet-route" : ""}`}
     style={sheetDragH != null ? { ["--sheet-h"]: `${sheetDragH}px` } as CSSProperties : undefined}
   >
     <aside className={`explorer-sidebar ${sheetExpanded ? "sheet-expanded" : ""} ${sheetDragH != null ? "is-dragging" : ""}`} aria-label="Vehicle controls and clearance list">
@@ -820,6 +823,7 @@ export function MapExplorer() {
           loading={driveLoading}
           error={driveError}
           active={Boolean(drive)}
+          onOpenChange={setRouteFormOpen}
           onSubmit={(from, to) => {
             setListLimit(30);
             pendingPlaces.current = { from, to };
