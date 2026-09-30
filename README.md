@@ -2,7 +2,7 @@
 
 A free, map-first tool for exploring posted vehicle clearances around NYC, Long Island, the Hudson Valley, southwest Connecticut, and NYC-facing New Jersey. Enter your vehicle height; red markers are at or below it, and orange markers are 1–12 inches above it. No account, payment, destination, or routing service is required.
 
-**Status:** local working prototype. The app builds successfully for Vercel, but has not been deployed or field-verified. See [data-audit.md](data-audit.md) for source findings and outstanding launch work.
+**Status:** working prototype, deployed on Vercel at [headsuptrucker.vercel.app](https://headsuptrucker.vercel.app) but not field-verified. See [data-audit.md](data-audit.md) for source findings and outstanding launch work.
 
 ## Run locally
 
@@ -13,7 +13,7 @@ npm install
 npm run dev
 ```
 
-Open http://127.0.0.1:3000. Stop the server with Ctrl+C. Edit files under `src/`; the browser updates automatically. The same folder can also be opened in Cursor.
+Open http://127.0.0.1:3000. Stop the server with Ctrl+C. Edit files under `src/`; the browser updates automatically.
 
 ```sh
 npm test
