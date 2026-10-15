@@ -21,6 +21,8 @@ npm run typecheck
 npm run build
 ```
 
+See [docs/how-it-works.md](docs/how-it-works.md) for how the data flows from the agency feeds to the map, and how the route check works.
+
 ## Data pipeline
 
 The committed snapshot lets the app run without calling government APIs. Basemap tiles still need network access.
