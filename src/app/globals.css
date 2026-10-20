@@ -487,6 +487,27 @@ h1,h2,p{margin-top:0}
 .maplibregl-ctrl button{width:34px;height:36px}
 .maplibregl-ctrl-attrib{font-size:11px!important;background:#ffffffed!important;max-width:min(380px,calc(100% - 20px));line-height:1.4;border:2px solid var(--ink)!important}
 .maplibregl-ctrl-attrib-inner{white-space:normal}
+.maplibregl-ctrl-attrib.heads-up-attrib-hold.maplibregl-compact{padding:2px 28px 2px 8px}
+.maplibregl-ctrl-attrib.heads-up-attrib-hold.maplibregl-compact .maplibregl-ctrl-attrib-inner{display:block!important;opacity:1!important;max-width:min(380px,calc(100vw - 32px))!important}
+.maplibregl-ctrl-attrib.heads-up-attrib-animating.maplibregl-compact .maplibregl-ctrl-attrib-inner{
+  display:block!important;
+  overflow:hidden;
+  max-width:min(380px,calc(100% - 28px));
+  opacity:1;
+  transition:opacity 300ms ease,max-width 300ms ease;
+}
+.maplibregl-ctrl-attrib.heads-up-attrib-animating.heads-up-attrib-collapsing.maplibregl-compact .maplibregl-ctrl-attrib-inner,
+.maplibregl-ctrl-attrib.heads-up-attrib-animating.maplibregl-compact:not(.heads-up-attrib-expanded-visual) .maplibregl-ctrl-attrib-inner{
+  opacity:0;
+  max-width:0;
+}
+.maplibregl-ctrl-attrib.heads-up-attrib-animating.heads-up-attrib-expanded-visual:not(.heads-up-attrib-collapsing).maplibregl-compact .maplibregl-ctrl-attrib-inner{
+  opacity:1;
+  max-width:min(380px,calc(100% - 28px));
+}
+@media (prefers-reduced-motion:reduce){
+  .maplibregl-ctrl-attrib.heads-up-attrib-animating .maplibregl-ctrl-attrib-inner{transition:none!important}
+}
 
 .clearance-marker{
   font-weight:900;
