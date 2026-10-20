@@ -466,24 +466,6 @@ h1,h2,p{margin-top:0}
 .row-arrow{color:var(--ink);font-size:18px;font-weight:900}
 .sidebar-foot{border-top:3px solid var(--ink);padding:14px 18px;font-size:11px;color:var(--muted);display:flex;flex-direction:column;gap:8px;background:var(--paper);position:sticky;bottom:0;z-index:1;font-weight:700}
 .sidebar-foot a{font-size:12px;font-weight:800}
-.map-safety-notice{
-  position:absolute;
-  left:12px;
-  bottom:36px;
-  z-index:2;
-  max-width:min(280px,calc(100% - 72px));
-  margin:0;
-  padding:6px 10px;
-  font-size:10px;
-  line-height:1.35;
-  font-weight:700;
-  color:var(--ink);
-  background:#ffffffe8;
-  border:2px solid var(--ink);
-  border-radius:6px;
-  pointer-events:none;
-  box-shadow:2px 2px 0 #00000033;
-}
 .map-area{position:relative;min-width:0;min-height:0;background:#d6d2c8;overflow:hidden}
 .map-canvas{height:100%;width:100%;position:absolute;inset:0}
 .map-topline{position:absolute;top:16px;left:16px;right:58px;z-index:2;display:flex;align-items:flex-start;justify-content:flex-end;gap:10px;pointer-events:none}
@@ -781,6 +763,17 @@ h1,h2,p{margin-top:0}
     color:var(--ink);
     line-height:1;
   }
+  .sheet-map-note{
+    margin:0;
+    max-width:36em;
+    font-size:9px;
+    line-height:1.4;
+    font-weight:600;
+    color:var(--muted);
+    text-transform:none;
+    letter-spacing:0;
+    text-align:center;
+  }
   .sheet-handle:focus-visible{outline:3px solid var(--ink);outline-offset:-5px}
   .vehicle-panel{padding:10px 14px 12px}
   .explorer-sidebar:not(.sheet-expanded) .vehicle-panel{
@@ -862,7 +855,6 @@ h1,h2,p{margin-top:0}
   .compact .primary{max-width:none;padding:10px 12px}
   .height-required{margin:28px auto;padding:0 16px}
   .height-required h1{font-size:36px}
-  .map-safety-notice{left:8px;bottom:calc(var(--sheet-h) + 44px);max-width:calc(100% - 64px);font-size:9px;padding:5px 8px}
   .map-message{left:10px;right:52px;top:12px;padding:10px 12px;font-size:12px}
   .share-status{right:52px;top:52px}
   .map-legend-panel{left:10px;top:10px;bottom:auto;width:auto;max-width:min(240px,calc(100% - 64px));padding:8px 10px;max-height:min(50%,calc(100% - 24px))}

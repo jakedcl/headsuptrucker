@@ -28,7 +28,7 @@ import {
   postedLoadFromPoints,
 } from "@/lib/awareness-project";
 import type { AwarenessLineCollection, AwarenessPointCollection } from "@/lib/awareness-schema";
-import { CLEARANCE_VERIFY_LINE, MAP_SAFETY_NOTICE } from "@/lib/disclaimer";
+import { CLEARANCE_VERIFY_LINE, MAP_REFERENCE_NOTICE } from "@/lib/disclaimer";
 
 const Map = dynamic(() => import("./clearance-map").then(m => m.ClearanceMap), {
   ssr: false,
@@ -803,6 +803,7 @@ export function MapExplorer() {
       >
         <span className="sheet-grip" aria-hidden="true" />
         <span className="sheet-hint">{sheetExpanded ? "Pull down for map" : "Pull up for clearances"}</span>
+        <p className="sheet-map-note" role="note">{MAP_REFERENCE_NOTICE}</p>
       </button>
       <div className="vehicle-panel">
         <div className="panel-heading">
@@ -1081,7 +1082,6 @@ export function MapExplorer() {
       </div>
     </aside>
     <section className="map-area" aria-label="Clearance map">
-      <p className="map-safety-notice" role="note">{MAP_SAFETY_NOTICE}</p>
       {shareMessage && <div className="share-status" role="status">{shareMessage}</div>}
       <div className={`map-legend-panel ${legendOpen ? "is-open" : ""}`} role="group" aria-label="Legend">
         <button type="button" className="legend-toggle" aria-expanded={legendOpen} onClick={() => setLegendOpen(value => !value)}>
