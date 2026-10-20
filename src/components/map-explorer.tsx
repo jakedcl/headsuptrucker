@@ -28,6 +28,7 @@ import {
   postedLoadFromPoints,
 } from "@/lib/awareness-project";
 import type { AwarenessLineCollection, AwarenessPointCollection } from "@/lib/awareness-schema";
+import { CLEARANCE_VERIFY_LINE, MAP_SAFETY_NOTICE } from "@/lib/disclaimer";
 
 const Map = dynamic(() => import("./clearance-map").then(m => m.ClearanceMap), {
   ssr: false,
@@ -1080,6 +1081,7 @@ export function MapExplorer() {
       </div>
     </aside>
     <section className="map-area" aria-label="Clearance map">
+      <p className="map-safety-notice" role="note">{MAP_SAFETY_NOTICE}</p>
       {shareMessage && <div className="share-status" role="status">{shareMessage}</div>}
       <div className={`map-legend-panel ${legendOpen ? "is-open" : ""}`} role="group" aria-label="Legend">
         <button type="button" className="legend-toggle" aria-expanded={legendOpen} onClick={() => setLegendOpen(value => !value)}>
@@ -1271,6 +1273,7 @@ export function MapExplorer() {
           <p className="eyebrow">OFFICIAL POSTED CLEARANCE</p>
           <strong className={`detail-height ${selectedSeverity}`}>{formatHeight(selected.postedClearanceInches)}</strong>
           <p className={`margin-label ${selectedSeverity}`}>{describeMargin(selected.postedClearanceInches, height)}</p>
+          <p className="detail-verify">{CLEARANCE_VERIFY_LINE}</p>
           <h2>{selectedLabels.title}</h2>
           {selectedLabels.subtitle !== selected.location && <p className="crossing">{selectedLabels.subtitle}</p>}
           {showPostingNote && (

@@ -240,6 +240,7 @@ h1,h2,p{margin-top:0}
   border-top:3px solid var(--ink);
   padding:18px 0 28px;
   display:flex;
+  flex-wrap:wrap;
   justify-content:space-between;
   font-size:11px;
   letter-spacing:1.2px;
@@ -247,6 +248,14 @@ h1,h2,p{margin-top:0}
   gap:20px;
   font-weight:800;
   text-transform:uppercase;
+}
+.start-footer-disclaimer{
+  flex:1 1 100%;
+  text-transform:none;
+  letter-spacing:0;
+  line-height:1.45;
+  font-weight:600;
+  font-size:10px;
 }
 
 .explorer{
@@ -457,6 +466,24 @@ h1,h2,p{margin-top:0}
 .row-arrow{color:var(--ink);font-size:18px;font-weight:900}
 .sidebar-foot{border-top:3px solid var(--ink);padding:14px 18px;font-size:11px;color:var(--muted);display:flex;flex-direction:column;gap:8px;background:var(--paper);position:sticky;bottom:0;z-index:1;font-weight:700}
 .sidebar-foot a{font-size:12px;font-weight:800}
+.map-safety-notice{
+  position:absolute;
+  left:12px;
+  bottom:36px;
+  z-index:2;
+  max-width:min(280px,calc(100% - 72px));
+  margin:0;
+  padding:6px 10px;
+  font-size:10px;
+  line-height:1.35;
+  font-weight:700;
+  color:var(--ink);
+  background:#ffffffe8;
+  border:2px solid var(--ink);
+  border-radius:6px;
+  pointer-events:none;
+  box-shadow:2px 2px 0 #00000033;
+}
 .map-area{position:relative;min-width:0;min-height:0;background:#d6d2c8;overflow:hidden}
 .map-canvas{height:100%;width:100%;position:absolute;inset:0}
 .map-topline{position:absolute;top:16px;left:16px;right:58px;z-index:2;display:flex;align-items:flex-start;justify-content:flex-end;gap:10px;pointer-events:none}
@@ -537,7 +564,8 @@ h1,h2,p{margin-top:0}
 .detail-panel dl>div{display:flex;justify-content:space-between;gap:15px;padding:8px 0;border-bottom:2px solid #ddd8cc}
 .detail-panel dt{color:var(--muted);font-weight:700}
 .detail-panel dd{margin:0;text-align:right;font-weight:800}
-.source-location,.detail-note{font-size:11px;color:var(--muted);line-height:1.55;font-weight:600}
+.source-location,.detail-note,.detail-verify{font-size:11px;color:var(--muted);line-height:1.55;font-weight:600}
+.detail-verify{margin:0 0 12px;font-weight:800;color:var(--ink)}
 .source-link{font-size:12px;font-weight:900;text-transform:uppercase}
 .detail-note{margin-top:14px;margin-bottom:0}
 .form-error{font-size:13px;color:var(--danger);font-weight:800}
@@ -551,6 +579,33 @@ h1,h2,p{margin-top:0}
 .height-required h1{font-family:var(--font-sign);font-size:56px;text-transform:uppercase;font-weight:900;line-height:.95}
 .height-required p{line-height:1.5;font-weight:600}
 .loading-message{padding:40px;font-weight:700}
+
+.safety-modal-backdrop{
+  position:fixed;
+  inset:0;
+  z-index:1000;
+  display:flex;
+  align-items:center;
+  justify-content:center;
+  padding:max(16px,env(safe-area-inset-top)) 16px max(16px,env(safe-area-inset-bottom));
+  background:#0a0a0ab8;
+}
+.safety-modal{
+  width:min(440px,100%);
+  max-height:min(90dvh,640px);
+  overflow:auto;
+  background:#fff;
+  border:var(--border-sign);
+  border-radius:var(--radius-sign);
+  padding:22px 20px 20px;
+  box-shadow:10px 10px 0 var(--ink);
+}
+.safety-modal h2{font-size:22px;line-height:1.2;margin:0 0 12px;font-weight:900}
+.safety-modal-lead{margin:0 0 14px;font-size:14px;line-height:1.5;font-weight:600;color:var(--muted)}
+.safety-modal-list{margin:0 0 20px;padding-left:18px;font-size:14px;line-height:1.5;font-weight:600}
+.safety-modal-list li{margin-bottom:8px}
+.safety-modal-list li:last-child{margin-bottom:0}
+.safety-modal-ack{width:100%;margin-top:4px}
 .methodology{max-width:800px;margin:0 auto;padding:44px 32px 80px}
 .back-link{font-size:13px;display:inline-block;margin-bottom:36px;font-weight:900;text-transform:uppercase;letter-spacing:.6px;text-decoration:none;border-bottom:3px solid var(--sign)}
 .methodology h1{font-size:72px;line-height:.95;margin-bottom:24px}
@@ -807,6 +862,7 @@ h1,h2,p{margin-top:0}
   .compact .primary{max-width:none;padding:10px 12px}
   .height-required{margin:28px auto;padding:0 16px}
   .height-required h1{font-size:36px}
+  .map-safety-notice{left:8px;bottom:calc(var(--sheet-h) + 44px);max-width:calc(100% - 64px);font-size:9px;padding:5px 8px}
   .map-message{left:10px;right:52px;top:12px;padding:10px 12px;font-size:12px}
   .share-status{right:52px;top:52px}
   .map-legend-panel{left:10px;top:10px;bottom:auto;width:auto;max-width:min(240px,calc(100% - 64px));padding:8px 10px;max-height:min(50%,calc(100% - 24px))}
