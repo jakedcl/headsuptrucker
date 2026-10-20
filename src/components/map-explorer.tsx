@@ -28,7 +28,7 @@ import {
   postedLoadFromPoints,
 } from "@/lib/awareness-project";
 import type { AwarenessLineCollection, AwarenessPointCollection } from "@/lib/awareness-schema";
-import { CLEARANCE_VERIFY_LINE, MAP_REFERENCE_NOTICE } from "@/lib/disclaimer";
+import { CLEARANCE_VERIFY_LINE } from "@/lib/disclaimer";
 
 const Map = dynamic(() => import("./clearance-map").then(m => m.ClearanceMap), {
   ssr: false,
@@ -167,6 +167,7 @@ export function MapExplorer() {
   const [editRouteRequest, setEditRouteRequest] = useState(0);
   const [mobileSheet, setMobileSheet] = useState(false);
   const [legendOpen, setLegendOpen] = useState(false);
+  const [mapAttribBottom, setMapAttribBottom] = useState(0);
   const explorerRef = useRef<HTMLElement>(null);
   const sidebarRef = useRef<HTMLElement>(null);
   const sheetDrag = useRef<{
@@ -511,6 +512,26 @@ export function MapExplorer() {
     return () => mq.removeEventListener("change", sync);
   }, []);
 
+  useEffect(() => {
+    if (!mobileSheet) {
+      setMapAttribBottom(0);
+      return;
+    }
+    const sidebar = sidebarRef.current;
+    if (!sidebar) return;
+    const measure = () => {
+      setMapAttribBottom(Math.ceil(sidebar.getBoundingClientRect().height));
+    };
+    measure();
+    const ro = new ResizeObserver(measure);
+    ro.observe(sidebar);
+    window.addEventListener("resize", measure);
+    return () => {
+      ro.disconnect();
+      window.removeEventListener("resize", measure);
+    };
+  }, [mobileSheet, sheetExpanded, sheetDragH, peekH, routeFormOpen, editing, height, drive, driveLoading, driveError]);
+
   const mapFitPadding = useMemo(() => {
     if (mobileSheet) {
       if (sheetExpanded) return 56;
@@ -803,7 +824,6 @@ export function MapExplorer() {
       >
         <span className="sheet-grip" aria-hidden="true" />
         <span className="sheet-hint">{sheetExpanded ? "Pull down for map" : "Pull up for clearances"}</span>
-        <p className="sheet-map-note" role="note">{MAP_REFERENCE_NOTICE}</p>
       </button>
       <div className="vehicle-panel">
         <div className="panel-heading">
@@ -1081,7 +1101,11 @@ export function MapExplorer() {
         <Link href="/methodology">Sources & coverage ↗</Link>
       </div>
     </aside>
-    <section className="map-area" aria-label="Clearance map">
+    <section
+      className="map-area"
+      aria-label="Clearance map"
+      style={mobileSheet && mapAttribBottom > 0 ? { ["--map-attrib-bottom"]: `${mapAttribBottom}px` } as CSSProperties : undefined}
+    >
       {shareMessage && <div className="share-status" role="status">{shareMessage}</div>}
       <div className={`map-legend-panel ${legendOpen ? "is-open" : ""}`} role="group" aria-label="Legend">
         <button type="button" className="legend-toggle" aria-expanded={legendOpen} onClick={() => setLegendOpen(value => !value)}>

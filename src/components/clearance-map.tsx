@@ -13,6 +13,21 @@ export type Viewport = { lng: number; lat: number; z: number };
 
 const EMPTY_DRIVE: FeatureCollection<LineString> = { type: "FeatureCollection", features: [] };
 const MAP_STYLE = process.env.NEXT_PUBLIC_MAP_STYLE || "https://basemaps.cartocdn.com/gl/voyager-gl-style/style.json";
+const ATTRIBUTION_PREVIEW_MS = 4000;
+
+/** MapLibre compact attribution: expanded panel first, then (i) toggle. */
+function previewAttributionDisclaimer(map: MapInstance): () => void {
+  const attribEl = map.getContainer().querySelector<HTMLDetailsElement>(".maplibregl-ctrl-attrib");
+  if (!attribEl?.classList.contains("maplibregl-compact")) return () => {};
+  attribEl.setAttribute("open", "");
+  attribEl.classList.remove("maplibregl-compact-show");
+  const timer = window.setTimeout(() => {
+    if (!attribEl.isConnected || !attribEl.classList.contains("maplibregl-compact")) return;
+    attribEl.classList.add("maplibregl-compact-show");
+    attribEl.removeAttribute("open");
+  }, ATTRIBUTION_PREVIEW_MS);
+  return () => window.clearTimeout(timer);
+}
 
 function toDriveGeoJSON(coordinates: number[][]): FeatureCollection<LineString> {
   return {
@@ -636,6 +651,10 @@ export function ClearanceMap({
     });
     attribRef.current = attrib;
     map.addControl(attrib, "bottom-right");
+    let clearAttributionPreview: (() => void) | undefined;
+    const attributionPreviewStart = window.setTimeout(() => {
+      clearAttributionPreview = previewAttributionDisclaimer(map);
+    }, 50);
     map.addControl(new maplibregl.NavigationControl({ showCompass: false }), "top-right");
     const locate = new maplibregl.GeolocateControl({
       positionOptions: { enableHighAccuracy: true },
@@ -791,6 +810,8 @@ export function ClearanceMap({
     });
 
     return () => {
+      window.clearTimeout(attributionPreviewStart);
+      clearAttributionPreview?.();
       for (const marker of markers.values()) marker.remove();
       for (const marker of ends.current) marker.remove();
       map.remove();
