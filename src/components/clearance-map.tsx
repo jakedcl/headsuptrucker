@@ -7,17 +7,12 @@ import type { ClearanceCollection } from "@/lib/types";
 import type { DrivePath } from "@/lib/path";
 import { formatHeight, getClearanceSeverity, recordLabels } from "@/lib/clearance";
 import { shouldSurfaceMapError } from "@/lib/map-errors";
+import { mapPathDisclaimer } from "@/lib/disclaimer";
 
 export type Viewport = { lng: number; lat: number; z: number };
 
 const EMPTY_DRIVE: FeatureCollection<LineString> = { type: "FeatureCollection", features: [] };
 const MAP_STYLE = process.env.NEXT_PUBLIC_MAP_STYLE || "https://basemaps.cartocdn.com/gl/voyager-gl-style/style.json";
-
-export function mapPathDisclaimer(hasPath: boolean) {
-  return hasPath
-    ? "Posted records near this path. Check signs. Missing markers do not guarantee clearance."
-    : "Check posted signs. Missing markers do not guarantee clearance.";
-}
 
 function toDriveGeoJSON(coordinates: number[][]): FeatureCollection<LineString> {
   return {
