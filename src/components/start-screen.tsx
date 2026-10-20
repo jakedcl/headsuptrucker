@@ -2,6 +2,7 @@
 import { useState } from "react";
 import { useRouter } from "next/navigation";
 import { HeightForm } from "./height-form";
+import { FOOTER_DISCLAIMER } from "@/lib/disclaimer";
 
 export function StartScreen() {
   const router = useRouter();
@@ -35,6 +36,7 @@ export function StartScreen() {
     <footer className="start-footer">
       <span>Free · No account · Not a trucker GPS</span>
       <span>Official NYSDOT + CTDOT records · Partial coverage</span>
+      <span className="start-footer-disclaimer">{FOOTER_DISCLAIMER}</span>
     </footer>
   </main>;
 }

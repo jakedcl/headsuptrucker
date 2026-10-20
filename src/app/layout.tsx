@@ -1,6 +1,7 @@
 import type { Metadata, Viewport } from "next";
 import "maplibre-gl/dist/maplibre-gl.css";
 import "./globals.css";
+import { SafetyDisclaimerModal } from "@/components/safety-disclaimer-modal";
 
 export const viewport: Viewport = {
   viewportFit: "cover",
@@ -28,5 +29,12 @@ export const metadata: Metadata = {
 };
 
 export default function RootLayout({ children }: { children: React.ReactNode }) {
-  return <html lang="en"><body>{children}</body></html>;
+  return (
+    <html lang="en">
+      <body>
+        {children}
+        <SafetyDisclaimerModal />
+      </body>
+    </html>
+  );
 }
