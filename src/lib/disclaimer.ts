@@ -7,11 +7,11 @@ export const DATA_SOURCES_SUMMARY =
   "Heads Up aggregates publicly available government and open-data feeds — including NYSDOT, NYC DOT, CTDOT, NJDOT, Port Authority crossing references, and selected OpenStreetMap tags — into one reference map. Coverage is partial; we do not field-verify postings.";
 
 export const MAP_REFERENCE_NOTICE =
-  "Do not rely on this map alone. Verify posted clearances at signs. Missing markers do not guarantee clearance.";
+  "Do not rely on this map. Verify posted clearances; missing markers do not guarantee clearance.";
 
 export function mapPathDisclaimer(hasPath: boolean) {
   return hasPath
-    ? "Do not rely on this map alone. Posted records near this path only — verify signs. Missing markers do not guarantee clearance."
+    ? "Do not rely on this map. Path records only — verify posted clearances; missing markers do not guarantee clearance."
     : MAP_REFERENCE_NOTICE;
 }
 

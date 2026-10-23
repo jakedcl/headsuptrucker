@@ -32,7 +32,7 @@ import { CLEARANCE_VERIFY_LINE } from "@/lib/disclaimer";
 
 const Map = dynamic(() => import("./clearance-map").then(m => m.ClearanceMap), {
   ssr: false,
-  loading: () => <div className="map-message">Loading interactive map…</div>,
+  loading: () => <div className="map-status-pill">Loading interactive map…</div>,
 });
 
 const AWARENESS_OFF: AwarenessLayers = {
@@ -1188,7 +1188,11 @@ export function MapExplorer() {
           onShare={() => copyLink(window.location.href, setShareMessage)}
         />
       )}
-      {!data && <div className="map-message">{fetchError ? "Map data unavailable. Retry from the clearance list." : "Preparing your map…"}</div>}
+      {!data && (
+        fetchError
+          ? <div className="map-message" role="status">Map data unavailable. Retry from the clearance list.</div>
+          : <div className="map-status-pill" role="status">Preparing your map…</div>
+      )}
       {selectedFacility && selectedFacilityEval && (
         <section className="detail-panel facility-detail" aria-label="Selected facility details">
           <button

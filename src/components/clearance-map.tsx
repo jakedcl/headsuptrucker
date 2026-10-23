@@ -13,94 +13,6 @@ export type Viewport = { lng: number; lat: number; z: number };
 
 const EMPTY_DRIVE: FeatureCollection<LineString> = { type: "FeatureCollection", features: [] };
 const MAP_STYLE = process.env.NEXT_PUBLIC_MAP_STYLE || "https://basemaps.cartocdn.com/gl/voyager-gl-style/style.json";
-const ATTRIBUTION_HOLD_MS = 1000;
-const ATTRIBUTION_ANIM_MS = 300;
-
-/** Show attribution expanded briefly on load (CSS hold), then animate collapse to (i). */
-function setupMapAttributionPreview(map: MapInstance): () => void {
-  const attribEl = map.getContainer().querySelector<HTMLDetailsElement>(".maplibregl-ctrl-attrib.maplibregl-compact");
-  if (!attribEl) return () => {};
-
-  const summary = attribEl.querySelector<HTMLElement>("summary.maplibregl-ctrl-attrib-button");
-  const reducedMotion = window.matchMedia("(prefers-reduced-motion: reduce)").matches;
-  const animMs = reducedMotion ? 0 : ATTRIBUTION_ANIM_MS;
-  const timers: number[] = [];
-
-  attribEl.classList.add("heads-up-attrib-hold");
-  attribEl.setAttribute("open", "");
-
-  const setCollapsed = () => {
-    attribEl.classList.add("maplibregl-compact-show");
-    attribEl.removeAttribute("open");
-    attribEl.classList.remove(
-      "heads-up-attrib-animating",
-      "heads-up-attrib-expanded-visual",
-      "heads-up-attrib-collapsing",
-    );
-  };
-
-  const setExpanded = () => {
-    attribEl.classList.remove("maplibregl-compact-show");
-    attribEl.setAttribute("open", "");
-  };
-
-  const finishCollapse = () => {
-    setCollapsed();
-    attribEl.classList.add("heads-up-attrib-interactive");
-  };
-
-  const scheduleCollapse = () => {
-    attribEl.classList.remove("heads-up-attrib-hold");
-
-    if (animMs === 0) {
-      finishCollapse();
-      return;
-    }
-
-    setExpanded();
-    attribEl.classList.add("heads-up-attrib-animating", "heads-up-attrib-expanded-visual");
-    timers.push(window.setTimeout(() => {
-      attribEl.classList.add("heads-up-attrib-collapsing");
-    }, 16));
-    timers.push(window.setTimeout(finishCollapse, animMs + 24));
-  };
-
-  timers.push(window.setTimeout(scheduleCollapse, ATTRIBUTION_HOLD_MS));
-
-  const onSummaryClick = (event: Event) => {
-    if (!attribEl.classList.contains("heads-up-attrib-interactive") || animMs === 0) return;
-    event.preventDefault();
-    event.stopImmediatePropagation();
-
-    const collapsed = attribEl.classList.contains("maplibregl-compact-show");
-    attribEl.classList.add("heads-up-attrib-animating");
-    attribEl.classList.remove("heads-up-attrib-collapsing", "heads-up-attrib-expanded-visual");
-
-    if (collapsed) {
-      setExpanded();
-      timers.push(window.setTimeout(() => {
-        attribEl.classList.add("heads-up-attrib-expanded-visual");
-      }, 16));
-      timers.push(window.setTimeout(() => {
-        attribEl.classList.remove("heads-up-attrib-animating", "heads-up-attrib-expanded-visual");
-      }, animMs + 24));
-      return;
-    }
-
-    attribEl.classList.add("heads-up-attrib-expanded-visual");
-    timers.push(window.setTimeout(() => {
-      attribEl.classList.add("heads-up-attrib-collapsing");
-    }, 16));
-    timers.push(window.setTimeout(finishCollapse, animMs + 24));
-  };
-
-  summary?.addEventListener("click", onSummaryClick, true);
-
-  return () => {
-    for (const id of timers) window.clearTimeout(id);
-    summary?.removeEventListener("click", onSummaryClick, true);
-  };
-}
 
 function toDriveGeoJSON(coordinates: number[][]): FeatureCollection<LineString> {
   return {
@@ -724,7 +636,6 @@ export function ClearanceMap({
     });
     attribRef.current = attrib;
     map.addControl(attrib, "bottom-right");
-    const clearAttributionPreview = setupMapAttributionPreview(map);
     map.addControl(new maplibregl.NavigationControl({ showCompass: false }), "top-right");
     const locate = new maplibregl.GeolocateControl({
       positionOptions: { enableHighAccuracy: true },
@@ -880,7 +791,6 @@ export function ClearanceMap({
     });
 
     return () => {
-      clearAttributionPreview();
       for (const marker of markers.values()) marker.remove();
       for (const marker of ends.current) marker.remove();
       map.remove();
@@ -1155,7 +1065,7 @@ export function ClearanceMap({
 
   return <>
     <div ref={container} className="map-canvas" />
-    {!ready && !error && <div className="map-message" role="status">Opening the map…</div>}
+    {!ready && !error && <div className="map-status-pill" role="status">Opening the map…</div>}
     {error && <div className="map-message" role="status">{error}<button onClick={() => setError("")} aria-label="Dismiss map message">×</button></div>}
   </>;
 }
