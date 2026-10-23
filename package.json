@@ -38,6 +38,6 @@
     "fast-xml-parser": "^5.3",
     "prettier": "^3.9.6",
     "tsx": "^4.20",
-    "typescript": "^5.9"
+    "typescript": "^7.0"
   }
 }
