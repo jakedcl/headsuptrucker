@@ -16,7 +16,7 @@ const MAP_STYLE = process.env.NEXT_PUBLIC_MAP_STYLE || "https://basemaps.cartocd
 const ATTRIBUTION_HOLD_MS = 1000;
 const ATTRIBUTION_ANIM_MS = 300;
 
-/** Hold expanded through MapLibre resize/sourcedata compact updates, then animate to (i). */
+/** Show attribution expanded briefly on load (CSS hold), then animate collapse to (i). */
 function setupMapAttributionPreview(map: MapInstance): () => void {
   const attribEl = map.getContainer().querySelector<HTMLDetailsElement>(".maplibregl-ctrl-attrib.maplibregl-compact");
   if (!attribEl) return () => {};
@@ -26,23 +26,8 @@ function setupMapAttributionPreview(map: MapInstance): () => void {
   const animMs = reducedMotion ? 0 : ATTRIBUTION_ANIM_MS;
   const timers: number[] = [];
 
-  let holding = true;
   attribEl.classList.add("heads-up-attrib-hold");
-
-  const pinExpanded = () => {
-    if (!holding) return;
-    attribEl.setAttribute("open", "");
-    attribEl.classList.remove("maplibregl-compact-show");
-  };
-  pinExpanded();
-
-  const observer = new MutationObserver(pinExpanded);
-  observer.observe(attribEl, { attributes: true, attributeFilter: ["class", "open"] });
-
-  const onMapReflow = () => pinExpanded();
-  map.on("resize", onMapReflow);
-  map.on("sourcedata", onMapReflow);
-  map.on("styledata", onMapReflow);
+  attribEl.setAttribute("open", "");
 
   const setCollapsed = () => {
     attribEl.classList.add("maplibregl-compact-show");
@@ -65,11 +50,6 @@ function setupMapAttributionPreview(map: MapInstance): () => void {
   };
 
   const scheduleCollapse = () => {
-    holding = false;
-    observer.disconnect();
-    map.off("resize", onMapReflow);
-    map.off("sourcedata", onMapReflow);
-    map.off("styledata", onMapReflow);
     attribEl.classList.remove("heads-up-attrib-hold");
 
     if (animMs === 0) {
@@ -118,10 +98,6 @@ function setupMapAttributionPreview(map: MapInstance): () => void {
 
   return () => {
     for (const id of timers) window.clearTimeout(id);
-    observer.disconnect();
-    map.off("resize", onMapReflow);
-    map.off("sourcedata", onMapReflow);
-    map.off("styledata", onMapReflow);
     summary?.removeEventListener("click", onSummaryClick, true);
   };
 }
