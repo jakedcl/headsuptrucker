@@ -13,6 +13,41 @@ export type Viewport = { lng: number; lat: number; z: number };
 
 const EMPTY_DRIVE: FeatureCollection<LineString> = { type: "FeatureCollection", features: [] };
 const MAP_STYLE = process.env.NEXT_PUBLIC_MAP_STYLE || "https://basemaps.cartocdn.com/gl/voyager-gl-style/style.json";
+const ATTRIBUTION_PREVIEW_MS = 3000;
+
+/** Expand compact attribution once after first idle, collapse after a fixed delay (stock toggle otherwise). */
+function scheduleAttributionPreview(map: MapInstance): () => void {
+  let collapseTimer: number | undefined;
+  let summary: HTMLElement | null = null;
+
+  const cancelScheduledCollapse = () => {
+    if (collapseTimer === undefined) return;
+    window.clearTimeout(collapseTimer);
+    collapseTimer = undefined;
+  };
+
+  const onIdle = () => {
+    const attribEl = map.getContainer().querySelector<HTMLDetailsElement>(".maplibregl-ctrl-attrib.maplibregl-compact");
+    if (!attribEl) return;
+    attribEl.classList.remove("maplibregl-compact-show");
+    attribEl.setAttribute("open", "");
+    summary = attribEl.querySelector<HTMLElement>("summary.maplibregl-ctrl-attrib-button");
+    summary?.addEventListener("click", cancelScheduledCollapse, true);
+    collapseTimer = window.setTimeout(() => {
+      collapseTimer = undefined;
+      attribEl.classList.add("maplibregl-compact-show");
+      attribEl.removeAttribute("open");
+    }, ATTRIBUTION_PREVIEW_MS);
+  };
+
+  map.once("idle", onIdle);
+
+  return () => {
+    cancelScheduledCollapse();
+    summary?.removeEventListener("click", cancelScheduledCollapse, true);
+    map.off("idle", onIdle);
+  };
+}
 
 function toDriveGeoJSON(coordinates: number[][]): FeatureCollection<LineString> {
   return {
@@ -636,6 +671,7 @@ export function ClearanceMap({
     });
     attribRef.current = attrib;
     map.addControl(attrib, "bottom-right");
+    const clearAttributionPreview = scheduleAttributionPreview(map);
     map.addControl(new maplibregl.NavigationControl({ showCompass: false }), "top-right");
     const locate = new maplibregl.GeolocateControl({
       positionOptions: { enableHighAccuracy: true },
@@ -791,6 +827,7 @@ export function ClearanceMap({
     });
 
     return () => {
+      clearAttributionPreview();
       for (const marker of markers.values()) marker.remove();
       for (const marker of ends.current) marker.remove();
       map.remove();
