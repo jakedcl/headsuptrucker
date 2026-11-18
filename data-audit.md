@@ -1,5 +1,7 @@
 # NYC + Long Island clearance data audit
 
+> **Note:** This document is the original September 2026 NYC + Long Island source audit. Current regional coverage, agencies, and limitations are described on [/methodology](https://headsuptrucker.vercel.app/methodology).
+
 Snapshot retrieved 2026-09-14 UTC (2026-09-13 local). This is a source audit, not field verification of signs.
 
 ## Result
@@ -77,6 +79,6 @@ The NYSDOT snapshot's `Date_FC_Updated` is 2026-09-13T09:05:27Z. We label it a l
 - Review the full NYC overlap report and resolve the legacy dataset's posted-versus-measured semantics before incorporating its warnings.
 - Audit named corridor coverage across the other Long Island parkways. A matching region count does not establish complete corridor coverage.
 - Consider authoritative county polygons for stronger coordinate QA and official reference-route names for readable labels.
-- Confirm production tile capacity and hosting. The current OSM raster service is best-effort; it has no usage bill or API key, but heavy traffic can be blocked. No bulk downloads, prefetch, proxying, or cache bypass are implemented.
+- Confirm production tile capacity and hosting. The default Carto Voyager vector style (`NEXT_PUBLIC_MAP_STYLE`) is a best-effort public service; heavy traffic may require a dedicated tile arrangement. No bulk downloads, prefetch, proxying, or cache bypass are implemented.
 
 Source gaps must remain visible. A missing marker is never evidence of unrestricted clearance.

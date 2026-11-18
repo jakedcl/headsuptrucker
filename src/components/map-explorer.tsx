@@ -1038,7 +1038,7 @@ export function MapExplorer() {
                         ? `${score.danger} at/below`
                         : score.caution > 0
                           ? `${score.caution} within 12″`
-                          : "No red/orange nearby"
+                          : "No red or yellow nearby"
                     ) : "—"}
                     {score?.lowest != null ? ` · lowest ${formatHeight(score.lowest)}` : ""}
                   </span>

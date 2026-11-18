@@ -1,6 +1,6 @@
 # Heads Up
 
-A free, map-first tool for exploring posted vehicle clearances around NYC, Long Island, the Hudson Valley, southwest Connecticut, and NYC-facing New Jersey. Enter your vehicle height; red markers are at or below it, and orange markers are 1–12 inches above it. No account, payment, destination, or routing service is required.
+A free, map-first tool for exploring posted vehicle clearances around NYC, Long Island, the Hudson Valley, southwest Connecticut, and NYC-facing New Jersey. Enter your vehicle height; red markers are at or below it, and yellow markers are 1–12 inches above it. No account, payment, destination, or routing service is required.
 
 **Status:** working prototype, deployed on Vercel at [headsuptrucker.vercel.app](https://headsuptrucker.vercel.app) but not field-verified. See [data-audit.md](data-audit.md) for source findings and outstanding launch work.
 
@@ -60,13 +60,13 @@ NYC's 149 legacy locations are **not** labeled as posted warnings. They are reta
 - Mobile layout includes a map and accessible clearance list.
 - `/methodology`: sources, dates, limitations, and posting rules.
 
-MapLibre handles the map; Next.js, React, and TypeScript handle the UI. Static GeoJSON keeps infrastructure simple. Fonts are served locally. No analytics, tracking accounts, or geolocation storage are configured. The current basemap is OpenStreetMap raster tiles, subject to its usage policy; the provider receives tile requests. Location requires an explicit button click.
+MapLibre handles the map; Next.js, React, and TypeScript handle the UI. Static GeoJSON keeps infrastructure simple. Fonts are served locally. No analytics, tracking accounts, or geolocation storage are configured. The default basemap is Carto Voyager vector (`NEXT_PUBLIC_MAP_STYLE`), with attribution to CARTO and OpenStreetMap contributors. Location requires an explicit button click.
 
 ## Deployment
 
 This is a standard Next.js project. On Vercel use the Next.js preset, `npm run build`, and the default output configuration. No data API keys are needed. The production build uses the committed data snapshot, so agency downtime does not break deployment.
 
-Before public launch, complete the audit's outstanding checks and choose a tile-hosting arrangement appropriate for expected traffic. The current OSM endpoint cannot promise viral-scale availability. If replacing the tiles using `NEXT_PUBLIC_TILE_URL`, update attribution and methodology for that provider. The app currently sets `robots` to noindex while it is a prototype; remove that only when ready for public discovery.
+Before public launch, complete the audit's outstanding checks and choose a tile-hosting arrangement appropriate for expected traffic. Carto and the geocoders are best-effort public services; revisit hosting before a high-traffic launch. If replacing the basemap via `NEXT_PUBLIC_MAP_STYLE`, update attribution and methodology for that provider. The app currently sets `robots` to noindex while it is a prototype; remove that only when ready for public discovery.
 
 ## Scope
 
