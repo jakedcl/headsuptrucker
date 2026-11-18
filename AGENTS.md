@@ -3,7 +3,7 @@
 "Heads Up": a free, map-first tool showing posted vehicle clearances around NYC, Long Island, the Hudson Valley, SW Connecticut, and NYC-facing NJ. The user enters a vehicle height; red markers are at or below it, orange are 1–12 in above. No accounts or routing service.
 
 ## Stack
-- Next.js 16.3, React 19.3, TypeScript, MapLibre GL 6.9. No CMS or database.
+- Next.js 16.4.x, React 19.3, TypeScript, MapLibre GL 6.18.x. No CMS or database.
 - Deployed on Vercel (headsuptrucker.vercel.app). Prototype, not field-verified.
 
 ## Layout

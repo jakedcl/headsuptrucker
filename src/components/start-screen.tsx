@@ -9,7 +9,7 @@ export function StartScreen() {
   const [commercial, setCommercial] = useState(false);
   return <main className="start-screen">
     <section className="start-main">
-      <p className="eyebrow">NYC · LI · SW CT · NE NJ</p>
+      <p className="eyebrow">NYC · LI · Hudson Valley · SW CT · NJ</p>
       <h1>Low bridge<br /><span>clearances</span></h1>
       <p className="start-description">Posted truck heights on a map — not a GPS. For the van, the box truck, the car with a mattress on the roof. Enter your vehicle height. Red means you don’t fit under the sign.</p>
       <HeightForm
@@ -25,7 +25,7 @@ export function StartScreen() {
       <p className="height-tip">Measure full vehicle height, including anything on the roof. Covers vehicles up to 13′6″ — taller than that is an oversized load we don’t support yet.</p>
     </section>
     <section className="start-guide" aria-label="How clearance warnings work">
-      <div className="guide-top"><span className="eyebrow">Caution · Know your clearance</span><span className="guide-index">01 / 02</span></div>
+      <div className="guide-top"><span className="eyebrow">Caution · Know your clearance</span></div>
       <div className="example-posting"><span>Low clearance</span><strong>8′ 11″</strong><span className="posting-arrow" aria-hidden="true">↕</span></div>
       <div className="guide-caption">
         <span className="example-tag">For a 9′ 0″ vehicle</span>
@@ -35,7 +35,7 @@ export function StartScreen() {
     </section>
     <footer className="start-footer">
       <span>Free · No account · Not a trucker GPS</span>
-      <span>Official NYSDOT + CTDOT records · Partial coverage</span>
+      <span>NYSDOT · CTDOT · NJDOT · OpenStreetMap</span>
       <span className="start-footer-disclaimer">{FOOTER_DISCLAIMER}</span>
     </footer>
   </main>;
