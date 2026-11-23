@@ -210,7 +210,7 @@
     "nycRoad": "SHORE (BELT) PARKWAY",
     "nycCrossing": "4TH  AVENUE",
     "nysdotRoad": "907C907CX2M13032",
-    "nysdotCrossing": "4th Avenue",
+    "nysdotCrossing": "Shore Rd to 907C NE",
     "nycInches": 124,
     "postedInches": 124,
     "sameValue": true
@@ -390,7 +390,7 @@
     "nycRoad": "CLEARVIEW EXPRESSWAY",
     "nycCrossing": "CLEARVIEW EXPWY",
     "nysdotRoad": "EAST RIVER",
-    "nysdotCrossing": "I295 - MTA",
+    "nysdotCrossing": "I295 - Clearview Expressway",
     "nycInches": 152,
     "postedInches": 152,
     "sameValue": true
@@ -474,7 +474,7 @@
     "nycRoad": "BRONX RIVER PARKWAY",
     "nycCrossing": "CROSS BX EXPWY SVC RD EB",
     "nysdotRoad": "907H907HX1M12101",
-    "nysdotCrossing": "907H SB to Ramp A",
+    "nysdotCrossing": "I95 SR EB",
     "nycInches": 141,
     "postedInches": 141,
     "sameValue": true
@@ -486,7 +486,7 @@
     "nycRoad": "BRONX RIVER PARKWAY",
     "nycCrossing": "CROSS BX EXPWY SVC RD WB",
     "nysdotRoad": "907H907HX1M11010",
-    "nysdotCrossing": "I95 SR WB",
+    "nysdotCrossing": "E 177TH ST SPUR",
     "nycInches": 138,
     "postedInches": 142,
     "sameValue": false
@@ -522,7 +522,7 @@
     "nycRoad": "FDR DRIVE",
     "nycCrossing": "DELANCY STREET",
     "nysdotRoad": "EAST RIVER",
-    "nysdotCrossing": "WILLIAMSBRG BR",
+    "nysdotCrossing": "WILLIAMSBURG BRG",
     "nycInches": 144,
     "postedInches": 144,
     "sameValue": true
@@ -570,7 +570,7 @@
     "nycRoad": "HARLEM RIVER DRIVE",
     "nycCrossing": "EAST 155TH STREET",
     "nysdotRoad": "HARLEM RIVER",
-    "nysdotCrossing": "MACOMBS DM BRG",
+    "nysdotCrossing": "MACOMBS DAM BR",
     "nycInches": 126,
     "postedInches": 126,
     "sameValue": true
@@ -665,8 +665,8 @@
     "meters": 2,
     "nycRoad": "FDR DRIVE",
     "nycCrossing": "FDR DRIVE NB RAMP TO E 42ND ST",
-    "nysdotRoad": "U.N.ENTR.-SER.RD.",
-    "nysdotCrossing": "E 42ND ST",
+    "nysdotRoad": "907L907LX4MR09B1",
+    "nysdotCrossing": "907L NB to E 42nd St",
     "nycInches": 132,
     "postedInches": 128,
     "sameValue": false
@@ -822,7 +822,7 @@
     "nycRoad": "BROOKLYN QUEENS EXPRESSWAY",
     "nycCrossing": "GRAND STREET",
     "nysdotRoad": "278I278IX2M23109",
-    "nysdotCrossing": "BORINGUEN PL",
+    "nysdotCrossing": "BORINQUEN PL",
     "nycInches": 155,
     "postedInches": 155,
     "sameValue": true
@@ -894,7 +894,7 @@
     "nycRoad": "JACKIE ROBINSON PARKWAY",
     "nycCrossing": "HIGHLAND BLVD E B",
     "nysdotRoad": "908B908BX2M13001",
-    "nysdotCrossing": "HIGHLAND BLVD",
+    "nysdotCrossing": "Bushwick Ave to 908B NB",
     "nycInches": 115,
     "postedInches": 114,
     "sameValue": false
@@ -918,7 +918,7 @@
     "nycRoad": "JACKIE ROBINSON PARKWAY",
     "nycCrossing": "HIGHLAND BLVD WB",
     "nysdotRoad": "908B908BX2M13001",
-    "nysdotCrossing": "HIGHLAND BLVD EXT",
+    "nysdotCrossing": "HIGHLAND BLVD",
     "nycInches": 129,
     "postedInches": 117,
     "sameValue": false
@@ -1146,7 +1146,7 @@
     "nycRoad": "HENRY HUDSON PARKWAY",
     "nycCrossing": "MOSHOLU PARKWAY",
     "nysdotRoad": "907V907VX1M21028",
-    "nysdotCrossing": "908F - MOSHOLU PKWY",
+    "nysdotCrossing": "908F NB to 907V SB",
     "nycInches": 87,
     "postedInches": 87,
     "sameValue": true
@@ -1326,7 +1326,7 @@
     "nycRoad": "JACKIE ROBINSON PARKWAY",
     "nycCrossing": "QUEENS BOULEVARD",
     "nysdotRoad": "908B908BX5M24044",
-    "nysdotCrossing": "QUEENS BLVD",
+    "nysdotCrossing": "NY25 - QUEENS BLVD",
     "nycInches": 150,
     "postedInches": 148,
     "sameValue": false
@@ -1518,7 +1518,7 @@
     "nycRoad": "QUEENS MIDTOWN TUNNEL",
     "nycCrossing": "TUNNEL ENTRANCE ST",
     "nysdotRoad": "495IX",
-    "nysdotCrossing": "MTA-E 40th St to I495 EB",
+    "nysdotCrossing": "NYC-E 40th St to I495 EB",
     "nycInches": 147,
     "postedInches": 144,
     "sameValue": false
@@ -1626,7 +1626,7 @@
     "nycRoad": "HENRY HUDSON PARKWAY",
     "nycCrossing": "W 239TH STREET",
     "nysdotRoad": "907VX",
-    "nysdotCrossing": "RIVERDALE AVE",
+    "nysdotCrossing": "W 239TH ST",
     "nycInches": 115,
     "postedInches": 115,
     "sameValue": true

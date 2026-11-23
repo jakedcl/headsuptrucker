@@ -130,11 +130,8 @@ async function fetchTruckLoadingSignRows() {
       "record_type = 'Current'",
       "sign_x_coord IS NOT NULL",
       "sign_y_coord IS NOT NULL",
-      "(",
-      "upper(sign_description) like '%TRUCK LOADING%'",
-      "OR upper(sign_description) like '%TRUCKS LOADING%'",
-      ")",
-    ].join(" "),
+      "(upper(sign_description) like '%TRUCK LOADING%' OR upper(sign_description) like '%TRUCKS LOADING%')",
+    ].join(" AND "),
   );
 }
 

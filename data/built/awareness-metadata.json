@@ -1,13 +1,39 @@
 {
-  "builtAt": "2026-09-15T15:46:23.558Z",
+  "builtAt": "2026-11-23T19:02:20.915Z",
   "sources": {
     "truckRoutes": {
       "dataset": "jjja-shxy",
       "url": "https://data.cityofnewyork.us/Transportation/New-York-City-Truck-Routes/jjja-shxy",
-      "note": "Also derives road-features, road-labels, crossing-limits"
+      "segmentCount": 32628,
+      "withRestrictionText": 860,
+      "byRouteType": {
+        "Through": 13113,
+        "Local": 19292,
+        "Limited Local": 223,
+        "Other": 0
+      }
+    },
+    "streetClosures": {
+      "dataset": "ezy6-djsf",
+      "url": "https://data.cityofnewyork.us/Transportation/Street-Closures-due-to-Construction-Activities-by-/ezy6-djsf",
+      "activeCount": 1213,
+      "filter": "workenddate >= today (build day); LINESTRING/MULTILINESTRING only",
+      "geometryNote": "WKT in EPSG:2263 (NY Long Island State Plane ftUS), converted to WGS84"
+    },
+    "loadingZones": {
+      "truckSignsDataset": "qt6m-xctn",
+      "truckSignsUrl": "https://data.cityofnewyork.us/Transportation/Street-Sign-Work-Orders/qt6m-xctn",
+      "neighborhoodSignsDataset": "6pjf-tf5u",
+      "neighborhoodSignsUrl": "https://data.cityofnewyork.us/Transportation/Neighborhood-Loading-Zone-signs-locations-NYCDOT/6pjf-tf5u",
+      "signCount": 6594,
+      "byZoneType": {
+        "truck": 5859,
+        "neighborhood": 735
+      },
+      "filter": "record_type = Current with State Plane coordinates",
+      "geometryNote": "sign_x_coord/sign_y_coord in EPSG:2263 → WGS84 points"
     },
     "postedLoad": {
-      "feed": "NYSDOT CommVehicleDataFeed /0",
       "file": "posted-load-nyc-li.geojson",
       "count": 162,
       "unit": "US tons",
@@ -22,32 +48,20 @@
     },
     "majorCrossings": {
       "file": "major-crossings.geojson",
-      "count": 18,
+      "count": 19,
       "note": "Curated MTA / PANYNJ / NYCDOT limits — PANYNJ heights from Feb 2026 truckers guide"
-    },
-    "crossingLimits": {
-      "file": "crossing-limits-nyc.geojson",
-      "segmentCount": 860,
-      "uniqueTexts": 11,
-      "note": "Parsed from NYC truck-route restrictio field"
-    },
-    "roadFeatures": {
-      "file": "road-features-nyc.geojson",
-      "kinds": [
-        "bridge",
-        "tunnel",
-        "expressway"
-      ],
-      "note": "Filtered from NYC truck routes flags"
     }
   },
   "notes": [
     "Awareness overlays only — not used for path routing.",
-    "Width / weight / commercial inputs unlock related layers.",
-    "Missing overlay data never means a road is clear.",
+    "NYC only; Long Island clearances remain separate.",
+    "Truck restrictions are segments with non-empty restrictio text.",
+    "Loading zones are curb sign locations, not guaranteed open spaces.",
     "CTDOT parkways + posted-load bridges are merged into the same GeoJSON as NYC/LI.",
+    "Hudson Valley parkways (Saw Mill, Sprain Brook, Taconic, Cross County, Hutch Westchester, etc.) use NYSDOT commercial-vehicle rules with NYSDOT roadway geometry, in the same shared parkways layer as NYC/LI/CT/NJ.",
     "NJ NYC-facing parkways (Palisades, GSP north of 105, Pulaski) and PANYNJ crossings are merged into the same GeoJSON as NYC/LI/CT.",
-    "Hudson Valley parkways (Saw Mill, Sprain Brook, Taconic, Cross County, Hutch Westchester, etc.) come from NYSDOT’s commercial-vehicle parkways feed and live in the same shared parkways layer as NYC/LI/CT/NJ.",
+    "NJ NYC-facing parkways (Palisades, GSP north of 105, Pulaski) and PANYNJ crossings are merged into the same GeoJSON as NYC/LI/CT.",
+    "NJ NYC-facing parkways (Palisades, GSP north of 105, Pulaski) and PANYNJ crossings are merged into the same GeoJSON as NYC/LI/CT.",
     "NJ NYC-facing parkways (Palisades, GSP north of 105, Pulaski) and PANYNJ crossings are merged into the same GeoJSON as NYC/LI/CT."
   ]
 }
