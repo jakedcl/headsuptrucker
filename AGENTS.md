@@ -15,7 +15,7 @@
 
 ## Commands
 - Node 22.9+. `npm run dev` (binds 127.0.0.1:3000), `npm test` (tsx --test), `npm run typecheck`, `npm run build`.
-- Data: `npm run data:fetch`, `data:build`, `data:build-unified`, plus the `data:*` merge scripts in package.json.
+- Data: `npm run data:refresh` (runs the full pipeline with safety assertions & diff summary, automated via weekly GitHub Action), or individual `data:*` scripts in package.json.
 - `predev`/`prebuild`/`postinstall` run `scripts/prepare-maplibre.mjs`. Don't remove them.
 
 ## Gotchas

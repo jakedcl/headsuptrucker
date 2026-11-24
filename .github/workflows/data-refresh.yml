@@ -1,0 +1,94 @@
+name: Weekly Clearance Data Refresh
+
+on:
+  schedule:
+    # Run every Monday at 03:00 UTC (10:00 PM EST Sunday)
+    - cron: '0 3 * * 1'
+  workflow_dispatch:
+    inputs:
+      skip_fetch:
+        description: 'Skip network downloads (rebuild from existing raw snapshots)'
+        required: false
+        type: boolean
+        default: false
+
+concurrency:
+  group: data-refresh
+  cancel-in-progress: false
+
+jobs:
+  refresh:
+    name: Refresh & Verify Agency Data
+    runs-on: ubuntu-latest
+    permissions:
+      contents: write
+      pull-requests: write
+
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v4
+        with:
+          fetch-depth: 0
+
+      - name: Setup Node.js
+        uses: actions/setup-node@v4
+        with:
+          node-version: 22
+          cache: 'npm'
+
+      - name: Install dependencies
+        run: npm ci
+
+      - name: Run data refresh pipeline
+        id: pipeline
+        run: |
+          if [ "${{ github.event.inputs.skip_fetch }}" = "true" ]; then
+            npm run data:refresh:quick
+          else
+            npm run data:refresh
+          fi
+
+      - name: Check for data changes
+        id: diff_check
+        run: |
+          if git diff --quiet data/ public/data/; then
+            echo "has_changes=false" >> $GITHUB_OUTPUT
+            echo "No data changes detected from agency sources."
+          else
+            echo "has_changes=true" >> $GITHUB_OUTPUT
+            echo "Data changes detected."
+          fi
+
+      - name: Create Pull Request with Diff Summary
+        if: steps.diff_check.outputs.has_changes == 'true'
+        env:
+          GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+        run: |
+          DATE=$(date +%Y-%m-%d)
+          BRANCH="data-refresh/${DATE}"
+
+          git config user.name "github-actions[bot]"
+          git config user.email "github-actions[bot]@users.noreply.github.com"
+
+          # Switch to fresh branch
+          git checkout -B "$BRANCH"
+          git add data/ public/data/
+
+          # Commit with clean message (no AI co-author lines)
+          git commit -m "data: weekly agency clearance refresh (${DATE})"
+
+          # Push branch
+          git push -u origin "$BRANCH" --force
+
+          # Check if an open PR already exists for this branch
+          PR_EXISTS=$(gh pr list --head "$BRANCH" --json number -q '.[0].number')
+          if [ -n "$PR_EXISTS" ]; then
+            gh pr edit "$PR_EXISTS" --title "Data Refresh: Agency clearance update (${DATE})" --body-file data/audit/last-refresh-summary.md
+            echo "Updated existing PR #$PR_EXISTS"
+          else
+            gh pr create \
+              --title "Data Refresh: Agency clearance update (${DATE})" \
+              --body-file data/audit/last-refresh-summary.md \
+              --base main \
+              --head "$BRANCH"
+          fi

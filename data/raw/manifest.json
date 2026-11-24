@@ -1,20 +1,20 @@
 {
-  "retrievedAt": "2026-09-15T15:46:10.267Z",
-  "nysdotCount": 1125,
+  "retrievedAt": "2026-11-23T14:42:56.339Z",
+  "nysdotCount": 1122,
   "nysdotPostedLoadCount": 644,
   "ctdotCount": 213,
   "hashes": {
-    "nyc-metadata.json": "ff562c7fec88ea0973654ad27c6b9817e64c408f041d545f2df20ba1d5c183f1",
+    "nyc-metadata.json": "e3c6d241ad69af979e80205c79fdb8c196bea38dafdd53a96b0a9ee8aac5891a",
     "nysdot-metadata.json": "ad085ecf46167e92c5753f56e7657a94174c988137b82705e66b45c184d1b1ac",
     "nyc-low-bridges.kml": "f71ad6209571c84ebca54eb2aac14e1bf9eca8b86587610ca26869e2049423ec",
-    "nysdot-statewide.geojson": "8c8e62b7bc50dedf4eb81e9bd051a3547b0baaff4d0f27417b956245454d30c6",
-    "nysdot-posted-load.geojson": "c75e020017374d4121f9ca07f6bdda8137a14a06a62cf8f1f9e43c33d3516ff7",
+    "nysdot-statewide.geojson": "b79b91067eb766862b36d4a7ae6a7a1174793db510d43f5663c28d2bae8b9b3b",
+    "nysdot-posted-load.geojson": "0383d05688f8cc5036b3fb617ad73877c7bec6635df1e4f0d268499e6670507a",
     "ctdot-bridges.geojson": "b032cbf84b803c1bb49cdd4d79d5fd64f11381457f598393fd4c035b5e8ed1e5",
-    "ctdot-metadata.json": "0c33dd7a071cab225e3130256a6673bd3aac5b126c9be4e1c45be6424a73e577",
+    "ctdot-metadata.json": "e5a36c34d89ff044715f4f70b26fd4b14d42f10e7e0b46ae2721877a2d99f981",
     "nj-truck-map-bridges.geojson": "ea3fb85c4b646738a478ff57e956f550c2f52eb506b9c7a385c9048f0287acd1",
-    "osm-nj-maxheight.json": "8c29f4eea046849aeefa31f5a92b4f21d150ebf7e6db05f75d422b0378c25fac"
+    "osm-nj-maxheight.json": "9f8fe11785f8ce27f88d355a4c9f302cdac4b855e8d9f83535472185119a6d31"
   },
-  "njClearancesRetrievedAt": "2026-09-16T03:37:35.681Z",
+  "njClearancesRetrievedAt": "2026-11-23T18:56:35.991Z",
   "njTruckMapBridgeCount": 14,
-  "osmNjMaxheightCount": 1725
+  "osmNjMaxheightCount": 1748
 }

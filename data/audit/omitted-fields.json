@@ -1011,12 +1011,6 @@
     "reason": "No active posting in this field"
   },
   {
-    "id": "3348560",
-    "field": "POSTED_VRT_CLRNC_UNDER",
-    "value": 0,
-    "reason": "No active posting in this field"
-  },
-  {
     "id": "3348440",
     "field": "POSTED_VRT_CLRNC_ON",
     "value": 0,
@@ -1947,12 +1941,6 @@
     "reason": "No active posting in this field"
   },
   {
-    "id": "2230869",
-    "field": "POSTED_VRT_CLRNC_ON",
-    "value": 0,
-    "reason": "No active posting in this field"
-  },
-  {
     "id": "2230669",
     "field": "POSTED_VRT_CLRNC_ON",
     "value": 0,
@@ -2704,12 +2692,6 @@
   },
   {
     "id": "1066779",
-    "field": "POSTED_VRT_CLRNC_ON",
-    "value": 0,
-    "reason": "No active posting in this field"
-  },
-  {
-    "id": "1066669",
     "field": "POSTED_VRT_CLRNC_ON",
     "value": 0,
     "reason": "No active posting in this field"

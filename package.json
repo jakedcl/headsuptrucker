@@ -22,7 +22,9 @@
     "data:hv-parkways": "tsx scripts/merge-hv-parkways.ts",
     "data:build-unified": "tsx scripts/build-unified-awareness.ts",
     "data:enrich-parkway-heights": "tsx scripts/enrich-parkway-heights.ts",
-    "data:apply-researched-heights": "tsx scripts/apply-researched-heights.ts"
+    "data:apply-researched-heights": "tsx scripts/apply-researched-heights.ts",
+    "data:refresh": "tsx scripts/refresh-data.ts",
+    "data:refresh:quick": "tsx scripts/refresh-data.ts --skip-fetch"
   },
   "dependencies": {
     "maplibre-gl": "6.18.0",

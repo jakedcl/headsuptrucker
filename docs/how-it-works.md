@@ -16,7 +16,9 @@ agency feeds ──fetch──▶ data/raw/ ──build──▶ data/built/ ─
 
 ## The data pipeline
 
-Everything runs by hand with `npm run data:*`. There is no scheduled refresh and no CI in the repo.
+You can run the full pipeline end-to-end with **`npm run data:refresh`** (or **`npm run data:refresh:quick`** to rebuild without refetching from networks). A GitHub Action (`.github/workflows/data-refresh.yml`) runs `npm run data:refresh` every Monday at 03:00 UTC and opens a PR if agency data changed and all integrity assertions pass.
+
+The underlying pipeline steps run in this order:
 
 1. **`data:fetch`** (`scripts/fetch-sources.ts`) downloads the NYSDOT commercial-vehicle feed, the NYSDOT posted-load layer, CTDOT posted clearances (paged), and NYC's legacy low-bridge KML. It refuses to replace the snapshot if the NYSDOT record count doesn't match the feed's own count query, and it writes files to `.tmp` names first and renames them. It then writes the manifest.
 2. **`data:fetch-nj`** (`scripts/fetch-nj-clearances.ts`) looks up the NJDOT truck-map structures in the NJDOT bridge layer by BRKEY, and grabs OpenStreetMap `maxheight` tags for NJ. It updates the manifest.

@@ -3,6 +3,7 @@ import { useState } from "react";
 import { useRouter } from "next/navigation";
 import { HeightForm } from "./height-form";
 import { FOOTER_DISCLAIMER } from "@/lib/disclaimer";
+import metadata from "../../public/data/metadata.json";
 
 export function StartScreen() {
   const router = useRouter();
@@ -36,7 +37,9 @@ export function StartScreen() {
     <footer className="start-footer">
       <span>Free · No account · Not a trucker GPS</span>
       <span>NYSDOT · CTDOT · NJDOT · OpenStreetMap</span>
-      <span className="start-footer-disclaimer">{FOOTER_DISCLAIMER}</span>
+      <span className="start-footer-disclaimer">
+        Agency data refreshed weekly (latest snapshot: {metadata.retrievedAt.slice(0, 10)}). {FOOTER_DISCLAIMER}
+      </span>
     </footer>
   </main>;
 }

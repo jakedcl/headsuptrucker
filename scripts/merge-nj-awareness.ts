@@ -88,8 +88,21 @@ function labelPoint(lines: Position[][]): [number, number] | null {
   return [mid[0], mid[1]];
 }
 
+const NJ_CROSSING_FACILITY_IDS = new Set([
+  "gwb-upper",
+  "gwb-lower",
+  "panynj-lincoln",
+  "panynj-holland",
+  "panynj-bayonne",
+  "panynj-goethals",
+  "panynj-outerbridge",
+]);
+
 function isNjId(id: unknown) {
-  return typeof id === "string" && (id.startsWith("parkway-nj-") || id.startsWith("panynj-"));
+  return (
+    typeof id === "string" &&
+    (id.startsWith("parkway-nj-") || id.startsWith("panynj-") || NJ_CROSSING_FACILITY_IDS.has(id))
+  );
 }
 
 function parkwayFeature(
