@@ -6,6 +6,7 @@ import {
   DISCLAIMER_HEADLINE,
   SAFETY_DISCLAIMER_STORAGE_KEY,
 } from "@/lib/disclaimer";
+import metadata from "../../public/data/metadata.json";
 
 export function SafetyDisclaimerModal() {
   const [open, setOpen] = useState(false);
@@ -41,6 +42,7 @@ export function SafetyDisclaimerModal() {
         <h2 id="safety-disclaimer-title">{DISCLAIMER_HEADLINE}</h2>
         <p className="safety-modal-lead">{DATA_SOURCES_SUMMARY}</p>
         <ul className="safety-modal-list">
+          <li>Agency clearances refreshed weekly (latest snapshot: {metadata.retrievedAt.slice(0, 10)}).</li>
           <li>Clearance and corridor data may be inaccurate, outdated, or incomplete.</li>
           <li>Always obey posted clearance signs and do your own research.</li>
           <li>Not a substitute for official agency records or truck navigation systems.</li>
