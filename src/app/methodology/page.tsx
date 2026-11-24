@@ -58,7 +58,7 @@ export default function Methodology() {
           the list leads with a readable crossing or location from the same record; the original name stays in the record details.
         </p>
         <p>
-          Source downloaded: {metadata.retrievedAt.slice(0, 10)}. Layer update:{" "}
+          Agency sources are audited and refreshed weekly via an automated pipeline with circuit breakers against truncated feeds. Source downloaded: {metadata.retrievedAt.slice(0, 10)}. Layer update:{" "}
           {metadata.sourceUpdatedAt?.slice(0, 10) || "not supplied"}. A layer refresh is not the date each sign was inspected.
         </p>
       </section>
