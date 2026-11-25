@@ -74,7 +74,7 @@ jobs:
           git checkout -B "$BRANCH"
           git add data/ public/data/
 
-          # Commit with clean message (no AI co-author lines)
+          # Commit with clean message
           git commit -m "data: weekly agency clearance refresh (${DATE})"
 
           # Push branch
